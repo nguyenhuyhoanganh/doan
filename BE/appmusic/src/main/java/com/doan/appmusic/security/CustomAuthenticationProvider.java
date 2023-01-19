@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 @Service
 @Transactional
+// không dùng nữa
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
