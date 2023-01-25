@@ -22,7 +22,6 @@ public class JwtUtils {
         for (String name : claims.keySet()) {
             jwtBuilder.withClaim(name, claims.get(name));
         }
-
         String token = jwtBuilder.sign(algorithm);
         return token;
     }

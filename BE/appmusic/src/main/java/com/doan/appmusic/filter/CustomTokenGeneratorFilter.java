@@ -54,7 +54,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> claims = new HashMap<>();
         claims.put("roles", JwtUtils.populateAuthorities(authentication.getAuthorities()));
         claims.put("type", "access_token");
-        String accessToken = JwtUtils.generateToken(subject, 24 * 60 * 60 * 1000, issuer, claims);
+        String accessToken = JwtUtils.generateToken(subject, 60 * 60 * 1000, issuer, claims);
         Map<String, String> refreshTokenClaims = new HashMap<>();
         refreshTokenClaims.put("type", "refresh_token");
         String refreshToken = JwtUtils.generateToken(subject, 10 * 24 * 60 * 60 * 1000, issuer, refreshTokenClaims);

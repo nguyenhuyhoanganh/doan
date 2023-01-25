@@ -85,7 +85,7 @@ class UserServiceImpl implements UserService {
         // convert to Model
         for (User user : users) {
             UserDTO userDTO = entityMapToModel(user);
-            userDTO.setPassword("[SECURITY]");
+            userDTO.setPassword("[SECURED]");
             userDTOs.add(userDTO);
         }
         return userDTOs;
@@ -96,7 +96,7 @@ class UserServiceImpl implements UserService {
         User user = repository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found"));
         UserDTO userDTO = entityMapToModel(user);
-        userDTO.setPassword("[SECURITY]");
+        userDTO.setPassword("[SECURED]");
         return userDTO;
     }
 
@@ -105,7 +105,7 @@ class UserServiceImpl implements UserService {
         User user = modelMapToEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserDTO userCreated = entityMapToModel(repository.save(user));
-        userCreated.setPassword("[SECURITY]");
+        userCreated.setPassword("[SECURED]");
         return userCreated;
     }
 
@@ -116,7 +116,7 @@ class UserServiceImpl implements UserService {
             User user = modelMapToEntity(userDTO);
             user.setPassword(repository.findById(id).get().getPassword());
             repository.save(user);
-            userDTO.setPassword("[SECURITY]");
+            userDTO.setPassword("[SECURED]");
             return userDTO;
         }
         throw new UsernameNotFoundException("User not found");
