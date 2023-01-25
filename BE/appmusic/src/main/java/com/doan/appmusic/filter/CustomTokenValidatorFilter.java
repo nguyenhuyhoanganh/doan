@@ -1,9 +1,10 @@
 package com.doan.appmusic.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.utils.JwtUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.doan.appmusic.utils.Mapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomAuthorizationFilter extends OncePerRequestFilter {
+public class CustomTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -42,12 +43,18 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                 filterChain.doFilter(request, response);
             } catch (Exception exception) {
-                response.setHeader("error", exception.getMessage());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setStatus(HttpStatus.FORBIDDEN.value());
-                new ObjectMapper().writeValue(response.getOutputStream(), exception.getMessage());
+                ResponseDTO<?> responseBody =
+                        ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.FORBIDDEN.value()).build();
+                Mapper.writeValue(response.getOutputStream(), responseBody);
             }
         } else {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            ResponseDTO<?> responseBody =
+                    ResponseDTO.builder().message("Deny access").code(HttpStatus.FORBIDDEN.value()).build();
+            Mapper.writeValue(response.getOutputStream(), responseBody);
             filterChain.doFilter(request, response);
         }
     }

@@ -1,7 +1,7 @@
 package com.doan.appmusic.security;
 
-import com.doan.appmusic.filter.CustomAuthenticationFilter;
-import com.doan.appmusic.filter.CustomAuthorizationFilter;
+import com.doan.appmusic.filter.CustomTokenGeneratorFilter;
+import com.doan.appmusic.filter.CustomTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,19 +34,15 @@ public class SecurityConfig {
 //    }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http,
-        UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
 
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder).and().build();
+        return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(userDetailsService).passwordEncoder(passwordEncoder).and().build();
     }
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(authenticationManager);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+        CustomTokenGeneratorFilter customTokenGeneratorFilter = new CustomTokenGeneratorFilter(authenticationManager);
+        customTokenGeneratorFilter.setFilterProcessesUrl("/api/login");
 
         // cors, csrf
         http.cors(c -> {
@@ -68,9 +64,8 @@ public class SecurityConfig {
         http.authorizeRequests().anyRequest().authenticated();
 
         // add filter
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter()
-                , UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(customTokenGeneratorFilter);
+        http.addFilterBefore(new CustomTokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
