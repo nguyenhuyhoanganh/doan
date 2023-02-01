@@ -8,10 +8,11 @@ function App() {
     <>
       <div className="">
         <Routes>
-          <Route path={path.PUBLIC} element={<Pubic></Pubic>}>
+          <Route path={path.PUBLIC} element={<Pubic/>}>
             // nằm trong rt khác thì lấy path cha + con
             <Route path={path.HOME} element={<Home/>}/>
             <Route path={path.LOGIN} element={<Login/>}/>
+            <Route path={path.STAR} element={<Home/>}/>
           </Route>
         </Routes>
       </div>

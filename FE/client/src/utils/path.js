@@ -1,6 +1,7 @@
 const path = {
-    PUBLIC: '/*',
+    PUBLIC: '/',
     HOME: "",
     LOGIN: "login",
+    STAR: "*"
 }
 export default path
