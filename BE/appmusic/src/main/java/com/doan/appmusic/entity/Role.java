@@ -9,8 +9,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "roles")
-public class Role {
+public class Role extends DateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

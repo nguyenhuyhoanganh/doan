@@ -1,9 +1,6 @@
 package com.doan.appmusic.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,32 +10,38 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "users")
-public class User {
+public class User extends DateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
     private String firstName;
 
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private Long phone;
 
     private String photoUrl;
 
+    private String gender;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = { @UniqueConstraint(columnNames = { "user_id", "role_id" }) })
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
     private Set<Role> roles;
 }
+
+
