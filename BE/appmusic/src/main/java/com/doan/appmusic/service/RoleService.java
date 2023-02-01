@@ -74,7 +74,7 @@ class RoleServiceImpl implements RoleService {
     }
 
     private RoleDTO entityMapToModel(Role role) {
-        return RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).build();
+        return RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).createdAt(role.getCreatedAt()).updatedAt(role.getUpdatedAt()).build();
     }
 
 

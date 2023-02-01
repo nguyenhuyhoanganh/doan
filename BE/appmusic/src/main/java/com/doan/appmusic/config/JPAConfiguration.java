@@ -25,8 +25,8 @@ public class JPAConfiguration {
             public Optional<User> getCurrentAuditor() {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if (authentication == null) return Optional.empty();
-                String username = authentication.getName();
-                User user = repository.findByUsername(username).orElse(null);
+                String email = authentication.getName();
+                User user = repository.findByEmail(email).orElse(null);
                 return Optional.ofNullable(user);
             }
         };

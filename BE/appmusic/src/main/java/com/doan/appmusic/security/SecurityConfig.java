@@ -26,13 +26,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
-//        return http.getSharedObject(AuthenticationManagerBuilder.class)
-//                .authenticationProvider(authenticationProvider)
-//                .build();
-//    }
-
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
 
@@ -60,8 +53,12 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // matcher
-        http.authorizeRequests().mvcMatchers("/api/login", "/api/register", "/api/refresh-token/**").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
+//        http.authorizeRequests()
+//                .mvcMatchers("/api/login", "/api/register", "/api/refresh-token/**", "/api/logout",
+//                        "/api/files/upload", "/api/files/**")
+//                .permitAll();
+        http.authorizeRequests().anyRequest().permitAll();
+//                .authenticated();
 
         // add filter
         http.addFilter(customTokenGeneratorFilter);

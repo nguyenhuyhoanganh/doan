@@ -1,0 +1,4 @@
+id,created_at,updated_at,email,first_name,gender,last_name,password,phone,photo_url,username
+1,"2023-02-01 17:23:08.000000","2023-02-01 17:23:08.000000",admin@gmail.com,Admin,Female,"My Name Is",$2a$10$DS6Sc8vmbutzqR70SMfYJedFFa5HXCDWVvj3lUtfDGjXyjljcG8ye,987654321,http://localhost:8080/api/files/1,admin
+3,"2023-02-01 17:50:33.000000","2023-02-01 17:50:33.000000",user@gmail.com,NULL,NULL,NULL,$2a$10$Xa2blhEpYizothDOIBxMmuBer33qU6Vr3lILQSTUKhwlkAC1eJYAi,NULL,http://localhost:8080/api/files/1,NULL
+4,"2023-02-01 17:58:24.000000","2023-02-01 17:58:24.000000",user2@gmail.com,NULL,NULL,NULL,$2a$10$Rrp6iaHv/IUTzEk4IZ8rS.c1OVEpFtcjmeKW.4tiU/ji1PQhOj68C,NULL,http://localhost:8080/api/files/1,NULL

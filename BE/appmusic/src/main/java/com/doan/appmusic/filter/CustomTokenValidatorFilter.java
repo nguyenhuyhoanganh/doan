@@ -28,9 +28,11 @@ public class CustomTokenValidatorFilter extends OncePerRequestFilter {
         }
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
-            if (authorizationHeader == null || !authorizationHeader.startsWith(SecurityConstants.TOKEN_PREFIX))
-                throw new RuntimeException("Deny access");
             String token = authorizationHeader.substring(SecurityConstants.TOKEN_PREFIX.length());
 
             DecodedJWT decodedJWT = JwtUtils.decodeToken(token);

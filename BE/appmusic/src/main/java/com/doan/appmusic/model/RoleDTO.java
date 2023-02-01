@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,4 +17,9 @@ public class RoleDTO {
 
     @NotBlank
     private String roleName;
+
+    private Date createdAt;
+
+    private Date updatedAt;
+
 }
