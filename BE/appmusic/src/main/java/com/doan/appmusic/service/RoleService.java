@@ -1,6 +1,7 @@
 package com.doan.appmusic.service;
 
 import com.doan.appmusic.entity.Role;
+import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO getById(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role not found"));
         return entityMapToModel(role);
     }
 
@@ -56,7 +57,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO update(long id, RoleDTO roleDTO) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role not found"));
         roleDTO.setId(role.getId());
         repository.save(modelMapToEntity(roleDTO));
         return roleDTO;
@@ -64,7 +65,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role not found"));
         repository.delete(role);
     }
 

@@ -10,8 +10,8 @@ export const registerSchema = yup.object({
   password: yup
     .string()
     .required('Password is required')
-    .min(6, 'Độ dài từ 6 - 160 ký tự')
-    .max(160, 'Độ dài từ 6 - 160 ký tự'),
+    .min(6, 'Password length from 6 - 160 characters')
+    .max(160, 'Password length from 6 - 160 characters'),
   confirm_password: yup
     .string()
     .required('Confirm password is required')

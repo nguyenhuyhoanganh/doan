@@ -1,6 +1,7 @@
 package com.doan.appmusic.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.utils.JwtUtils;
@@ -37,7 +38,7 @@ public class CustomTokenValidatorFilter extends OncePerRequestFilter {
 
             DecodedJWT decodedJWT = JwtUtils.decodeToken(token);
             if (!decodedJWT.getClaim("type").asString().equals("access_token"))
-                throw new RuntimeException("Invalid token");
+                throw new CommonException("Invalid token");
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, AuthorityUtils.commaSeparatedStringToAuthorityList(decodedJWT.getClaim("roles").asString()));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

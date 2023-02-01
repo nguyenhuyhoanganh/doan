@@ -2,6 +2,8 @@ package com.doan.appmusic.service;
 
 import com.doan.appmusic.entity.Role;
 import com.doan.appmusic.entity.User;
+import com.doan.appmusic.exception.CommonException;
+import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
@@ -61,7 +63,7 @@ class UserServiceImpl implements UserService {
 
         // search
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        Pattern patternSearch = Pattern.compile("(\\w+?)(:|<|>)(\\w+( +\\w+)*$?),", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern patternSearch = Pattern.compile("(\\w+?)([:<>])(\\w+( +\\w+)*$?),", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcherSearch = patternSearch.matcher(search + ",");
         while (matcherSearch.find()) {
             if (matcherSearch.group(1).compareTo("roles") == 0) {
@@ -76,7 +78,7 @@ class UserServiceImpl implements UserService {
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
-        if (orderBy == "desc") sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
+        if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
         else sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));
 
         Set<User> users = repository.findAll(specification, PageRequest.of(page, limit, Sort.by(sortList))).toSet();
@@ -84,7 +86,6 @@ class UserServiceImpl implements UserService {
         // convert to Model
         for (User user : users) {
             UserDTO userDTO = entityMapToModel(user);
-            userDTO.setPassword("[SECURED]");
             userDTOs.add(userDTO);
         }
         return userDTOs;
@@ -94,20 +95,19 @@ class UserServiceImpl implements UserService {
     public UserDTO getById(long id) {
         User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDTO userDTO = entityMapToModel(user);
-        userDTO.setPassword("[SECURED]");
         return userDTO;
     }
 
     @Override
     public UserDTO create(UserDTO userDTO) {
-        System.out.println(userDTO);
+        if(repository.findByEmail(userDTO.getEmail()).isPresent())
+            throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         User user = modelMapToEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         if (user.getPhotoUrl() == null) {
             user.setPhotoUrl("http://localhost:8080/api/files/1");
         }
         UserDTO userCreated = entityMapToModel(repository.save(user));
-        userCreated.setPassword("[SECURED]");
         return userCreated;
     }
 
@@ -146,35 +146,11 @@ class UserServiceImpl implements UserService {
     }
 
     private UserDTO entityMapToModel(User user) {
-        return UserDTO.builder().id(user.getId())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .phone(user.getPhone())
-                .photoUrl(user.getPhotoUrl())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .gender(user.getGender())
-                .roles(user.getRoles().stream().map(role ->
-                        RoleDTO.builder().id(role.getId()).roleName(role.getRoleName())
-                                .updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build())
-                        .collect(Collectors.toSet())).build();
+        return UserDTO.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password("[SECURED]").phone(user.getPhone()).photoUrl(user.getPhotoUrl()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).gender(user.getGender()).roles(user.getRoles().stream().map(role -> RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build()).collect(Collectors.toSet())).build();
     }
 
     private User modelMapToEntity(UserDTO user) {
-        return User.builder().email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .phone(user.getPhone()).photoUrl(user.getPhotoUrl() == null ? "http://localhost:8080/api/files/1" :
-                        user.getPhotoUrl())
-                .gender(user.getGender())
-                .roles(user.getRoles() == null ? new HashSet<>(Arrays.asList(roleRepository.findByRoleName("ROLE_USER"))) :
-                        user.getRoles().stream().map(role -> roleRepository.findByRoleName(role.getRoleName()))
-                                .collect(Collectors.toSet())).build();
+        return User.builder().email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password(passwordEncoder.encode(user.getPassword())).phone(user.getPhone()).photoUrl(user.getPhotoUrl() == null ? "http://localhost:8080/api/files/1" : user.getPhotoUrl()).gender(user.getGender()).roles(user.getRoles() == null ? Set.of(roleRepository.findByRoleName("ROLE_USER")) : user.getRoles().stream().map(role -> roleRepository.findByRoleName(role.getRoleName())).collect(Collectors.toSet())).build();
     }
 
 }

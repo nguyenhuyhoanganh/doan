@@ -43,11 +43,14 @@ public class SecurityConfig {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(List.of("*"));
                 config.setAllowedMethods(List.of("*"));
+                config.setAllowedHeaders(List.of("*"));
                 return config;
             };
             c.configurationSource(source);
         });
         http.csrf().disable();
+
+//        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
         // session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

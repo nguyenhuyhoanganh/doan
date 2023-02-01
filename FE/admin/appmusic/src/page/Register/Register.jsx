@@ -1,20 +1,48 @@
 import { NavLink } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { omit } from 'lodash'
 
 import { registerSchema } from '../../utils/validate.form'
 import Input from '../../component/Input'
+import { registerAccount } from '../../apis/auth.api'
+import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 
 const Register = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(registerSchema)
   })
 
-  const onSubmit = handleSubmit((data) => {})
+  const registerAccountMutation = useMutation({
+    mutationFn: (body) => registerAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError(error)) {
+          const formError = error.response?.data?.error
+          if (formError) {
+            Object.keys(formError).forEach((key) =>
+              setError(key, {
+                message: formError[key]
+              })
+            )
+          }
+        }
+      }
+    })
+  })
   return (
     <div className='bg-green'>
       <div className='container'>

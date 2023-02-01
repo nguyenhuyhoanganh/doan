@@ -58,7 +58,6 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) throws AuthenticationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
         boolean isAdmin = false;
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             if (authority.getAuthority().equals("ROLE_ADMIN")) isAdmin = true;
@@ -68,5 +67,13 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
         throw new AuthenticationException("You do not have the authority to perform this action");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = service.findByEmail(authentication.getName());
+        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(user).build();
+        return ResponseEntity.ok(response);
     }
 }

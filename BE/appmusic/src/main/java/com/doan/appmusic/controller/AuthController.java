@@ -1,6 +1,7 @@
 package com.doan.appmusic.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.SecurityConstants;
@@ -42,15 +43,14 @@ public class AuthController {
         claims.put("roles", userCreated.getRoles().stream().map(role -> role.getRoleName()).reduce("", (subString, element) -> subString + "," + element).substring(1));
         claims.put("type", "access_token");
         String accessToken = JwtUtils.generateToken(userCreated.getEmail(), SecurityConstants.ACCESS_TOKEN_LIFE_TIME, location.toString(), claims);
-        Map<String, String> refreshTokenClaims = new HashMap<>();
-        refreshTokenClaims.put("type", "refresh_token");
-        String refreshToken = JwtUtils.generateToken(userCreated.getEmail(), SecurityConstants.REFRESH_TOKEN_LIFE_TIME, location.toString(), refreshTokenClaims);
+        String refreshToken = JwtUtils.generateToken(userCreated.getEmail(), SecurityConstants.REFRESH_TOKEN_LIFE_TIME, location.toString(), Map.of("type", "refresh_token"));
 
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", accessToken);
-        tokens.put("refresh_token", refreshToken);
+        Map<String, Object> data = new HashMap<>();
+        data.put("access_token", accessToken);
+        data.put("refresh_token", refreshToken);
+        data.put("user", userCreated);
 
-        ResponseDTO<?> response = ResponseDTO.builder().code(HttpStatus.CREATED.value()).data(tokens).build();
+        ResponseDTO<?> response = ResponseDTO.builder().code(HttpStatus.CREATED.value()).data(data).build();
 
         return ResponseEntity.created(location).body(response);
     }
@@ -60,14 +60,14 @@ public class AuthController {
         try {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorizationHeader == null && !authorizationHeader.startsWith(SecurityConstants.TOKEN_PREFIX))
-                throw new RuntimeException("Refresh token is missing");
+                throw new CommonException("Refresh token is missing");
 
             String refreshToken = authorizationHeader.substring(SecurityConstants.TOKEN_PREFIX.length());
 
             DecodedJWT decodedJWT = JwtUtils.decodeToken(refreshToken);
 
             if (!decodedJWT.getClaim("type").asString().equals("refresh_token"))
-                throw new RuntimeException("Invalid token");
+                throw new CommonException("Invalid token");
 
             UserDTO userDTO = service.findByEmail(decodedJWT.getSubject());
 
@@ -77,9 +77,7 @@ public class AuthController {
             claims.put("roles", JwtUtils.populateAuthorities(userDTO.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList())));
             claims.put("type", "access_token");
             String accessToken = JwtUtils.generateToken(subject, SecurityConstants.ACCESS_TOKEN_LIFE_TIME, issuer, claims);
-            Map<String, String> refreshTokenClaims = new HashMap<>();
-            refreshTokenClaims.put("type", "refresh_token");
-            refreshToken = JwtUtils.generateToken(subject, SecurityConstants.REFRESH_TOKEN_LIFE_TIME, issuer, refreshTokenClaims);
+            refreshToken = JwtUtils.generateToken(subject, SecurityConstants.REFRESH_TOKEN_LIFE_TIME, issuer, Map.of("type", "refresh_token"));
             Map<String, String> tokens = new HashMap<>();
             tokens.put("access_token", accessToken);
             tokens.put("refresh_token", refreshToken);
@@ -91,4 +89,5 @@ public class AuthController {
             return ResponseEntity.badRequest().body(responseBody);
         }
     }
+
 }
