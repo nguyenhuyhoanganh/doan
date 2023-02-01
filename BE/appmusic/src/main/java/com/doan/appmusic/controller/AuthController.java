@@ -7,7 +7,6 @@ import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.service.UserService;
 import com.doan.appmusic.utils.JwtUtils;
 import com.doan.appmusic.utils.OnCreate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,14 +39,12 @@ public class AuthController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 
         Map<String, String> claims = new HashMap<>();
-        claims.put("roles", userCreated.getRoles().stream().map(role -> role.getRoleName()).reduce("",
-                (subString, element) -> subString+ "," + element).substring(1));
+        claims.put("roles", userCreated.getRoles().stream().map(role -> role.getRoleName()).reduce("", (subString, element) -> subString + "," + element).substring(1));
         claims.put("type", "access_token");
-        String accessToken = JwtUtils.generateToken(userCreated.getEmail(), 24 * 60 * 60 * 1000, location.toString(),
-                claims);
+        String accessToken = JwtUtils.generateToken(userCreated.getEmail(), SecurityConstants.ACCESS_TOKEN_LIFE_TIME, location.toString(), claims);
         Map<String, String> refreshTokenClaims = new HashMap<>();
         refreshTokenClaims.put("type", "refresh_token");
-        String refreshToken = JwtUtils.generateToken(userCreated.getEmail(), 10 * 24 * 60 * 60 * 1000, location.toString(), refreshTokenClaims);
+        String refreshToken = JwtUtils.generateToken(userCreated.getEmail(), SecurityConstants.REFRESH_TOKEN_LIFE_TIME, location.toString(), refreshTokenClaims);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
@@ -79,8 +76,10 @@ public class AuthController {
             Map<String, String> claims = new HashMap<>();
             claims.put("roles", JwtUtils.populateAuthorities(userDTO.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList())));
             claims.put("type", "access_token");
-            String accessToken = JwtUtils.generateToken(subject, 24 * 60 * 60 * 1000, issuer, claims);
-
+            String accessToken = JwtUtils.generateToken(subject, SecurityConstants.ACCESS_TOKEN_LIFE_TIME, issuer, claims);
+            Map<String, String> refreshTokenClaims = new HashMap<>();
+            refreshTokenClaims.put("type", "refresh_token");
+            refreshToken = JwtUtils.generateToken(subject, SecurityConstants.REFRESH_TOKEN_LIFE_TIME, issuer, refreshTokenClaims);
             Map<String, String> tokens = new HashMap<>();
             tokens.put("access_token", accessToken);
             tokens.put("refresh_token", refreshToken);

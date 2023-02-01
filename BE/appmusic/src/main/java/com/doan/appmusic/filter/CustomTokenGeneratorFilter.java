@@ -1,6 +1,7 @@
 package com.doan.appmusic.filter;
 
 import com.doan.appmusic.model.ResponseDTO;
+import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.utils.JwtUtils;
 import com.doan.appmusic.utils.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,10 +55,10 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> claims = new HashMap<>();
         claims.put("roles", JwtUtils.populateAuthorities(authentication.getAuthorities()));
         claims.put("type", "access_token");
-        String accessToken = JwtUtils.generateToken(subject, 24 * 60 * 60 * 1000, issuer, claims);
+        String accessToken = JwtUtils.generateToken(subject, SecurityConstants.ACCESS_TOKEN_LIFE_TIME, issuer, claims);
         Map<String, String> refreshTokenClaims = new HashMap<>();
         refreshTokenClaims.put("type", "refresh_token");
-        String refreshToken = JwtUtils.generateToken(subject, 10 * 24 * 60 * 60 * 1000, issuer, refreshTokenClaims);
+        String refreshToken = JwtUtils.generateToken(subject, SecurityConstants.REFRESH_TOKEN_LIFE_TIME, issuer, refreshTokenClaims);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
