@@ -20,6 +20,8 @@ export const registerSchema = yup.object({
     .oneOf([yup.ref('password')], "Confirm password doesn't match password")
 })
 
+export const loginSchema = registerSchema.omit(['confirm_password'])
+
 // export const getRules = (getValues = undefined) => ({
 //   email: {
 //     required: {

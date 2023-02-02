@@ -1,12 +1,12 @@
 package com.doan.appmusic.filter;
 
-import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.utils.JwtUtils;
 import com.doan.appmusic.utils.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +31,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
 
     // authenticationManager được lấy từ bean khởi tạo trong lớp config
     // authenticationManager trong class cha trả về null
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (!request.getMethod().equals("POST"))
@@ -43,8 +44,12 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
             return authenticationManager.authenticate(authenticationToken);
         } catch (Exception exception) {
-            throw new CommonException(exception.getMessage());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            ResponseDTO<?> responseBody = ResponseDTO.builder().message("Credential is incorrect").code(HttpStatus.FORBIDDEN.value()).build();
+            Mapper.writeValue(response.getOutputStream(), responseBody);
         }
+        return null;
     }
 
     // thay vì mặc định đưa user đã authenticated vào context
