@@ -14,7 +14,7 @@ module.exports = {
         'green-weight': '#12de5b'
       },
       backgroundImage: {
-        'hero-img': "url('/src/img/herro-img.jpg')"
+        'hero-img': "url('/src/imgs/herro-img.jpg')"
       }
     }
   },

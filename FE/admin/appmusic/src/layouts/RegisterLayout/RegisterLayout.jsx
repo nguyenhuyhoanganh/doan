@@ -1,5 +1,5 @@
-import Footer from '../../component/Footer'
-import RegisterHeader from '../../component/RegisterHeader'
+import Footer from '../../components/Footer'
+import RegisterHeader from '../../components/RegisterHeader'
 
 const RegisterLayout = ({ children }) => {
   return (
