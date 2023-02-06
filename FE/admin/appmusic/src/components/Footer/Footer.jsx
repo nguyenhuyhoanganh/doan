@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import path from '../../constants/path'
 
 const Footer = () => {
   return (
@@ -6,7 +7,7 @@ const Footer = () => {
       <div className='mx-auto max-w-7xl px-4'>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
           <div className='content-center justify-items-center lg:col-span-2'>
-            <NavLink to='/'>
+            <NavLink to={path.dashBoard}>
               <svg
                 viewBox='0 0 1134 340'
                 className='h-12
@@ -23,7 +24,7 @@ const Footer = () => {
               <div className='mt-1'>Nguyen Trinh Sơn - 18150034 - KHMT17</div>
             </div>
           </div>
-          <div className='lg:col-span-1'>
+          <div className='justify-self-center lg:col-span-1'>
             <ul className='font-semibold text-gray-700'>
               <li className='mb-2 text-gray-500'>Company</li>
               <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>About Us</li>
@@ -38,7 +39,7 @@ const Footer = () => {
               <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Apple Music Offer</li>
             </ul>
           </div>
-          <div className='lg:col-span-1'>
+          <div className='justify-self-center lg:col-span-1'>
             <ul className='font-semibold text-gray-700'>
               <li className='mb-2 text-gray-500'>Legal</li>
               <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Terms</li>

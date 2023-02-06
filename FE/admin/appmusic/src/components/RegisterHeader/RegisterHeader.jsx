@@ -1,11 +1,14 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useMatch } from 'react-router-dom'
+import path from '../../constants/path'
 
 const RegisterHeader = () => {
+  const registerMatch = useMatch('register')
+  const isRegister = Boolean(registerMatch)
   return (
     <header className='py-5'>
       <div className='x-auto max-w-7xl px-4'>
         <nav className='flex items-end'>
-          <NavLink to='/'>
+          <NavLink to={path.dashBoard}>
             <svg viewBox='0 0 1134 340' className='h-8 fill-green lg:h-11'>
               <title>Spotify</title>
               <g fillRule='evenodd'>
@@ -13,7 +16,9 @@ const RegisterHeader = () => {
               </g>
             </svg>
           </NavLink>
-          <div className='ml-5 mb-1 text-xl font-semibold text-gray-600 lg:text-2xl'>Register</div>
+          <div className='ml-1 mb-1 text-2xl font-semibold text-gray-600 lg:text-2xl'>
+            {isRegister ? 'Register' : 'Login'}
+          </div>
         </nav>
       </div>
     </header>

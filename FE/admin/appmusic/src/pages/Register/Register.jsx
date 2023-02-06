@@ -1,15 +1,21 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
+import { useContext } from 'react'
 
 import { registerSchema } from '../../utils/validate.form'
 import Input from '../../components/Input'
 import { registerAccount } from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
+import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button'
+import path from '../../constants/path'
 
 const Register = () => {
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,7 +33,9 @@ const Register = () => {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
-        console.log(data)
+        setIsAuthenticated(true)
+        setProfile(data.data.user)
+        navigate(path.dashBoard)
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError(error)) {
@@ -75,16 +83,18 @@ const Register = () => {
                 placeholder='Confirm Password'
               />
               <div className='mt-2'>
-                <button
+                <Button
                   type='submit'
                   className='w-full bg-green-weight py-4 px-2 text-center text-sm uppercase text-white hover:bg-green-light'
+                  isLoading={registerAccountMutation.isLoading}
+                  disabled={registerAccountMutation.isLoading}
                 >
                   Register
-                </button>
+                </Button>
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Have an account?</span>
-                <NavLink className='ml-1 text-green hover:underline hover:underline-offset-1' to='/login'>
+                <NavLink className='ml-1 text-green hover:underline hover:underline-offset-1' to={path.login}>
                   Login
                 </NavLink>
               </div>

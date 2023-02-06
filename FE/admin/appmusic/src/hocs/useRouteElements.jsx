@@ -1,21 +1,25 @@
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
+
 import RegisterLayout from '../layouts/RegisterLayout'
 import MainLayout from '../layouts/MainLayout'
 import DashBoard from '../pages/DashBoard'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Profile from '../pages/Profile'
-
-const isAuthenticated = false
+import { useContext } from 'react'
+import { AppContext } from '../contexts/app.context'
+import path from './../constants/path'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
-  return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
+  const { isAuthenticated } = useContext(AppContext)
+  return isAuthenticated ? <Outlet /> : <Navigate to={path.login} />
 }
 
 // prevent authenticated user from returning to the login page
 function RejectedRoute() {
-  return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
+  const { isAuthenticated } = useContext(AppContext)
+  return !isAuthenticated ? <Outlet /> : <Navigate to={path.dashBoard} />
 }
 
 const useRouteElements = () => {
@@ -23,11 +27,11 @@ const useRouteElements = () => {
     // For routes that are not related to authentication
     // it is recommended to put it on top or add the property: 'index: true' to avoid matching path = ''
     {
-      path: '',
+      path: '/khongcogi',
       element: (
-        <MainLayout>
-          <DashBoard />
-        </MainLayout>
+        <RegisterLayout>
+          <div>KhongCoGi</div>
+        </RegisterLayout>
       )
     },
     // user is authenticated
@@ -36,7 +40,15 @@ const useRouteElements = () => {
       element: <ProtectedRoute />,
       children: [
         {
-          path: 'profile',
+          path: path.dashBoard,
+          element: (
+            <MainLayout>
+              <DashBoard />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.profile,
           element: (
             <MainLayout>
               <Profile />
@@ -51,7 +63,7 @@ const useRouteElements = () => {
       element: <RejectedRoute />,
       children: [
         {
-          path: 'login',
+          path: path.login,
           element: (
             <RegisterLayout>
               <Login />
@@ -59,7 +71,7 @@ const useRouteElements = () => {
           )
         },
         {
-          path: 'register',
+          path: path.register,
           element: (
             <RegisterLayout>
               <Register />

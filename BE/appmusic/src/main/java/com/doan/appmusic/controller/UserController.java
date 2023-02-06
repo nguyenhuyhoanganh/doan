@@ -69,11 +69,4 @@ public class UserController {
         throw new AuthenticationException("You do not have the authority to perform this action");
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> getInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO user = service.findByEmail(authentication.getName());
-        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(user).build();
-        return ResponseEntity.ok(response);
-    }
 }
