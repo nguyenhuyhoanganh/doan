@@ -1,6 +1,6 @@
 import React from 'react'
 import icons from "../utils/icons"
-import { Search} from "./index"
+import { Search, LoginBar} from "./index"
 const {AiOutlineArrowRight, AiOutlineArrowLeft} =icons
 const Header = () => {
   return (
@@ -14,8 +14,8 @@ const Header = () => {
             <Search />
         </div>
       </div>
-      <div>
-        Login
+      <div className='flex'>
+        <LoginBar />
       </div>
     </div>
   )

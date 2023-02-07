@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 // const { banner } = useSelector(state => state.app)
 
@@ -18,8 +18,11 @@ const getArrSlider = (start, end, number) => {
 };
 
 const Slider = () => {
-  const { banner } = useSelector((state) => state.app);
-
+  const { banner } = useSelector((state) => {
+    // console.log(state)
+    return state.app
+  });
+  
   useEffect(() => {
     const sliderEls = document.getElementsByClassName("slider-item");
     let min = 0;
@@ -81,6 +84,12 @@ const Slider = () => {
     };
   }, []);
 
+  const handleClickBanner = (item) => {
+    if(item?.type === 1){
+      
+    }
+  };
+
   return (
     <div className="w-full overflow-hidden px-[59px]">
       <div className="flex w-full gap-8 pt-8">
@@ -88,6 +97,7 @@ const Slider = () => {
           <img
             key={item.encodeId}
             src={item.banner}
+            onClick={() => handleClickBanner(item)}
             className={`slider-item flex-1 object-contain w-[30%] rounded-lg ${
               index <= 2 ? "block" : "hidden"
             }`}

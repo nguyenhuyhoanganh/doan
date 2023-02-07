@@ -7,6 +7,7 @@ import {
   AiOutlineSearch
 } from "react-icons/ai";
 import { BsMicFill} from "react-icons/bs"
+import { RiVipFill} from "react-icons/ri"
 
 const icons = {
   MdOutlineLibraryMusic,
@@ -16,6 +17,7 @@ const icons = {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
   AiOutlineSearch,
-  BsMicFill
+  BsMicFill,
+  RiVipFill
 };
 export default icons;

@@ -10,7 +10,7 @@ import {useDispatch} from 'react-redux'
 
 
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch() // redux
   useEffect(() => {
     dispatch(actions.getHome())
   }, [])
