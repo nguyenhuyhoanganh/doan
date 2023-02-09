@@ -4,15 +4,16 @@ import { SidebarLeft, SidebarRight, Player } from "../../components";
 
 const Public = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col bg-[#CED9D9]">
+    <div className="w-full min-h-screen flex flex-col bg-main-200">
       <div className="w-full h-full flex flex-auto">
         <div className="w-[240px] flex-none border border-blue-500">
           <SidebarLeft />
         </div>
         <div className="flex-auto border border-yellow-500">
-          <Outlet></Outlet>
+          <Outlet></Outlet> 
+          {/*  sinh ra các element nằm trong route con */}
         </div>
-        <div className="w-[329px] flex-none border border-red-500">
+        <div className="w-[329px] hidden 1500:flex flex-none border border-red-500 animate-slide-left">
           <SidebarRight />
         </div>
       </div>

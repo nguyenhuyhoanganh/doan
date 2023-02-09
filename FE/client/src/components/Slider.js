@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import * as actions from "../store/actions";
 // const { banner } = useSelector(state => state.app)
 
 const getArrSlider = (start, end, number) => {
@@ -22,7 +22,7 @@ const Slider = () => {
     // console.log(state)
     return state.app
   });
-  
+  const dispatch = useDispatch()
   useEffect(() => {
     const sliderEls = document.getElementsByClassName("slider-item");
     let min = 0;
@@ -78,15 +78,18 @@ const Slider = () => {
       });
       min = min === sliderEls.length - 1 ? 0 : min + 1;
       max = max === sliderEls.length - 1 ? 0 : max + 1;
-    }, 3000);
+    }, 5000);
     return () => {
       intervalId && clearInterval(intervalId);
     };
   }, []);
 
   const handleClickBanner = (item) => {
+    // console.log(item);
     if(item?.type === 1){
-      
+      // is song get id stored in localStorage
+      dispatch(actions.setCurSongId(item.encodeId))
+
     }
   };
 
