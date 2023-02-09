@@ -1,6 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { SidebarLeft, SidebarRight, Player } from "../../components";
+import {
+  SidebarLeft,
+  SidebarRight,
+  Player,
+  Header
+} from "../../components";
 
 const Public = () => {
   return (
@@ -10,7 +15,10 @@ const Public = () => {
           <SidebarLeft />
         </div>
         <div className="flex-auto border border-yellow-500">
-          <Outlet></Outlet> 
+          <div className="h-[70px] px-[59px] flex items-center">
+            <Header />
+          </div>
+          <Outlet></Outlet>
           {/*  sinh ra các element nằm trong route con */}
         </div>
         <div className="w-[329px] hidden 1500:flex flex-none border border-red-500 animate-slide-left">
@@ -18,7 +26,7 @@ const Public = () => {
         </div>
       </div>
       <div className="flex-none h-[90px] bg-[#C0D8D8]">
-        <Player/>
+        <Player />
       </div>
     </div>
   );

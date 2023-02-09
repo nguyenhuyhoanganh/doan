@@ -3,6 +3,8 @@ const path = {
     HOME: "",
     LOGIN: "login",
     STAR: "*",
-    MY_MUSIC: "mymusic"
+    MY_MUSIC: "mymusic",
+    ZING_CHART: "zing-chart",
+    FOLLOW: "follow"
 }
 export default path

@@ -50,9 +50,9 @@ const SidebarRight = () => {
         </span>
       </div>
       {/* map list recommend */}
-      {[1, 2].map(() => {
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((el) => {
         return (
-          <div className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
+          <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
             <span className="absolute pt-3 pl-[30px]">
               <GrCaretNext size={24} />
             </span>
