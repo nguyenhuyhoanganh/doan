@@ -1,4 +1,4 @@
-package com.doan.appmusic.utils;
+package com.doan.appmusic.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

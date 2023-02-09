@@ -1,4 +1,4 @@
-package com.doan.appmusic.utils;
+package com.doan.appmusic.model;
 
 import javax.validation.groups.Default;
 

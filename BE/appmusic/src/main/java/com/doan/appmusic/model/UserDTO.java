@@ -1,7 +1,5 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.OnCreate;
-import com.doan.appmusic.utils.OnUpdate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.Set;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 

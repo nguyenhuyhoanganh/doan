@@ -2,13 +2,11 @@ package com.doan.appmusic.service;
 
 import com.doan.appmusic.entity.Role;
 import com.doan.appmusic.entity.User;
-import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
-import com.doan.appmusic.utils.GenericSpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

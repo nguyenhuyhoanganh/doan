@@ -7,7 +7,7 @@ import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.SecurityConstants;
 import com.doan.appmusic.service.UserService;
 import com.doan.appmusic.utils.JwtUtils;
-import com.doan.appmusic.utils.OnCreate;
+import com.doan.appmusic.model.OnCreate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

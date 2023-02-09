@@ -1,24 +1,29 @@
 package com.doan.appmusic.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.Set;
 
-@Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+@NoArgsConstructor
+@Builder
+@Entity
+@EqualsAndHashCode(callSuper = true)
+@Table(name = "comments")
+public class Comment extends CreateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String username;
-    private String message;
-    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Song song;
+
+    private String content;
+
+    @ManyToMany
+    @JoinTable(name = "comment_likes", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"comment_id", "user_id"})})
+    private Set<User> likedBy;
 }

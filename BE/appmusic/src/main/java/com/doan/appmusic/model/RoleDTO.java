@@ -1,7 +1,5 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.OnCreate;
-import com.doan.appmusic.utils.OnUpdate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
