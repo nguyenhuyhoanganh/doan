@@ -9,9 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'green-light': '#3ce87a',
-        green: '#1ed760',
-        'green-weight': '#12de5b'
+        'main-color': '#1ed760'
       },
       backgroundImage: {
         'hero-img': "url('/src/imgs/herro-img.jpg')"
@@ -29,6 +27,9 @@ module.exports = {
           paddingRight: theme('spacing.4')
         }
       })
-    })
+    }),
+    // thêm @tailwindcss/line-clamp
+    // có thuộc tính `line-clamp-x` để truncate với text có `x` dòng
+    require('@tailwindcss/line-clamp')
   ]
 }

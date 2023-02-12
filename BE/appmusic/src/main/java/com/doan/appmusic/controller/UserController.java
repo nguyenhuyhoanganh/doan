@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,15 +23,22 @@ public class UserController {
     private UserService service;
 
     @GetMapping("")
-    public ResponseEntity<ResponseDTO<Set<UserDTO>>> search(HttpServletRequest request) {
-        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 0;
+    public ResponseEntity<?> search(HttpServletRequest request) {
+        int page = request.getParameter("page") != null && Integer.parseInt(request.getParameter("page")) >= 1 ? Integer.parseInt(request.getParameter("page")) : 1;
         int limit = request.getParameter("limit") != null ? Integer.parseInt(request.getParameter("limit")) : 10;
         String sortBy = request.getParameter("sortBy") != null ? request.getParameter("sortBy") : "id";
         String orderBy = request.getParameter("orderBy") != null ? request.getParameter("orderBy") : "desc";
-        String search = request.getParameter("search") != null ? request.getParameter("search") : "desc";
-        Set<UserDTO> users = service.search(page, limit, sortBy, orderBy, search);
-        long count = service.count();
-        ResponseDTO<Set<UserDTO>> response = ResponseDTO.<Set<UserDTO>>builder().data(users).totalPages(count / limit * limit < count ? (int) count / limit + 1 : (int) count / limit).totalElements(count).numberOfElements(limit > count ? (int) count : limit).build();
+
+        Map<String, String[]> search = new HashMap<>();
+        search.putAll(request.getParameterMap());
+        search.remove("page");
+        search.remove("limit");
+        search.remove("sortBy");
+        search.remove("orderBy");
+
+        List<UserDTO> users = service.search(page - 1, limit, sortBy, orderBy, search);
+        long count = service.count(search);
+        ResponseDTO<?> response = ResponseDTO.builder().data(users).results(count).page(page).limit(limit).build();
         return ResponseEntity.ok(response);
     }
 

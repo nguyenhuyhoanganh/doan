@@ -25,14 +25,20 @@ const Login = () => {
   })
 
   const loginMutation = useMutation({
+    // login được check trong axios
+    // nếu login thành công => set profile vào localstorage
+    // => set accesstoken, refreshtoken vào localstorage
     mutationFn: (body) => login(body)
   })
 
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
+      // login thành công
       onSuccess: (data) => {
+        // set isAuthenticated = true trong context
         setIsAuthenticated(true)
-        setProfile(data.data.user)
+        // save profile user vào context
+        setProfile(data.data.data.user)
         navigate(path.dashBoard)
       },
       onError: (error) => {
@@ -52,7 +58,7 @@ const Login = () => {
 
   return (
     // bg-hero-pattern bg-cover
-    <div className='bg-green'>
+    <div className='bg-main-color'>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
@@ -77,7 +83,7 @@ const Login = () => {
               <div className='mt-2'>
                 <Button
                   type='submit'
-                  className='w-full bg-green-weight py-4 px-2 text-center text-sm uppercase text-white hover:bg-green-light'
+                  className='w-full bg-main-color py-4 px-2 text-center text-sm uppercase text-white hover:bg-main-color/80'
                   isLoading={loginMutation.isLoading}
                   disabled={loginMutation.isLoading}
                 >
@@ -86,7 +92,7 @@ const Login = () => {
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Don't have an account?</span>
-                <NavLink className='ml-1 text-green hover:underline hover:underline-offset-1' to={path.register}>
+                <NavLink className='ml-1 text-main-color hover:underline hover:underline-offset-1' to={path.register}>
                   Register
                 </NavLink>
               </div>

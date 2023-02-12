@@ -21,11 +21,11 @@ public class RoleController {
 
     @GetMapping("")
     public ResponseEntity<?> getAll(HttpServletRequest request) {
-        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 0;
+        int page = request.getParameter("page") != null && Integer.parseInt(request.getParameter("page")) >= 1 ? Integer.parseInt(request.getParameter("page")) : 1;
         int limit = request.getParameter("limit") != null ? Integer.parseInt(request.getParameter("limit")) : 10;
-        Set<RoleDTO> roles = service.getAll(page, limit);
+        Set<RoleDTO> roles = service.getAll(page - 1, limit);
         long count = service.count();
-        ResponseDTO<Set<RoleDTO>> response = ResponseDTO.<Set<RoleDTO>>builder().data(roles).totalPages(count / limit * limit < count ? (int) count / limit + 1 : (int) count / limit).totalElements(count).numberOfElements(limit > count ? (int) count : limit).build();
+        ResponseDTO<Set<RoleDTO>> response = ResponseDTO.<Set<RoleDTO>>builder().data(roles).results(count).limit(limit).page(page).build();
         return ResponseEntity.ok(response);
     }
 

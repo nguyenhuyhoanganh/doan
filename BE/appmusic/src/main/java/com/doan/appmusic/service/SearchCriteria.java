@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchCriteria {
+public class SearchCriteria<P, J> {
     private String key;
     private String operation;
     private Object value;
-    private String predicateType;
+    private Class predicateType;
+    private Class joinType = null;
 
-    public boolean isOrPredicate() {
-        // TODO Auto-generated method stub
-        return false;
+    public SearchCriteria(String key, String operation, Object value, Class predicateType) {
+        this.key = key;
+        this.operation = operation;
+        this.value = value;
+        this.predicateType = predicateType;
     }
 }

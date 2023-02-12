@@ -1,5 +1,6 @@
 package com.doan.appmusic.entity;
 
+import com.doan.appmusic.utils.GenderEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,19 +34,23 @@ public class User extends DateAuditable {
     @Column(unique = true)
     private Long phone;
 
-    private String photoUrl;
+    private String avatarUrl;
 
     private String backgroundImageUrl;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender = GenderEnum.UNKNOWN;
 
     private Integer age;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Playlist> playlists;
 }
 
 

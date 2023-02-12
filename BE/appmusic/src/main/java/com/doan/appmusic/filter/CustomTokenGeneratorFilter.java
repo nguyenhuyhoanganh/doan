@@ -85,7 +85,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
     }
 
     private UserDTO entityMapToModel(User user) {
-        return UserDTO.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password("[SECURED]").phone(user.getPhone()).photoUrl(user.getPhotoUrl()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).gender(user.getGender()).roles(user.getRoles().stream().map(role -> RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build()).collect(Collectors.toSet())).build();
+        return UserDTO.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password("[SECURED]").phone(user.getPhone()).photoUrl(user.getAvatarUrl()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).gender(user.getGender()).roles(user.getRoles().stream().map(role -> RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build()).collect(Collectors.toSet())).build();
     }
 }
 

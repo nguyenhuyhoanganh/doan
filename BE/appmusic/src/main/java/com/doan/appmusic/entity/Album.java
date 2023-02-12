@@ -3,6 +3,7 @@ package com.doan.appmusic.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -10,8 +11,8 @@ import javax.persistence.*;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "categories")
-public class Category extends UpdateAuditable {
+@Table(name = "albums")
+public class Album extends UpdateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,9 +25,11 @@ public class Category extends UpdateAuditable {
 
     private String description;
 
-    private String imageUrl;
+    private String backgroundImageUrl;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_category_id")
-    private Category parentCategory;
+    @ManyToMany(mappedBy = "albums", cascade = CascadeType.ALL)
+    private Set<Artist> artists;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Song> songs;
 }

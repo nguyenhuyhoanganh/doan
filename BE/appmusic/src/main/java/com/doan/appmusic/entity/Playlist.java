@@ -12,18 +12,23 @@ import java.util.Set;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "playlists")
+// uniqueConstraints ràng buộc cặp created_by và slug là duy nhất
+@Table(name = "playlists", uniqueConstraints = {@UniqueConstraint(columnNames = {"created_by", "slug"}), @UniqueConstraint(columnNames = {"created_by", "title"})})
 public class Playlist extends CreateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "playlist_song", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns =
-    @JoinColumn(name = "song_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"playlist_id", "song_id"}))
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "playlists_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"playlist_id", "song_id"}))
     private Set<Song> songs;
 
-    private String name;
+    @Column(nullable = false)
+    private String title;
 
+    @Column(nullable = false)
+    private String slug;
+
+    @Enumerated(EnumType.STRING)
     private StatusEnum status;
 }

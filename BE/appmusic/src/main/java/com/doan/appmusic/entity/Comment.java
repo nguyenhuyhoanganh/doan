@@ -17,13 +17,16 @@ public class Comment extends CreateAuditable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "song_id")
     private Song song;
 
     private String content;
 
-    @ManyToMany
-    @JoinTable(name = "comment_likes", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"comment_id", "user_id"})})
-    private Set<User> likedBy;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CommentLike> likes;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
 }

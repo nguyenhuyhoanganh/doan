@@ -12,8 +12,8 @@ import java.util.Set;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "artists")
-public class Artist extends UpdateAuditable {
+@Table(name = "composers")
+public class Composer extends UpdateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,15 +34,7 @@ public class Artist extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
-    @ManyToMany(mappedBy = "artists", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Song> songs;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"artist_id", "album_id"}))
-    private Set<Album> albums;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ArtistFollow> follows;
-
-    private Long followCount;
 }

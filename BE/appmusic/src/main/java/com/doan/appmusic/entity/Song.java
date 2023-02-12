@@ -21,30 +21,56 @@ public class Song extends UpdateAuditable {
     @Column(unique = true)
     private String title;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="source_urls", joinColumns=@JoinColumn(name="song_id"))
-    @Column(name="source_url")
-    private Set<String> sourceUrls;
-
-    private Long duration;
+    @Column(unique = true)
+    private String slug;
 
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
-    private String slug;
+    private String imageUrl;
 
-    @ManyToMany
-    @JoinTable(name = "song_artist", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "artist_id"}))
-    private Set<Artist> artists;
+    private String backgroundImageUrl;
 
-    @ManyToMany
-    @JoinTable(name = "song_tag", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "tag_id"}))
+    private Long duration;
+
+    private Long view;
+
+    private String lyrics;
+
+    private String description;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "source_urls", joinColumns = @JoinColumn(name = "song_id"))
+    @Column(name = "source_urls")
+    private Set<String> sourceUrls;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "tag_id"}))
     private Set<Tag> tags;
 
-    @ManyToMany
-    @JoinTable(name = "song_category", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "category_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"song_id", "category_id"})})
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "songs_categories", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "category_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "category_id"}))
     private Set<Category> categories;
 
-    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "songs_artists", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "artist_id"}))
+    private Set<Artist> artists;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "album_id")
+    private Album album;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "composer_id")
+    private Composer composer;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    private Long commentCount;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL)
+    private Set<SongLike> likes;
+
+    private Long likeCount;
 }

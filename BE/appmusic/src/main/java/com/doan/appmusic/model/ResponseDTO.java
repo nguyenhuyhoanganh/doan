@@ -24,13 +24,13 @@ public class ResponseDTO<T> {
     private String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long totalElements;
+    private Long results;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer numberOfElements;
+    private Integer page;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer totalPages;
+    private Integer limit;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;

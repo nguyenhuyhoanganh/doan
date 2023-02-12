@@ -1,5 +1,6 @@
 package com.doan.appmusic.model;
 
+import com.doan.appmusic.utils.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class UserDTO {
     private String lastName;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String gender;
+    private GenderEnum gender;
 
     @NotBlank(message = "Email is required", groups = {OnCreate.class, OnUpdate.class})
     @Email(message = "Email is not valid", groups = {OnCreate.class, OnUpdate.class})

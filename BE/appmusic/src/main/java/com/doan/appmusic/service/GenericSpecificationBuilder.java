@@ -1,5 +1,6 @@
 package com.doan.appmusic.service;
 
+import lombok.SneakyThrows;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -14,8 +15,8 @@ public class GenericSpecificationBuilder {
         params = new ArrayList<SearchCriteria>();
     }
 
-    public GenericSpecificationBuilder with(String key, String operation, Object value, String predicateType) {
-        params.add(new SearchCriteria(key, operation, value, predicateType));
+    public GenericSpecificationBuilder with(SearchCriteria searchCriteria) {
+        params.add(searchCriteria);
         return this;
     }
 
@@ -26,22 +27,22 @@ public class GenericSpecificationBuilder {
         }
 
         List<Specification> specs = params.stream().map(x -> getSpecification(x)).collect(Collectors.toList());
-        // x là param là
 
         Specification result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
-            result = params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i))
-                    : Specification.where(result).and(specs.get(i));
+            result = Specification.where(result).and(specs.get(i));
+//                    params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i))
+//                    : Specification.where(result).and(specs.get(i));
         }
         return result;
     }
 
     public <T> Specification<T> getSpecification(SearchCriteria criteria) {
         Specification<T> specification = new Specification<T>() {
+            @SneakyThrows
             @Override
-            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery,
-                                         CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 Predicate predicate = genericCriteria(criteria, root, criteriaBuilder);
                 return predicate;
             }
@@ -49,23 +50,42 @@ public class GenericSpecificationBuilder {
         return specification;
     }
 
-    public Predicate genericCriteria(SearchCriteria criteria, Root<?> root, CriteriaBuilder builder) {
+    public Predicate genericCriteria(SearchCriteria criteria, Root<?> root, CriteriaBuilder builder) throws NoSuchFieldException {
 
+        Join join = null;
+        String[] keys = null;
+        // check joinType != null
+        if (criteria.getJoinType() != null) {
+            keys = criteria.getKey().split("\\.");
+            // join 2 tables
+            join = root.join(keys[0], JoinType.INNER);
+        }
+
+        // greater than
         if (criteria.getOperation().equalsIgnoreCase(">")) {
+            if (join != null) return builder.greaterThanOrEqualTo(join.get(keys[1]), criteria.getValue().toString());
             return builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
-        } else if (criteria.getOperation().equalsIgnoreCase("<")) {
+        }
+        // less than
+        if (criteria.getOperation().equalsIgnoreCase("<")) {
+            if (join != null) return builder.lessThanOrEqualTo(join.get(keys[1]), criteria.getValue().toString());
             return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
-        } else if (criteria.getOperation().equalsIgnoreCase(":")) {
+        }
+        // like or equal
+        if (criteria.getOperation().equalsIgnoreCase("=")) {
+            if (join != null) {
+                // like
+                if (criteria.getJoinType().getDeclaredField(keys[1]).getType() == String.class)
+                    return builder.like(join.get(keys[1]), "%" + criteria.getValue().toString() + "%");
+                // equal
+                return builder.equal(join.get(keys[1]), criteria.getValue().toString());
+            }
+            // like
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
-            } else if (root.get(criteria.getKey()).getJavaType() == Long.class
-                    || root.get(criteria.getKey()).getJavaType() == Integer.class) {
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
-            } else {
-                Join join = root.join(criteria.getKey());
-                String attributeName = criteria.getPredicateType().toLowerCase() + "Name";
-                return builder.equal(join.get(attributeName), criteria.getValue());
             }
+            // equal
+            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
         }
         return null;
     }

@@ -11,7 +11,7 @@ const Footer = () => {
               <svg
                 viewBox='0 0 1134 340'
                 className='h-12
-               fill-green lg:h-20'
+               fill-main-color lg:h-20'
               >
                 <title>Spotify</title>
                 <g fillRule='evenodd'>
@@ -27,24 +27,26 @@ const Footer = () => {
           <div className='justify-self-center lg:col-span-1'>
             <ul className='font-semibold text-gray-700'>
               <li className='mb-2 text-gray-500'>Company</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>About Us</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Careers</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Help for Apple Devices</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>About Us</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>Careers</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>
+                Help for Apple Devices
+              </li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>
                 Help for Android Devices
               </li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>
                 ShazamKit for Developers
               </li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Apple Music Offer</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>Apple Music Offer</li>
             </ul>
           </div>
           <div className='justify-self-center lg:col-span-1'>
             <ul className='font-semibold text-gray-700'>
               <li className='mb-2 text-gray-500'>Legal</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Terms</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Privacy</li>
-              <li className='mb-1 hover:text-green hover:underline hover:underline-offset-2'>Privacy</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>Terms</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>Privacy</li>
+              <li className='mb-1 hover:text-main-color hover:underline hover:underline-offset-2'>Privacy</li>
             </ul>
           </div>
         </div>
