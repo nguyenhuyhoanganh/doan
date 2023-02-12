@@ -8,6 +8,8 @@ import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -53,12 +55,14 @@ class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByEmail(String email) {
-        return entityMapToModel(repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        return convertToDTO(repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 
     @Override
     public List<UserDTO> search(int page, int limit, String sortBy, String orderBy, Map<String, String[]> search) {
-        List<UserDTO> userDTOs = new ArrayList<>();
+
+
+        // build specification
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
         for (Map.Entry<String, String[]> entry : search.entrySet()) {
             SearchCriteria searchCriteria = null;
@@ -85,35 +89,29 @@ class UserServiceImpl implements UserService {
         if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
         else sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));
 
+        // page request
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
 
+        // find
         List<User> users = repository.findAll(specification, pageRequest).toList();
 
-        // convert to Model
-        for (User user : users) {
-            UserDTO userDTO = entityMapToModel(user);
-            userDTOs.add(userDTO);
-        }
-        return userDTOs;
+        // convert to dto
+        return users.stream().map(user -> convertToDTO(user)).collect(Collectors.toList());
     }
 
     @Override
     public UserDTO getById(long id) {
         User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        UserDTO userDTO = entityMapToModel(user);
-        return userDTO;
+        return convertToDTO(user);
     }
 
     @Override
     public UserDTO create(UserDTO userDTO) {
         if (repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
-        User user = modelMapToEntity(userDTO);
+        User user = convertToEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        if (user.getAvatarUrl() == null) {
-            user.setAvatarUrl("http://localhost:8080/api/files/1");
-        }
-        UserDTO userCreated = entityMapToModel(repository.save(user));
+        UserDTO userCreated = convertToDTO(repository.save(user));
         return userCreated;
     }
 
@@ -121,11 +119,9 @@ class UserServiceImpl implements UserService {
     public UserDTO update(long id, UserDTO userDTO) {
         if (repository.findById(id).isPresent()) {
             userDTO.setId(id);
-            User user = modelMapToEntity(userDTO);
-            user.setPassword(repository.findById(id).get().getPassword());
-            repository.save(user);
-            userDTO.setPassword("[SECURED]");
-            return userDTO;
+            // convert skip setPassword
+            User user = convertToEntity(userDTO);
+            return convertToDTO(repository.save(user));
         }
         throw new UsernameNotFoundException("User not found");
     }
@@ -171,12 +167,33 @@ class UserServiceImpl implements UserService {
         return repository.count(specification);
     }
 
-    private UserDTO entityMapToModel(User user) {
-        return UserDTO.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password("[SECURED]").phone(user.getPhone()).photoUrl(user.getAvatarUrl()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).gender(user.getGender()).roles(user.getRoles().stream().map(role -> RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build()).collect(Collectors.toSet())).build();
+    private UserDTO convertToDTO(User user) {
+        // mapper
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
+            context.getDestination().setPassword("[Secured]");
+            return context.getDestination();
+        });
+
+        // map to dto
+        return mapper.map(user, UserDTO.class);
     }
 
-    private User modelMapToEntity(UserDTO user) {
-        return User.builder().email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password(passwordEncoder.encode(user.getPassword())).phone(user.getPhone()).avatarUrl(user.getPhotoUrl() == null ? "http://localhost:8080/api/files/1" : user.getPhotoUrl()).gender(user.getGender()).roles(user.getRoles() == null ? Set.of(roleRepository.findByRoleName("ROLE_USER")) : user.getRoles().stream().map(role -> roleRepository.findByRoleName(role.getRoleName())).collect(Collectors.toSet())).build();
+    private User convertToEntity(UserDTO userDTO) {
+
+        // mapper
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.createTypeMap(UserDTO.class, User.class).setPostConverter(context -> {
+            if(context.getSource().getAvatarUrl() == null)
+                context.getDestination().setAvatarUrl("http://localhost:8080/api/files/1");
+            if(context.getSource().getRoles() == null)
+                context.getDestination().setRoles(Set.of(roleRepository.findByRoleName("ROLE_USER")));
+            return context.getDestination();
+        }).addMappings(map -> map.skip(User::setPassword));
+
+        return mapper.map(userDTO, User.class);
     }
 
 }

@@ -52,40 +52,34 @@ public class GenericSpecificationBuilder {
 
     public Predicate genericCriteria(SearchCriteria criteria, Root<?> root, CriteriaBuilder builder) throws NoSuchFieldException {
 
-        Join join = null;
-        String[] keys = null;
+        Expression<String> expression;
+        Class typeKey;
         // check joinType != null
         if (criteria.getJoinType() != null) {
-            keys = criteria.getKey().split("\\.");
+            String[] keys = criteria.getKey().split("\\.");
             // join 2 tables
-            join = root.join(keys[0], JoinType.INNER);
+            Join join = root.join(keys[0], JoinType.INNER);
+            expression = join.get(keys[1]);
+            typeKey = criteria.getJoinType().getDeclaredField(keys[1]).getType();
+        } else {
+            expression = root.get(criteria.getKey());
+            typeKey = root.get(criteria.getKey()).getJavaType();
         }
 
         // greater than
         if (criteria.getOperation().equalsIgnoreCase(">")) {
-            if (join != null) return builder.greaterThanOrEqualTo(join.get(keys[1]), criteria.getValue().toString());
-            return builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
+            return builder.greaterThanOrEqualTo(expression, criteria.getValue().toString());
         }
         // less than
         if (criteria.getOperation().equalsIgnoreCase("<")) {
-            if (join != null) return builder.lessThanOrEqualTo(join.get(keys[1]), criteria.getValue().toString());
-            return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
+            return builder.lessThanOrEqualTo(expression, criteria.getValue().toString());
         }
         // like or equal
         if (criteria.getOperation().equalsIgnoreCase("=")) {
-            if (join != null) {
-                // like
-                if (criteria.getJoinType().getDeclaredField(keys[1]).getType() == String.class)
-                    return builder.like(join.get(keys[1]), "%" + criteria.getValue().toString() + "%");
-                // equal
-                return builder.equal(join.get(keys[1]), criteria.getValue().toString());
-            }
             // like
-            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
-            }
+            if (typeKey == String.class) return builder.like(expression, "%" + criteria.getValue().toString() + "%");
             // equal
-            return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+            return builder.equal(expression, criteria.getValue().toString());
         }
         return null;
     }

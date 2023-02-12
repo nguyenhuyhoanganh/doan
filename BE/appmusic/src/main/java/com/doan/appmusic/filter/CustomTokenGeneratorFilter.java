@@ -10,6 +10,8 @@ import com.doan.appmusic.utils.JwtUtils;
 import com.doan.appmusic.utils.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -64,7 +66,16 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
     // => trả lại token khi login
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        UserDTO user = entityMapToModel(((CustomUserDetails) authentication.getPrincipal()).getUser());
+        // mapper
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
+            context.getDestination().setPassword("[Secured]");
+            return context.getDestination();
+        });
+
+        // map to dto
+        UserDTO user = mapper.map(((CustomUserDetails) authentication.getPrincipal()).getUser(), UserDTO.class);
 
         String subject = authentication.getName();
         String issuer = request.getRequestURL().toString();
@@ -82,10 +93,6 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         response.setStatus(HttpStatus.OK.value());
         ResponseDTO<?> responseBody = ResponseDTO.builder().data(data).code(HttpStatus.OK.value()).build();
         Mapper.writeValue(response.getOutputStream(), responseBody);
-    }
-
-    private UserDTO entityMapToModel(User user) {
-        return UserDTO.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).username(user.getUsername()).password("[SECURED]").phone(user.getPhone()).photoUrl(user.getAvatarUrl()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).gender(user.getGender()).roles(user.getRoles().stream().map(role -> RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).updatedAt(role.getUpdatedAt()).createdAt(role.getCreatedAt()).build()).collect(Collectors.toSet())).build();
     }
 }
 
