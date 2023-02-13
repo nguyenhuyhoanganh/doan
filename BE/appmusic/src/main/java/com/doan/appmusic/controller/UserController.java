@@ -23,11 +23,12 @@ public class UserController {
     private UserService service;
 
     @GetMapping("")
-    public ResponseEntity<?> search(HttpServletRequest request) {
-        int page = request.getParameter("page") != null && Integer.parseInt(request.getParameter("page")) >= 1 ? Integer.parseInt(request.getParameter("page")) : 1;
-        int limit = request.getParameter("limit") != null ? Integer.parseInt(request.getParameter("limit")) : 10;
-        String sortBy = request.getParameter("sortBy") != null ? request.getParameter("sortBy") : "id";
-        String orderBy = request.getParameter("orderBy") != null ? request.getParameter("orderBy") : "desc";
+    public ResponseEntity<?> search(HttpServletRequest request, @RequestParam(required = false, defaultValue = "id") String[] sortBy, @RequestParam(required = false, defaultValue = "desc") String[] orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
+
+        page = page < 1 ? 1 : page;
+        limit = limit < 0 ? 10 : limit;
+        sortBy = sortBy.length == 0 ? new String[]{"id"} : sortBy;
+        orderBy = orderBy.length == 0 ? new String[]{"desc"} : orderBy;
 
         Map<String, String[]> search = new HashMap<>();
         search.putAll(request.getParameterMap());

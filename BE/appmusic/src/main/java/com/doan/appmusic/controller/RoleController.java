@@ -9,9 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/roles")
@@ -20,12 +19,13 @@ public class RoleController {
     private RoleService service;
 
     @GetMapping("")
-    public ResponseEntity<?> getAll(HttpServletRequest request) {
-        int page = request.getParameter("page") != null && Integer.parseInt(request.getParameter("page")) >= 1 ? Integer.parseInt(request.getParameter("page")) : 1;
-        int limit = request.getParameter("limit") != null ? Integer.parseInt(request.getParameter("limit")) : 10;
-        Set<RoleDTO> roles = service.getAll(page - 1, limit);
-        long count = service.count();
-        ResponseDTO<Set<RoleDTO>> response = ResponseDTO.<Set<RoleDTO>>builder().data(roles).results(count).limit(limit).page(page).build();
+    public ResponseEntity<?> getAll(@RequestParam(required = false, defaultValue = "") String roleName, @RequestParam(required = false, defaultValue = "id") String sortBy, @RequestParam(required = false, defaultValue = "asc") String orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
+        page = page < 1 ? 1 : page;
+        limit = limit < 0 ? 10 : limit;
+
+        List<RoleDTO> roles = service.getAll(page - 1, limit, sortBy, orderBy, roleName);
+        long count = service.count(roleName);
+        ResponseDTO<?> response = ResponseDTO.builder().data(roles).results(count).limit(limit).page(page).build();
         return ResponseEntity.ok(response);
     }
 

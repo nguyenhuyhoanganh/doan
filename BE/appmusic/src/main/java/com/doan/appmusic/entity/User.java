@@ -39,7 +39,7 @@ public class User extends DateAuditable {
     private String backgroundImageUrl;
 
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender = GenderEnum.UNKNOWN;
+    private GenderEnum gender;
 
     private Integer age;
 

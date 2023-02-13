@@ -4,7 +4,6 @@ import com.doan.appmusic.entity.Playlist;
 import com.doan.appmusic.entity.Role;
 import com.doan.appmusic.entity.User;
 import com.doan.appmusic.exception.CustomSQLException;
-import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 public interface UserService {
     UserDTO findByEmail(String email);
 
-    List<UserDTO> search(int page, int limit, String sortBy, String orderBy, Map<String, String[]> search);
+    List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search);
 
     UserDTO getById(long id);
 
@@ -59,8 +58,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> search(int page, int limit, String sortBy, String orderBy, Map<String, String[]> search) {
-
+    public List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
 
         // build specification
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
@@ -86,8 +84,15 @@ class UserServiceImpl implements UserService {
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
-        if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
-        else sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));
+        for (int i = 0; i < sortBy.length; i++) {
+            if (i < orderBy.length) {
+                if (orderBy[i].equals("desc")) {
+                    sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy[i]));
+                    continue;
+                }
+            }
+            sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy[i]));
+        }
 
         // page request
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
@@ -118,9 +123,9 @@ class UserServiceImpl implements UserService {
     @Override
     public UserDTO update(long id, UserDTO userDTO) {
         if (repository.findById(id).isPresent()) {
-            userDTO.setId(id);
-            // convert skip setPassword
+            // convert skip setPassword, setId
             User user = convertToEntity(userDTO);
+            user.setId(id);
             return convertToDTO(repository.save(user));
         }
         throw new UsernameNotFoundException("User not found");
@@ -176,7 +181,6 @@ class UserServiceImpl implements UserService {
             return context.getDestination();
         });
 
-        // map to dto
         return mapper.map(user, UserDTO.class);
     }
 
@@ -186,12 +190,12 @@ class UserServiceImpl implements UserService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         mapper.createTypeMap(UserDTO.class, User.class).setPostConverter(context -> {
-            if(context.getSource().getAvatarUrl() == null)
+            if (context.getSource().getAvatarUrl() == null)
                 context.getDestination().setAvatarUrl("http://localhost:8080/api/files/1");
-            if(context.getSource().getRoles() == null)
+            if (context.getSource().getRoles() == null)
                 context.getDestination().setRoles(Set.of(roleRepository.findByRoleName("ROLE_USER")));
             return context.getDestination();
-        }).addMappings(map -> map.skip(User::setPassword));
+        }).addMappings(mapping -> mapping.skip(User::setPassword)).addMappings(mapping -> mapping.skip(User::setId));
 
         return mapper.map(userDTO, User.class);
     }
