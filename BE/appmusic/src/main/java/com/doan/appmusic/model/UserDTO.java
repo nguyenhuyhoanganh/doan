@@ -7,11 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,7 +20,7 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
-    // sử dụng email để login
+    // use email to login, register
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String username;
 
@@ -60,10 +59,7 @@ public class UserDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<RoleDTO> roles;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Date createdAt;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Date updatedAt;
 }
+
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    private Set<PlaylistDTO> playlists;

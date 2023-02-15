@@ -16,17 +16,17 @@ public class Category extends UpdateAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     private String description;
 
     private String imageUrl;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 }

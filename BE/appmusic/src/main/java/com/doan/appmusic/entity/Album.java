@@ -17,19 +17,19 @@ public class Album extends UpdateAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     private String description;
 
     private String backgroundImageUrl;
 
-    @ManyToMany(mappedBy = "albums", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "albums", cascade = CascadeType.REMOVE)
     private Set<Artist> artists;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Song> songs;
 }

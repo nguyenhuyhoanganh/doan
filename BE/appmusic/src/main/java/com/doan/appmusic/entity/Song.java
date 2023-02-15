@@ -18,10 +18,10 @@ public class Song extends UpdateAuditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     @Enumerated(EnumType.STRING)
@@ -44,32 +44,32 @@ public class Song extends UpdateAuditable {
     @Column(name = "source_urls")
     private Set<String> sourceUrls;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "tag_id"}))
-    private Set<Tag> tags;
+//    @ManyToMany(cascade = CascadeType.REMOVE)
+//    @JoinTable(name = "songs_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "tag_id"}))
+//    private Set<Tag> tags;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "songs_categories", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "category_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "category_id"}))
     private Set<Category> categories;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "songs_artists", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"song_id", "artist_id"}))
     private Set<Artist> artists;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "album_id")
     private Album album;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "composer_id")
     private Composer composer;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Comment> comments;
 
     private Long commentCount;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.REMOVE)
     private Set<SongLike> likes;
 
     private Long likeCount;

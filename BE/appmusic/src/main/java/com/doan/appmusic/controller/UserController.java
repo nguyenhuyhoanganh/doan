@@ -57,7 +57,7 @@ public class UserController {
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             if (authority.getAuthority().equals("ROLE_ADMIN")) isAdmin = true;
         }
-        if (authentication.getName().equals(service.getById(id).getUsername()) || isAdmin) {
+        if (authentication.getName().equals(service.getById(id).getEmail()) || isAdmin) {
             UserDTO userUpdated = service.update(id, userDTO);
             ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(userUpdated).build();
             return ResponseEntity.ok(response);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.naming.AuthenticationException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
@@ -28,6 +29,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception, WebRequest request) {
+        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.NOT_FOUND.value()).build();
+        return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(CustomSQLException.class)
     public ResponseEntity<Object> handleCustomSQLException(CustomSQLException exception, WebRequest request) {
         ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNPROCESSABLE_ENTITY.value()).error(exception.getError()).build();
@@ -43,6 +50,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleException(RuntimeException exception, WebRequest request) {
         log.error("Error:" + exception.getMessage());
+        log.error("Localized Message:" + exception.getLocalizedMessage());
+        log.error("Stack Trace:" + exception.getStackTrace());
         ResponseDTO<?> responseBody = ResponseDTO.builder().message("Server error, please try again later").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
         return new ResponseEntity<Object>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }

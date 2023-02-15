@@ -1,7 +1,11 @@
 package com.doan.appmusic.entity;
 
 import com.doan.appmusic.utils.GenderEnum;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -11,9 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "users")
-public class User extends DateAuditable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,14 +46,11 @@ public class User extends DateAuditable {
 
     private Integer age;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
+    @JsonIgnore
     private Set<Role> roles;
-
-    @OneToMany(mappedBy = "createdBy")
-    private Set<Playlist> playlists;
 }
-
+//    @OneToMany(mappedBy = "createdBy")
+//    private Set<Playlist> playlists;
 

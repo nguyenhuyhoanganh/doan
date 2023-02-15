@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "tags")
+//, uniqueConstraints = @UniqueConstraint(columnNames = {"title", "slug"})
 public class Tag extends UpdateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +19,9 @@ public class Tag extends UpdateAuditable {
 
     private String description;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 }

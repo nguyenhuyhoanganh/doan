@@ -25,7 +25,7 @@ public class Composer extends UpdateAuditable {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender = GenderEnum.UNKNOWN;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     private String description;
@@ -34,7 +34,7 @@ public class Composer extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Song> songs;
 
 }

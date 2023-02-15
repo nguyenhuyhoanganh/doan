@@ -4,9 +4,11 @@ import com.doan.appmusic.entity.Playlist;
 import com.doan.appmusic.entity.Role;
 import com.doan.appmusic.entity.User;
 import com.doan.appmusic.exception.CustomSQLException;
+import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +108,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getById(long id) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
         return convertToDTO(user);
     }
 
@@ -116,34 +118,37 @@ class UserServiceImpl implements UserService {
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         User user = convertToEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        UserDTO userCreated = convertToDTO(repository.save(user));
-        return userCreated;
+        return convertToDTO(repository.save(user));
     }
 
     @Override
     public UserDTO update(long id, UserDTO userDTO) {
-        if (repository.findById(id).isPresent()) {
-            // convert skip setPassword, setId
-            User user = convertToEntity(userDTO);
-            user.setId(id);
-            return convertToDTO(repository.save(user));
-        }
-        throw new UsernameNotFoundException("User not found");
+
+        Optional<User> optionalUser = repository.findById(id);
+        if (!optionalUser.isPresent()) throw new UsernameNotFoundException("User is not found");
+
+        User user = optionalUser.get();
+        if (!user.getEmail().equals(user.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
+            throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
+        mapper.createTypeMap(UserDTO.class, User.class).setProvider(provider -> user).addMappings(mapping -> mapping.skip(User::setId));
+
+        return convertToDTO(repository.save(mapper.map(userDTO, User.class)));
     }
 
     @Override
     public void changePassword(long id, String password) {
-        Optional<User> userOptional = repository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setPassword(passwordEncoder.encode(password));
-            repository.save(user);
-        }
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+        user.setPassword(passwordEncoder.encode(password));
+        repository.save(user);
+
     }
 
     @Override
     public void delete(long id) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
         repository.delete(user);
     }
 
@@ -175,9 +180,12 @@ class UserServiceImpl implements UserService {
     private UserDTO convertToDTO(User user) {
         // mapper
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
-            context.getDestination().setPassword("[Secured]");
+            Set<Role> roles = context.getSource().getRoles();
+            context.getDestination().setPassword("[PROTECTED]");
+
+            context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toSet()));
             return context.getDestination();
         });
 
@@ -185,15 +193,14 @@ class UserServiceImpl implements UserService {
     }
 
     private User convertToEntity(UserDTO userDTO) {
-
         // mapper
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(UserDTO.class, User.class).setPostConverter(context -> {
             if (context.getSource().getAvatarUrl() == null)
                 context.getDestination().setAvatarUrl("http://localhost:8080/api/files/1");
             if (context.getSource().getRoles() == null)
-                context.getDestination().setRoles(Set.of(roleRepository.findByRoleName("ROLE_USER")));
+                context.getDestination().setRoles(Set.of(roleRepository.findByRoleName("ROLE_USER").orElse(null)));
             return context.getDestination();
         }).addMappings(mapping -> mapping.skip(User::setPassword)).addMappings(mapping -> mapping.skip(User::setId));
 

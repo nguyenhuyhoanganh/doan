@@ -11,9 +11,9 @@ import javax.persistence.*;
 @MappedSuperclass
 @EqualsAndHashCode(callSuper = false)
 @EntityListeners(AuditingEntityListener.class)
-public class CreateAuditable extends DateAuditable {
+public abstract class CreateAuditable extends DateAuditable {
     @CreatedBy
-    @JoinColumn(name = "created_by")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private User createdBy;
 }

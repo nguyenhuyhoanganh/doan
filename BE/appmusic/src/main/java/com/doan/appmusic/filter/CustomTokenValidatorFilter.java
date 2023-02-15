@@ -43,6 +43,7 @@ public class CustomTokenValidatorFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, AuthorityUtils.commaSeparatedStringToAuthorityList(decodedJWT.getClaim("roles").asString()));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
+            System.out.println(authenticationToken);
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
