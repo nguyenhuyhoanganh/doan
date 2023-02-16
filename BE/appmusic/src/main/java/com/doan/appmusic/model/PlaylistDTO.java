@@ -7,7 +7,7 @@ public class PlaylistDTO {
     private Long id;
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    private Set<Song> songs;
+//    private List<Song> songs;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String title;

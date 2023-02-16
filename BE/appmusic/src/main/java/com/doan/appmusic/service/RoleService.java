@@ -48,7 +48,7 @@ class RoleServiceImpl implements RoleService {
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
 
         List<Role> roles = repository.findByRoleNameContainingIgnoreCase(roleName, pageRequest);
-        return roles.stream().map(role -> convertToDTO(role)).collect(Collectors.toList());
+        return roles.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -68,7 +68,7 @@ class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO update(long id, RoleDTO roleDTO) {
         Optional<Role> optionalRole = repository.findById(id);
-        if (!optionalRole.isPresent()) throw new CommonException("Role is not found");
+        if (optionalRole.isEmpty()) throw new CommonException("Role is not found");
 
         Role role = optionalRole.get();
         if (!role.getRoleName().equals(roleDTO.getRoleName()) && repository.findByRoleName(roleDTO.getRoleName()).isPresent())

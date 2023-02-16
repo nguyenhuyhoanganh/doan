@@ -4,7 +4,7 @@ import com.doan.appmusic.utils.StatusEnum;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class Playlist extends CreateAuditable {
 
     @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "playlists_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"playlist_id", "song_id"}))
-    private Set<Song> songs;
+    private List<Song> songs;
 
     @Column(nullable = false)
     private String title;

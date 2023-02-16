@@ -1,5 +1,6 @@
 package com.doan.appmusic.controller;
 
+import com.doan.appmusic.entity.User;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.service.UserService;
@@ -30,8 +31,7 @@ public class UserController {
         sortBy = sortBy.length == 0 ? new String[]{"id"} : sortBy;
         orderBy = orderBy.length == 0 ? new String[]{"desc"} : orderBy;
 
-        Map<String, String[]> search = new HashMap<>();
-        search.putAll(request.getParameterMap());
+        Map<String, String[]> search = new HashMap<>(request.getParameterMap());
         search.remove("page");
         search.remove("limit");
         search.remove("sortBy");
@@ -55,9 +55,12 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if (authority.getAuthority().equals("ROLE_ADMIN")) isAdmin = true;
+            if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                isAdmin = true;
+                break;
+            }
         }
-        if (authentication.getName().equals(service.getById(id).getEmail()) || isAdmin) {
+        if (((User) authentication.getPrincipal()).getId().equals(id) || isAdmin) {
             UserDTO userUpdated = service.update(id, userDTO);
             ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(userUpdated).build();
             return ResponseEntity.ok(response);

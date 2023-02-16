@@ -1,19 +1,18 @@
 package com.doan.appmusic.entity;
 
 import com.doan.appmusic.utils.GenderEnum;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "users")
 public class User {
@@ -46,10 +45,9 @@ public class User {
 
     private Integer age;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
-    @JsonIgnore
-    private Set<Role> roles;
+    private List<Role> roles;
 }
 //    @OneToMany(mappedBy = "createdBy")
 //    private Set<Playlist> playlists;

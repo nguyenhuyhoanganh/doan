@@ -4,7 +4,7 @@ import com.doan.appmusic.utils.GenderEnum;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -35,6 +35,6 @@ public class Composer extends UpdateAuditable {
     private String backgroundImageUrl;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Song> songs;
+    private List<Song> songs;
 
 }

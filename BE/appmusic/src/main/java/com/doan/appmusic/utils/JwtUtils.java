@@ -22,15 +22,13 @@ public class JwtUtils {
         for (String name : claims.keySet()) {
             jwtBuilder.withClaim(name, claims.get(name));
         }
-        String token = jwtBuilder.sign(algorithm);
-        return token;
+        return jwtBuilder.sign(algorithm);
     }
 
     public static DecodedJWT decodeToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.SECRET_KEY.getBytes());
         JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-        return decodedJWT;
+        return verifier.verify(token);
     }
 
     public static String populateAuthorities(Collection<? extends GrantedAuthority> collection) {

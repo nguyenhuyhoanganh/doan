@@ -20,7 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,7 +39,7 @@ public interface UserService {
 
     UserDTO update(long id, UserDTO userDTO);
 
-    void changePassword(long id, String password);
+//    void changePassword(long id, String password);
 
     void delete(long id);
 
@@ -59,10 +62,7 @@ class UserServiceImpl implements UserService {
         return convertToDTO(repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 
-    @Override
-    public List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
-
-        // build specification
+    private Specification<User> buildSpecification(Map<String, String[]> search) {
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
         for (Map.Entry<String, String[]> entry : search.entrySet()) {
             SearchCriteria searchCriteria = null;
@@ -82,7 +82,15 @@ class UserServiceImpl implements UserService {
             }
 
         }
-        Specification<User> specification = builder.build();
+        return builder.build();
+    }
+
+
+    @Override
+    public List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
+
+        // specification
+        Specification<User> specification = buildSpecification(search);
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
@@ -103,7 +111,7 @@ class UserServiceImpl implements UserService {
         List<User> users = repository.findAll(specification, pageRequest).toList();
 
         // convert to dto
-        return users.stream().map(user -> convertToDTO(user)).collect(Collectors.toList());
+        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -125,7 +133,7 @@ class UserServiceImpl implements UserService {
     public UserDTO update(long id, UserDTO userDTO) {
 
         Optional<User> optionalUser = repository.findById(id);
-        if (!optionalUser.isPresent()) throw new UsernameNotFoundException("User is not found");
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User is not found");
 
         User user = optionalUser.get();
         if (!user.getEmail().equals(user.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
@@ -138,13 +146,13 @@ class UserServiceImpl implements UserService {
         return convertToDTO(repository.save(mapper.map(userDTO, User.class)));
     }
 
-    @Override
-    public void changePassword(long id, String password) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
-        user.setPassword(passwordEncoder.encode(password));
-        repository.save(user);
-
-    }
+//    @Override
+//    public void changePassword(long id, String password) {
+//        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+//        user.setPassword(passwordEncoder.encode(password));
+//        repository.save(user);
+//
+//    }
 
     @Override
     public void delete(long id) {
@@ -154,26 +162,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public long count(Map<String, String[]> search) {
-        GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        for (Map.Entry<String, String[]> entry : search.entrySet()) {
-            SearchCriteria searchCriteria = null;
-            if (entry.getValue()[0].equals("")) {
-                Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
-                Matcher matcher = pattern.matcher(entry.getKey());
-                if (matcher.find()) {
-                    searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3), User.class);
-                }
-            } else {
-                searchCriteria = new SearchCriteria(entry.getKey(), "=", entry.getValue()[0], User.class);
-            }
-            if (searchCriteria != null) {
-                if (entry.getKey().startsWith("role")) searchCriteria.setJoinType(Role.class);
-                if (entry.getKey().startsWith("playlist")) searchCriteria.setJoinType(Playlist.class);
-                builder.with(searchCriteria);
-            }
-
-        }
-        Specification<User> specification = builder.build();
+        Specification<User> specification = buildSpecification(search);
         return repository.count(specification);
     }
 
@@ -182,10 +171,10 @@ class UserServiceImpl implements UserService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
-            Set<Role> roles = context.getSource().getRoles();
+            List<Role> roles = context.getSource().getRoles();
             context.getDestination().setPassword("[PROTECTED]");
 
-            context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toSet()));
+            context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toList()));
             return context.getDestination();
         });
 
@@ -200,7 +189,7 @@ class UserServiceImpl implements UserService {
             if (context.getSource().getAvatarUrl() == null)
                 context.getDestination().setAvatarUrl("http://localhost:8080/api/files/1");
             if (context.getSource().getRoles() == null)
-                context.getDestination().setRoles(Set.of(roleRepository.findByRoleName("ROLE_USER").orElse(null)));
+                context.getDestination().setRoles(List.of(roleRepository.findByRoleName("ROLE_USER").orElse(null)));
             return context.getDestination();
         }).addMappings(mapping -> mapping.skip(User::setPassword)).addMappings(mapping -> mapping.skip(User::setId));
 

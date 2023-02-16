@@ -3,6 +3,7 @@ package com.doan.appmusic.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -24,7 +25,7 @@ public class Comment extends CreateAuditable {
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<CommentLike> likes;
+    private List<CommentLike> likes;
 
     private Long likeCount;
 

@@ -1,22 +1,32 @@
 package com.doan.appmusic.config;
 
 import com.doan.appmusic.entity.User;
-import com.doan.appmusic.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Optional;
+
+@Slf4j
 @Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditingAware")
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JPAConfiguration {
-    @Autowired
-    private UserRepository repository;
 
     @Bean
-    public AuditorAware<User> auditingAware() {
-        return new AuditorAwareImpl(repository);
+    public AuditorAware<User> auditorProvider() {
+        return () -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
+                return Optional.empty();
+            }
+            User user = (User) authentication.getPrincipal();
+            return Optional.ofNullable(user);
+        };
     }
 
 }

@@ -39,7 +39,7 @@ class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getFile(String fileId) throws Exception {
+    public File getFile(String fileId) {
         return repository.findById(Long.parseLong(fileId)).orElseThrow(() -> new CommonException("File not found with Id: " + fileId));
     }
 }

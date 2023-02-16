@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -58,7 +58,7 @@ public class UserDTO {
     private String backgroundImageUrl;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Set<RoleDTO> roles;
+    private List<RoleDTO> roles;
 }
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)

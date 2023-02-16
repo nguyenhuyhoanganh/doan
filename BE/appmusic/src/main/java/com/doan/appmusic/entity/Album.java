@@ -3,7 +3,7 @@ package com.doan.appmusic.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,8 +28,8 @@ public class Album extends UpdateAuditable {
     private String backgroundImageUrl;
 
     @ManyToMany(mappedBy = "albums", cascade = CascadeType.REMOVE)
-    private Set<Artist> artists;
+    private List<Artist> artists;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Song> songs;
+    private List<Song> songs;
 }

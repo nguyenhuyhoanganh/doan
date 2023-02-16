@@ -10,12 +10,10 @@ import javax.persistence.*;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@RequiredArgsConstructor
 @Table(name = "roles")
 public class Role extends DateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NonNull
     private Long id;
 
     @Column(nullable = false, unique = true)

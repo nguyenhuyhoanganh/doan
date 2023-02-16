@@ -57,7 +57,7 @@ class TagServiceImpl implements TagService {
     @Override
     public TagDTO update(long id, TagDTO tagDTO) {
         Optional<Tag> optionalTag = repository.findById(id);
-        if (!optionalTag.isPresent()) throw new CommonException("Tag is not found");
+        if (optionalTag.isEmpty()) throw new CommonException("Tag is not found");
 
         Tag tag = optionalTag.get();
         if (!tag.getTitle().equals(tagDTO.getTitle()) && repository.findByTitle(tagDTO.getTitle()).isPresent())
@@ -67,23 +67,9 @@ class TagServiceImpl implements TagService {
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
-        mapper.createTypeMap(TagDTO.class, Tag.class).setProvider(provider -> tag).addMappings(mapping -> mapping.skip(Tag::setId))
-//                .setPostConverter(context -> {
-//            User createdBy = tag.getCreatedBy();
-//            User updatedBy = tag.getUpdatedBy();
-//            context.getDestination().setCreatedBy(User.builder().id(createdBy.getId()).build());
-//            context.getDestination().setUpdatedBy(User.builder().id(updatedBy.getId()).build());
-//            return context.getDestination();
-//        });
-        .addMappings(mapping -> mapping.skip(Tag::setCreatedBy)).addMappings(mapping -> mapping.skip(Tag::setUpdatedBy));
+        mapper.createTypeMap(TagDTO.class, Tag.class).setProvider(provider -> tag).addMappings(mapping -> mapping.skip(Tag::setId)).addMappings(mapping -> mapping.skip(Tag::setCreatedBy)).addMappings(mapping -> mapping.skip(Tag::setUpdatedBy));
 
-        Tag tagUpdated = mapper.map(tagDTO, Tag.class);
-
-        System.out.println(tagUpdated);
-        System.out.println(tagUpdated.getUpdatedBy());
-        System.out.println(tagUpdated.getUpdatedBy());
-        repository.save(tagUpdated);
-        return tagDTO;
+        return convertToDTO(mapper.map(tagDTO, Tag.class));
 
     }
 
@@ -106,7 +92,7 @@ class TagServiceImpl implements TagService {
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
 
         List<Tag> tags = repository.findByTitleContainingIgnoreCase(title, pageRequest);
-        return tags.stream().map(tag -> convertToDTO(tag)).collect(Collectors.toList());
+        return tags.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override

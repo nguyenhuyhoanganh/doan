@@ -2,6 +2,8 @@ package com.doan.appmusic.security;
 
 import com.doan.appmusic.filter.CustomTokenGeneratorFilter;
 import com.doan.appmusic.filter.CustomTokenValidatorFilter;
+import com.doan.appmusic.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,8 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+
+    @Autowired private UserRepository repository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -65,7 +69,7 @@ public class SecurityConfig {
 
         // add filter
         http.addFilter(customTokenGeneratorFilter);
-        http.addFilterBefore(new CustomTokenValidatorFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomTokenValidatorFilter(repository), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

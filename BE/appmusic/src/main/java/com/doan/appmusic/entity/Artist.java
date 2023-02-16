@@ -4,7 +4,7 @@ import com.doan.appmusic.utils.GenderEnum;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -35,14 +35,14 @@ public class Artist extends UpdateAuditable {
     private String backgroundImageUrl;
 
     @ManyToMany(mappedBy = "artists", cascade = CascadeType.REMOVE)
-    private Set<Song> songs;
+    private List<Song> songs;
 
     @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"artist_id", "album_id"}))
-    private Set<Album> albums;
+    private List<Album> albums;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "artist", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ArtistFollow> follows;
+    private List<ArtistFollow> follows;
 
     private Long followCount;
 }
