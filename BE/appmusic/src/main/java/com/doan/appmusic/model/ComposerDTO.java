@@ -1,6 +1,6 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.StatusEnum;
+import com.doan.appmusic.utils.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,23 +15,35 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistDTO {
+public class ComposerDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
+    @NotBlank(message = "Name is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<SongDTO> songs;
+    private String fullName;
 
-    @NotBlank(message = "Title is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String title;
+    private Integer age;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private GenderEnum gender;
 
     @NotBlank(message = "Slug is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String slug;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private StatusEnum status;
+    private String description;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String avatarUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String backgroundImageUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SongDTO> songs;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date createdAt;
@@ -41,4 +53,7 @@ public class PlaylistDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDTO createdBy;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private UserDTO updatedBy;
 }

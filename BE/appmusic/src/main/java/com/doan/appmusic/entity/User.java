@@ -49,6 +49,4 @@ public class User {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
     private List<Role> roles;
 }
-//    @OneToMany(mappedBy = "createdBy")
-//    private Set<Playlist> playlists;
 

@@ -1,6 +1,5 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +14,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistDTO {
+public class AlbumDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<SongDTO> songs;
 
     @NotBlank(message = "Title is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,7 +27,16 @@ public class PlaylistDTO {
     private String slug;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private StatusEnum status;
+    private String description;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String backgroundImageUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<ArtistDTO> artists;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SongDTO> songs;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date createdAt;
@@ -41,4 +46,7 @@ public class PlaylistDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDTO createdBy;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private UserDTO updatedBy;
 }

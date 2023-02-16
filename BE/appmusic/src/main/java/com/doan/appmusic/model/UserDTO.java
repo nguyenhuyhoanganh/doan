@@ -25,8 +25,7 @@ public class UserDTO {
     private String username;
 
     @NotBlank(message = "Password is required", groups = {OnCreate.class, OnUpdate.class})
-    @Size(min = 6, max = 160, message = "Password length from 6 - 160 characters", groups = {OnCreate.class,
-            OnUpdate.class})
+    @Size(min = 6, max = 160, message = "Password length from 6 - 160 characters", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String password;
 
@@ -60,6 +59,3 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<RoleDTO> roles;
 }
-
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    private Set<PlaylistDTO> playlists;

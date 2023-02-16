@@ -1,6 +1,6 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.StatusEnum;
+import com.doan.appmusic.utils.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,23 +15,44 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistDTO {
+public class ArtistDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
+    @NotBlank(message = "Slug is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<SongDTO> songs;
+    private String fullName;
 
-    @NotBlank(message = "Title is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String title;
+    private Integer age;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final GenderEnum gender = GenderEnum.UNKNOWN;
 
     @NotBlank(message = "Slug is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String slug;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private StatusEnum status;
+    private String description;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String avatarUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String backgroundImageUrl;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SongDTO> songs;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<AlbumDTO> albums;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<ArtistFollowDTO> follows;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long followCount;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date createdAt;
@@ -41,4 +62,7 @@ public class PlaylistDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDTO createdBy;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private UserDTO updatedBy;
 }

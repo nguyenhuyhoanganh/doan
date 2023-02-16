@@ -2,7 +2,6 @@ package com.doan.appmusic.filter;
 
 import com.doan.appmusic.entity.User;
 import com.doan.appmusic.model.ResponseDTO;
-import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.security.SecurityConstants;
