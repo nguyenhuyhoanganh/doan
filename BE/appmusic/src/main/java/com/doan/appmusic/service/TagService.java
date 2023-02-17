@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface TagService {
@@ -56,10 +55,8 @@ class TagServiceImpl implements TagService {
 
     @Override
     public TagDTO update(long id, TagDTO tagDTO) {
-        Optional<Tag> optionalTag = repository.findById(id);
-        if (optionalTag.isEmpty()) throw new CommonException("Tag is not found");
+        Tag tag = repository.findById(id).orElseThrow(() -> new CommonException("Tag is not found"));
 
-        Tag tag = optionalTag.get();
         if (!tag.getTitle().equals(tagDTO.getTitle()) && repository.findByTitle(tagDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
         if (!tag.getSlug().equals(tagDTO.getSlug()) && repository.findBySlug(tagDTO.getSlug()).isPresent())
@@ -70,7 +67,6 @@ class TagServiceImpl implements TagService {
         mapper.createTypeMap(TagDTO.class, Tag.class).setProvider(provider -> tag).addMappings(mapping -> mapping.skip(Tag::setId)).addMappings(mapping -> mapping.skip(Tag::setCreatedBy)).addMappings(mapping -> mapping.skip(Tag::setUpdatedBy));
 
         return convertToDTO(mapper.map(tagDTO, Tag.class));
-
     }
 
     @Override

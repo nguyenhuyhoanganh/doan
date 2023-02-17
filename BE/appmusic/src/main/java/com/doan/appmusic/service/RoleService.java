@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface RoleService {
@@ -67,10 +66,8 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO update(long id, RoleDTO roleDTO) {
-        Optional<Role> optionalRole = repository.findById(id);
-        if (optionalRole.isEmpty()) throw new CommonException("Role is not found");
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
 
-        Role role = optionalRole.get();
         if (!role.getRoleName().equals(roleDTO.getRoleName()) && repository.findByRoleName(roleDTO.getRoleName()).isPresent())
             throw new CustomSQLException("Error", Map.of("role_name", "Role name already exists"));
 

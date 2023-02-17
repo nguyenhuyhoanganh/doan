@@ -26,7 +26,7 @@ public class Category extends UpdateAuditable {
 
     private String imageUrl;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 }

@@ -20,7 +20,6 @@ public class GenericSpecificationBuilder {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> Specification<T> build() {
         if (params.size() == 0) {
             return null;

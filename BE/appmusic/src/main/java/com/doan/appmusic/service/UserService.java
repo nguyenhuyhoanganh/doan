@@ -1,6 +1,5 @@
 package com.doan.appmusic.service;
 
-import com.doan.appmusic.entity.Playlist;
 import com.doan.appmusic.entity.Role;
 import com.doan.appmusic.entity.User;
 import com.doan.appmusic.exception.CustomSQLException;
@@ -23,7 +22,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -61,30 +59,6 @@ class UserServiceImpl implements UserService {
     public UserDTO findByEmail(String email) {
         return convertToDTO(repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
-
-    private Specification<User> buildSpecification(Map<String, String[]> search) {
-        GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        for (Map.Entry<String, String[]> entry : search.entrySet()) {
-            SearchCriteria searchCriteria = null;
-            if (entry.getValue()[0].equals("")) {
-                Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
-                Matcher matcher = pattern.matcher(entry.getKey());
-                if (matcher.find()) {
-                    searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3), User.class);
-                }
-            } else {
-                searchCriteria = new SearchCriteria(entry.getKey(), "=", entry.getValue()[0], User.class);
-            }
-            if (searchCriteria != null) {
-                if (entry.getKey().startsWith("role")) searchCriteria.setJoinType(Role.class);
-                if (entry.getKey().startsWith("playlist")) searchCriteria.setJoinType(Playlist.class);
-                builder.with(searchCriteria);
-            }
-
-        }
-        return builder.build();
-    }
-
 
     @Override
     public List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
@@ -125,18 +99,17 @@ class UserServiceImpl implements UserService {
         if (repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         User user = convertToEntity(userDTO);
+        Role role = roleRepository.findByRoleName("ROLE_NAME").orElse(null);
+        if (role != null) user.setRoles(List.of(role));
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return convertToDTO(repository.save(user));
     }
 
     @Override
     public UserDTO update(long id, UserDTO userDTO) {
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
 
-        Optional<User> optionalUser = repository.findById(id);
-        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User is not found");
-
-        User user = optionalUser.get();
-        if (!user.getEmail().equals(user.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
+        if (!user.getEmail().equals(userDTO.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
 
         ModelMapper mapper = new ModelMapper();
@@ -145,14 +118,6 @@ class UserServiceImpl implements UserService {
 
         return convertToDTO(repository.save(mapper.map(userDTO, User.class)));
     }
-
-//    @Override
-//    public void changePassword(long id, String password) {
-//        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
-//        user.setPassword(passwordEncoder.encode(password));
-//        repository.save(user);
-//
-//    }
 
     @Override
     public void delete(long id) {
@@ -185,15 +150,29 @@ class UserServiceImpl implements UserService {
         // mapper
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
-        mapper.createTypeMap(UserDTO.class, User.class).setPostConverter(context -> {
-            if (context.getSource().getAvatarUrl() == null)
-                context.getDestination().setAvatarUrl("http://localhost:8080/api/files/1");
-            if (context.getSource().getRoles() == null)
-                context.getDestination().setRoles(List.of(roleRepository.findByRoleName("ROLE_USER").orElse(null)));
-            return context.getDestination();
-        }).addMappings(mapping -> mapping.skip(User::setPassword)).addMappings(mapping -> mapping.skip(User::setId));
+        mapper.createTypeMap(UserDTO.class, User.class).addMappings(mapping -> mapping.skip(User::setPassword)).addMappings(mapping -> mapping.skip(User::setId)).addMappings(mapping -> mapping.skip(User::setRoles));
 
         return mapper.map(userDTO, User.class);
+    }
+
+    private Specification<User> buildSpecification(Map<String, String[]> search) {
+        GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
+        for (Map.Entry<String, String[]> entry : search.entrySet()) {
+            SearchCriteria searchCriteria = null;
+            if (entry.getValue()[0].equals("")) {
+                Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
+                Matcher matcher = pattern.matcher(entry.getKey());
+                if (matcher.find()) {
+                    searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3), User.class);
+                }
+            } else searchCriteria = new SearchCriteria(entry.getKey(), "=", entry.getValue()[0], User.class);
+            if (searchCriteria != null) {
+                if (entry.getKey().startsWith("roles")) searchCriteria.setJoinType(Role.class);
+                builder.with(searchCriteria);
+            }
+
+        }
+        return builder.build();
     }
 
 }
