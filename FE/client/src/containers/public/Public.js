@@ -9,13 +9,13 @@ import {
 
 const Public = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col bg-main-200">
+    <div className="w-full min-h-screen flex flex-col bg-main-200 ">
       <div className="w-full h-full flex flex-auto">
         <div className="w-[240px] flex-none border border-blue-500">
           <SidebarLeft />
         </div>
         <div className="flex-auto border border-yellow-500">
-          <div className="h-[70px] px-[59px] flex items-center">
+          <div className="h-[70px] px-[59px] flex items-center mb-5">
             <Header />
           </div>
           <Outlet></Outlet>

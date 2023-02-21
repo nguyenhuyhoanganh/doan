@@ -46,6 +46,9 @@ module.exports = {
         'slide-left': 'slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;',
         'slide-left2': 'slide-left2 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;',
       },
+      flex: {
+        '4': '4 4 0%'
+      },
     },
     screens: {
       '1500': "1500px",

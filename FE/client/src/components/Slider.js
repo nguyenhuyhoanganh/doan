@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/actions";
+import { useNavigate } from "react-router-dom";
+
 // const { banner } = useSelector(state => state.app)
 
 const getArrSlider = (start, end, number) => {
@@ -83,12 +85,21 @@ const Slider = () => {
       intervalId && clearInterval(intervalId);
     };
   }, []);
-
+  const navigate = useNavigate()
   const handleClickBanner = (item) => {
     // console.log(item);
     if(item?.type === 1){
       // is song get id stored in localStorage
       dispatch(actions.setCurSongId(item.encodeId))
+      dispatch(actions.play(true))
+    }
+    else if(item?.type === 4){
+      console.log(item)
+      // link = /album/Nhac-Moi-Moi-Ngay-Sam-Smith-Vu-Cat-Tuong-STAYC-Hoang-Thuy-Linh/67WIO6CF.html
+      const albumPath = item?.link?.split('.')[0]
+      // console.log(albumPath)
+      //chuyển qua trang album
+      navigate(albumPath)
 
     }
   };

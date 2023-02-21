@@ -16,19 +16,36 @@ const Player = () => {
     MdPlaylistPlay,
     BsVolumeUp,
   } = icons;
-  const { curSongId } = useSelector((state) => state.music);
+  // const [isPlaying, setIsPlaying] = useState(false)
+  const { curSongId, isPlaying } = useSelector((state) => state.music);
   const [songInfo, setSongInfo] = useState(null);
+  const [source, setSource] = useState(null);
+  const audioElm = new Audio("https://mp3-s1-zmp3.zmdcdn.me/c579777ecb3e22607b2f/2469051156594466330?authen=exp=1677028055~acl=/c579777ecb3e22607b2f/*~hmac=ab9399a5aa43c0f0e6e6993c127589f0&fs=MTY3Njg1NTI1NTQyNXx3ZWJWNnwyMzEwNjI2MDh8MTQdUngMjMyLjIwOC4yMzQ")
   useEffect(() => {
     const fetchDetailSong = async () => {
-      const response = await api.getDetailSong(curSongId);
-      // console.log(response);
-      if (response?.data.err === 0) {
-        setSongInfo(response.data.data);
+      const [res1, res2] = await Promise.all([
+        api.apiGetDetailSong(curSongId),
+        api.apiGetSong(curSongId)
+      ]) 
+      // console.log(res2);
+      if (res1?.data.err === 0) {
+        setSongInfo(res1.data.data);
+      }
+      if(res2?.data.err === 0) {
+        setSource(res2.data.data['128'])
       }
     };
     fetchDetailSong();
   }, [curSongId]);
+
+  useEffect(() => {
+    // audioElm.play()
+  }, [curSongId])
   // console.log(curSongId);
+  const handleTogglePlayMusic = () => {
+    // setIsPlaying(prev => !prev)
+  }
+
   return (
     <div className="px-5 h-full flex justify-center bg-main-300">
       <div className="w-[30%] flex-auto border border-red-500 flex items-center">
@@ -50,23 +67,25 @@ const Player = () => {
       </div>
       <div className="w-[40%] flex-auto border border-red-500">
         <div className="flex flex-col justify-center items-center h-[100%]">
-          <div className="flex h-[70%] gap-12 mt-4 items-center">
-            <span>
+          <div className="flex h-[70%] gap-12 mt-4 items-center cursor-pointer">
+            <span className="hover:text-[#fff]" title="Bật phát ngẫu nhiên">
               <BsShuffle size={24} />
             </span>
-            <span>
+            <span className="hover:text-[#fff]" title="Lùi bài">
               <IoMdSkipBackward size={24} />
             </span>
-            <span>
-              <AiOutlinePlayCircle size={50} />
+            <span title="Phát" className="hover:text-[#fff]"
+            onClick={handleTogglePlayMusic}
+            >
+              {isPlaying ? <AiOutlinePauseCircle size={50} /> : <AiOutlinePlayCircle size={50} />}
             </span>
-            <span className="hidden">
+            <span  className="hidden">
               <AiOutlinePauseCircle size={30} />
             </span>
-            <span>
+            <span className="hover:text-[#fff]" title="">
               <IoMdSkipForward size={24} />
             </span>
-            <span>
+            <span className="hover:text-[#fff]" title="Lặp bài hát">
               <RxLoop size={24} />
             </span>
           </div>
