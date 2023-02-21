@@ -12,7 +12,7 @@ const SidebarRight = () => {
   const notActiveStyle = "hidden";
   console.log("re-render");
   return (
-    <div className="bg-main-200 h-full w-full flex flex-col">
+    <div className="bg-main-200 w-full h-screen flex flex-col">
       <div className="flex bg-main-300 rounded-lg justify-between h-8 gap-2 w-[80%] m-4 p-1 cursor-pointer">
         <div className="bg-[#E7ECEC] rounded-lg">
           <span>Danh sách phát</span>
@@ -42,15 +42,16 @@ const SidebarRight = () => {
           className="flex items-center cursor-pointer"
           onClick={handleAutoButton}
         >
-          <BsToggleOff
+          {/* <BsToggleOff
             size={24}
             className={(autoPlay) => (autoPlay ? activeStyle : notActiveStyle)}
           />
-          <BsToggleOn size={24} className="hidden" />
+          <BsToggleOn size={24} className="hidden" /> */}
+          {autoPlay? <BsToggleOff size={24}></BsToggleOff> : <BsToggleOn size={24}></BsToggleOn>}
         </span>
       </div>
       {/* map list recommend */}
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((el) => {
+      {/* {[1, 2, 3, 4, 5, 6, 7, 8].map((el) => {
         return (
           <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
             <span className="absolute pt-3 pl-[30px]">
@@ -63,7 +64,7 @@ const SidebarRight = () => {
             </div>
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 };
