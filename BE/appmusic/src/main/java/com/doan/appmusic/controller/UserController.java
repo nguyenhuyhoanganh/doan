@@ -24,21 +24,21 @@ public class UserController {
     private UserService service;
 
     @GetMapping("")
-    public ResponseEntity<?> search(HttpServletRequest request, @RequestParam(required = false, defaultValue = "id") String[] sortBy, @RequestParam(required = false, defaultValue = "desc") String[] orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
+    public ResponseEntity<?> getAll(HttpServletRequest request, @RequestParam(required = false, defaultValue = "id") String[] sortBy, @RequestParam(required = false, defaultValue = "desc") String[] orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
 
         page = page < 1 ? 1 : page;
         limit = limit < 0 ? 10 : limit;
         sortBy = sortBy.length == 0 ? new String[]{"id"} : sortBy;
         orderBy = orderBy.length == 0 ? new String[]{"desc"} : orderBy;
 
-        Map<String, String[]> search = new HashMap<>(request.getParameterMap());
-        search.remove("page");
-        search.remove("limit");
-        search.remove("sortBy");
-        search.remove("orderBy");
+        Map<String, String[]> query = new HashMap<>(request.getParameterMap());
+        query.remove("page");
+        query.remove("limit");
+        query.remove("sortBy");
+        query.remove("orderBy");
 
-        List<UserDTO> users = service.search(page - 1, limit, sortBy, orderBy, search);
-        long count = service.count(search);
+        List<UserDTO> users = service.getAll(page - 1, limit, sortBy, orderBy, query);
+        long count = service.count(query);
         ResponseDTO<?> response = ResponseDTO.builder().data(users).results(count).page(page).limit(limit).build();
         return ResponseEntity.ok(response);
     }
@@ -81,5 +81,4 @@ public class UserController {
         }
         throw new AuthenticationException("You do not have the authority to perform this action");
     }
-
 }

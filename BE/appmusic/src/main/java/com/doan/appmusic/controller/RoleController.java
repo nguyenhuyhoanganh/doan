@@ -23,7 +23,7 @@ public class RoleController {
         page = page < 1 ? 1 : page;
         limit = limit < 0 ? 10 : limit;
 
-        List<RoleDTO> roles = service.search(page - 1, limit, sortBy, orderBy, roleName);
+        List<RoleDTO> roles = service.findByRoleName(page - 1, limit, sortBy, orderBy, roleName);
         long count = service.count(roleName);
         ResponseDTO<?> response = ResponseDTO.builder().data(roles).results(count).limit(limit).page(page).build();
         return ResponseEntity.ok(response);

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public interface ArtistService {
-    List<ArtistDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search);
+    List<ArtistDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     ArtistDTO getById(long id);
 
@@ -57,9 +57,9 @@ class ArtistServiceImpl implements ArtistService {
     private UserRepository userRepository;
 
     @Override
-    public List<ArtistDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
+    public List<ArtistDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query) {
         // specification
-        Specification<Artist> specification = buildSpecification(search);
+        Specification<Artist> specification = buildSpecification(query);
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
@@ -109,7 +109,7 @@ class ArtistServiceImpl implements ArtistService {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(ArtistDTO.class, Artist.class).setProvider(provider -> artist).addMappings(mapping -> mapping.skip(Artist::setId)).addMappings(mapping -> mapping.skip(Artist::setCreatedBy)).addMappings(mapping -> mapping.skip(Artist::setUpdatedBy));
 
-        return convertToDTO(mapper.map(artistDTO, Artist.class));
+        return convertToDTO(repository.save(mapper.map(artistDTO, Artist.class)));
     }
 
     @Override
@@ -119,36 +119,36 @@ class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public long count(Map<String, String[]> search) {
-        Specification<Artist> specification = buildSpecification(search);
+    public long count(Map<String, String[]> query) {
+        Specification<Artist> specification = buildSpecification(query);
         return repository.count(specification);
     }
 
     @Override
     public void follow(long artistId, long userId) {
         Optional<ArtistFollow> optionalArtistFollow = followRepository.findByUserIdAndArtistId(userId, artistId);
-        if(optionalArtistFollow.isPresent()) return;
+        if (optionalArtistFollow.isPresent()) return;
         Artist artist = repository.findById(artistId).orElseThrow(() -> new CommonException("Artist is not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new CommonException("User is not found"));
-        followRepository.save(ArtistFollow.builder().artist(artist).user(user).build());
         artist.incrementFollowCount();
         repository.save(artist);
+        followRepository.save(ArtistFollow.builder().artist(artist).user(user).build());
     }
 
     @Override
     public void unfollow(long artistId, long userId) {
         Optional<ArtistFollow> optionalArtistFollow = followRepository.findByUserIdAndArtistId(userId, artistId);
-        if(optionalArtistFollow.isEmpty()) return;
+        if (optionalArtistFollow.isEmpty()) return;
         ArtistFollow artistFollow = optionalArtistFollow.get();
         Artist artist = artistFollow.getArtist();
-        followRepository.delete(artistFollow);
         artist.decrementFollowCount();
         repository.save(artist);
+        followRepository.delete(artistFollow);
     }
 
-    private Specification<Artist> buildSpecification(Map<String, String[]> search) {
+    private Specification<Artist> buildSpecification(Map<String, String[]> query) {
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        for (Map.Entry<String, String[]> entry : search.entrySet()) {
+        for (Map.Entry<String, String[]> entry : query.entrySet()) {
             SearchCriteria searchCriteria = null;
             if (entry.getValue()[0].equals("")) {
                 Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
@@ -182,11 +182,15 @@ class ArtistServiceImpl implements ArtistService {
 
             // songs
             List<Song> songs = context.getSource().getSongs();
-            context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).build()).collect(Collectors.toList()));
+            if (songs != null) {
+                context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).build()).collect(Collectors.toList()));
+            }
 
             // albums
             List<Album> albums = context.getSource().getAlbums();
-            context.getDestination().setAlbums(albums.stream().map(album -> AlbumDTO.builder().id(album.getId()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build()).collect(Collectors.toList()));
+            if (albums != null) {
+                context.getDestination().setAlbums(albums.stream().map(album -> AlbumDTO.builder().id(album.getId()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build()).collect(Collectors.toList()));
+            }
             return context.getDestination();
         });
 

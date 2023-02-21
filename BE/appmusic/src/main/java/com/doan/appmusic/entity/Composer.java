@@ -34,7 +34,7 @@ public class Composer extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "composer", orphanRemoval = true)
     private List<Song> songs;
 
 }

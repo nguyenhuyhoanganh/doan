@@ -27,9 +27,9 @@ public class Album extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
-    @ManyToMany(mappedBy = "albums", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToMany(mappedBy = "albums")
     private List<Artist> artists;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", orphanRemoval = true)
     private List<Song> songs;
 }

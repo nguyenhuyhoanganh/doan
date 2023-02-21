@@ -30,7 +30,7 @@ public interface TagService {
 
     long count(String title);
 
-    List<TagDTO> search(int page, int limit, String sortBy, String orderBy, String title);
+    List<TagDTO> findByTitle(int page, int limit, String sortBy, String orderBy, String title);
 
     TagDTO getBySlug(String slug);
 
@@ -66,7 +66,7 @@ class TagServiceImpl implements TagService {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(TagDTO.class, Tag.class).setProvider(provider -> tag).addMappings(mapping -> mapping.skip(Tag::setId)).addMappings(mapping -> mapping.skip(Tag::setCreatedBy)).addMappings(mapping -> mapping.skip(Tag::setUpdatedBy));
 
-        return convertToDTO(mapper.map(tagDTO, Tag.class));
+        return convertToDTO(repository.save(mapper.map(tagDTO, Tag.class)));
     }
 
     @Override
@@ -81,7 +81,7 @@ class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagDTO> search(int page, int limit, String sortBy, String orderBy, String title) {
+    public List<TagDTO> findByTitle(int page, int limit, String sortBy, String orderBy, String title) {
         List<Sort.Order> sortList = new ArrayList<>();
         if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
         if (orderBy.equals("asc")) sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));

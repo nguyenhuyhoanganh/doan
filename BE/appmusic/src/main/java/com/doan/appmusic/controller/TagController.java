@@ -23,7 +23,7 @@ public class TagController {
         page = page < 1 ? 1 : page;
         limit = limit < 0 ? 10 : limit;
 
-        List<TagDTO> tags = service.search(page - 1, limit, sortBy, orderBy, title);
+        List<TagDTO> tags = service.findByTitle(page - 1, limit, sortBy, orderBy, title);
         long count = service.count(title);
         ResponseDTO<?> response = ResponseDTO.builder().data(tags).results(count).limit(limit).page(page).build();
         return ResponseEntity.ok(response);

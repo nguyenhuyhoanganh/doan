@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public interface AlbumService {
 
-    List<AlbumDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search);
+    List<AlbumDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     AlbumDTO getById(long id);
 
@@ -50,9 +50,9 @@ class AlbumServiceImpl implements AlbumService {
     private AlbumRepository repository;
 
     @Override
-    public List<AlbumDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
+    public List<AlbumDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query) {
         // specification
-        Specification<Album> specification = buildSpecification(search);
+        Specification<Album> specification = buildSpecification(query);
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
@@ -105,7 +105,7 @@ class AlbumServiceImpl implements AlbumService {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(AlbumDTO.class, Album.class).setProvider(provider -> album).addMappings(mapping -> mapping.skip(Album::setId)).addMappings(mapping -> mapping.skip(Album::setCreatedBy)).addMappings(mapping -> mapping.skip(Album::setUpdatedBy));
 
-        return convertToDTO(mapper.map(albumDTO, Album.class));
+        return convertToDTO(repository.save(mapper.map(albumDTO, Album.class)));
     }
 
     @Override
@@ -115,14 +115,14 @@ class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public long count(Map<String, String[]> search) {
-        Specification<Album> specification = buildSpecification(search);
+    public long count(Map<String, String[]> query) {
+        Specification<Album> specification = buildSpecification(query);
         return repository.count(specification);
     }
 
-    private Specification<Album> buildSpecification(Map<String, String[]> search) {
+    private Specification<Album> buildSpecification(Map<String, String[]> query) {
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        for (Map.Entry<String, String[]> entry : search.entrySet()) {
+        for (Map.Entry<String, String[]> entry : query.entrySet()) {
             SearchCriteria searchCriteria = null;
             if (entry.getValue()[0].equals("")) {
                 Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
@@ -157,11 +157,15 @@ class AlbumServiceImpl implements AlbumService {
 
             // songs
             List<Song> songs = context.getSource().getSongs();
-            context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).build()).collect(Collectors.toList()));
+            if (songs != null) {
+                context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).build()).collect(Collectors.toList()));
+            }
 
             // artists
             List<Artist> artists = context.getSource().getArtists();
-            context.getDestination().setArtists(artists.stream().map(artist -> ArtistDTO.builder().id(artist.getId()).fullName(artist.getFullName()).avatarUrl(artist.getAvatarUrl()).build()).collect(Collectors.toList()));
+            if (artists != null) {
+                context.getDestination().setArtists(artists.stream().map(artist -> ArtistDTO.builder().id(artist.getId()).fullName(artist.getFullName()).avatarUrl(artist.getAvatarUrl()).build()).collect(Collectors.toList()));
+            }
             return context.getDestination();
         });
 

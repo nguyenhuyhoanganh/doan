@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public interface RoleService {
-    List<RoleDTO> search(int page, int limit, String sortBy, String orderBy, String roleName);
+    List<RoleDTO> findByRoleName(int page, int limit, String sortBy, String orderBy, String roleName);
 
     RoleDTO getById(long id);
 
@@ -40,7 +40,7 @@ class RoleServiceImpl implements RoleService {
     private RoleRepository repository;
 
     @Override
-    public List<RoleDTO> search(int page, int limit, String sortBy, String orderBy, String roleName) {
+    public List<RoleDTO> findByRoleName(int page, int limit, String sortBy, String orderBy, String roleName) {
         List<Sort.Order> sortList = new ArrayList<>();
         if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
         if (orderBy.equals("asc")) sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));

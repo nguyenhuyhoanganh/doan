@@ -24,14 +24,14 @@ public class Comment extends CreateAuditable {
 
     private String content;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", orphanRemoval = true)
     private List<CommentLike> likes;
 
     private Long likeCount;
 
     private Long replyCount;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;
 }

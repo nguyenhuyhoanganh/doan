@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public interface UserService {
     UserDTO findByEmail(String email);
 
-    List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search);
+    List<UserDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     UserDTO getById(long id);
 
@@ -61,10 +61,10 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> search(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> search) {
+    public List<UserDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query) {
 
         // specification
-        Specification<User> specification = buildSpecification(search);
+        Specification<User> specification = buildSpecification(query);
 
         // sort
         List<Sort.Order> sortList = new ArrayList<>();
@@ -99,7 +99,7 @@ class UserServiceImpl implements UserService {
         if (repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         User user = convertToEntity(userDTO);
-        Role role = roleRepository.findByRoleName("ROLE_NAME").orElse(null);
+        Role role = roleRepository.findByRoleName("ROLE_USER").orElse(null);
         if (role != null) user.setRoles(List.of(role));
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return convertToDTO(repository.save(user));
@@ -126,8 +126,8 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long count(Map<String, String[]> search) {
-        Specification<User> specification = buildSpecification(search);
+    public long count(Map<String, String[]> query) {
+        Specification<User> specification = buildSpecification(query);
         return repository.count(specification);
     }
 
@@ -136,10 +136,11 @@ class UserServiceImpl implements UserService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
-            List<Role> roles = context.getSource().getRoles();
             context.getDestination().setPassword("[PROTECTED]");
 
-            context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toList()));
+            List<Role> roles = context.getSource().getRoles();
+            if (roles != null)
+                context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toList()));
             return context.getDestination();
         });
 
@@ -155,9 +156,9 @@ class UserServiceImpl implements UserService {
         return mapper.map(userDTO, User.class);
     }
 
-    private Specification<User> buildSpecification(Map<String, String[]> search) {
+    private Specification<User> buildSpecification(Map<String, String[]> query) {
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
-        for (Map.Entry<String, String[]> entry : search.entrySet()) {
+        for (Map.Entry<String, String[]> entry : query.entrySet()) {
             SearchCriteria searchCriteria = null;
             if (entry.getValue()[0].equals("")) {
                 Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
