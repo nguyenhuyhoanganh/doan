@@ -1,8 +1,12 @@
 import React from "react";
 import icons from "../utils/icons";
+import { useDispatch } from "react-redux";
+import * as actions from "../../src/store/actions"
+
 
 const { GrCaretNext } = icons;
 const List = ({ songs }) => {
+  const dispatch = useDispatch()
   console.log(songs);
   const handleTime = (sec) => {
     let min = Math.floor(sec/60)
@@ -10,11 +14,16 @@ const List = ({ songs }) => {
     return second < 10? min + ':0' + second : min + ':' + second
   }
   return (
-    <div className="flex flex-col gap-2 overflow-scroll h-[500px] overflow-x-hidden">
+    <div className="flex flex-col gap-2 overflow-x-hidden">
       {/*  playlist */}
       {songs?.map((item) => {
         return (
-          <div key={item.encodeId} className="flex gap-6 cursor-pointer hover:shadow-2xl bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
+          <div
+          onClick={() => {
+            dispatch(actions.setCurSongId(item?.encodeId))
+            dispatch(actions.play(true))
+          }}
+          key={item.encodeId} className="flex gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
             <span className="absolute pt-3 pl-[30px] ">
               <GrCaretNext size={24} className="hover:inline hidden" />
             </span>

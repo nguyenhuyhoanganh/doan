@@ -27,6 +27,7 @@ function App() {
             <Route path={path.ZING_CHART} element={<Zingchart/>}/>
             <Route path={path.FOLLOW} element={<Follow />}/>
             <Route path={path.ALBUM__TITLE__PID} element={<Album />}/>
+            <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
 
 
             <Route path={path.STAR} element={<Home/>}/>
