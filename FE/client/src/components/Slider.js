@@ -92,6 +92,7 @@ const Slider = () => {
       // is song get id stored in localStorage
       dispatch(actions.setCurSongId(item.encodeId))
       dispatch(actions.play(true))
+      dispatch(actions.playAlbum(false))
     }
     else if(item?.type === 4){
       console.log(item)
@@ -99,8 +100,12 @@ const Slider = () => {
       const albumPath = item?.link?.split('.')[0]
       // console.log(albumPath)
       //chuyển qua trang album
+      
       navigate(albumPath)
 
+    }
+    else{
+      dispatch(actions.playAlbum(false))
     }
   };
 

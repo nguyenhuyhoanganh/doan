@@ -1,13 +1,13 @@
 import React from "react";
 import icons from "../utils/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../src/store/actions"
 
 
 const { GrCaretNext } = icons;
-const List = ({ songs }) => {
+const List = ({ songs}) => {
   const dispatch = useDispatch()
-  console.log(songs);
+  // console.log(songs);
   const handleTime = (sec) => {
     let min = Math.floor(sec/60)
     let second = sec - Math.floor(sec/60)*60
@@ -22,6 +22,7 @@ const List = ({ songs }) => {
           onClick={() => {
             dispatch(actions.setCurSongId(item?.encodeId))
             dispatch(actions.play(true))
+            dispatch(actions.playAlbum(true))
           }}
           key={item.encodeId} className="flex gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
             <span className="absolute pt-3 pl-[30px] ">
