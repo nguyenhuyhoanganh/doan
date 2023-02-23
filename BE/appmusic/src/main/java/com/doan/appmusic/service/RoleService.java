@@ -1,18 +1,26 @@
 package com.doan.appmusic.service;
 
 import com.doan.appmusic.entity.Role;
+import com.doan.appmusic.exception.CommonException;
+import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.repository.RoleRepository;
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public interface RoleService {
-    Set<RoleDTO> getAll(int page, int limit);
+    List<RoleDTO> findByRoleName(int page, int limit, String sortBy, String orderBy, String roleName);
 
     RoleDTO getById(long id);
 
@@ -22,7 +30,7 @@ public interface RoleService {
 
     void delete(long id);
 
-    long count();
+    long count(String roleName);
 }
 
 @Service
@@ -32,54 +40,70 @@ class RoleServiceImpl implements RoleService {
     private RoleRepository repository;
 
     @Override
-    public Set<RoleDTO> getAll(int page, int limit) {
-        Set<RoleDTO> roleDTOs = new HashSet<>();
-        Set<Role> roles = repository.findAll(PageRequest.of(page, limit)).toSet();
-        for (Role role : roles) {
-            roleDTOs.add(entityMapToModel(role));
-        }
-        return roleDTOs;
+    public List<RoleDTO> findByRoleName(int page, int limit, String sortBy, String orderBy, String roleName) {
+        List<Sort.Order> sortList = new ArrayList<>();
+        if (orderBy.equals("desc")) sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy));
+        if (orderBy.equals("asc")) sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy));
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
+
+        List<Role> roles = repository.findByRoleNameContainingIgnoreCase(roleName, pageRequest);
+        return roles.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public RoleDTO getById(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
-        return entityMapToModel(role);
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
+        return convertToDTO(role);
     }
 
     @Override
     public RoleDTO create(RoleDTO roleDTO) {
-        roleDTO.setId(null);
-        Role role = modelMapToEntity(roleDTO);
-        return entityMapToModel(repository.save(role));
+        if (repository.findByRoleName(roleDTO.getRoleName()).isPresent())
+            throw new CustomSQLException("Error", Map.of("role_name", "Role name already exists"));
+        Role role = convertToEntity(roleDTO);
+        return convertToDTO(repository.save(role));
     }
 
     @Override
     public RoleDTO update(long id, RoleDTO roleDTO) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
-        roleDTO.setId(role.getId());
-        repository.save(modelMapToEntity(roleDTO));
-        return roleDTO;
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
+
+        if (!role.getRoleName().equals(roleDTO.getRoleName()) && repository.findByRoleName(roleDTO.getRoleName()).isPresent())
+            throw new CustomSQLException("Error", Map.of("role_name", "Role name already exists"));
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
+        mapper.createTypeMap(RoleDTO.class, Role.class).setProvider(provider -> role).addMappings(mapping -> mapping.skip(Role::setId));
+
+        return convertToDTO(repository.save(mapper.map(roleDTO, Role.class)));
     }
 
     @Override
     public void delete(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
         repository.delete(role);
     }
 
     @Override
-    public long count() {
-        return repository.count();
+    public long count(String roleName) {
+        return repository.countByRoleName(roleName);
     }
 
-    private RoleDTO entityMapToModel(Role role) {
-        return RoleDTO.builder().id(role.getId()).roleName(role.getRoleName()).createdAt(role.getCreatedAt()).updatedAt(role.getUpdatedAt()).build();
+    private RoleDTO convertToDTO(Role role) {
+        // mapper
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        return mapper.map(role, RoleDTO.class);
     }
 
 
-    private Role modelMapToEntity(RoleDTO role) {
-        return Role.builder().id(role.getId()).roleName(role.getRoleName()).build();
+    private Role convertToEntity(RoleDTO roleDTO) {
+        // mapper
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.createTypeMap(RoleDTO.class, Role.class).addMappings(mapping -> mapping.skip(Role::setId));
+        return mapper.map(roleDTO, Role.class);
     }
 
 }

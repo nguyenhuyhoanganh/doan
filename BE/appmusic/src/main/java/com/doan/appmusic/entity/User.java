@@ -1,18 +1,21 @@
 package com.doan.appmusic.entity;
 
-import lombok.*;
+import com.doan.appmusic.utils.GenderEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "users")
-public class User extends DateAuditable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,15 +36,17 @@ public class User extends DateAuditable {
     @Column(unique = true)
     private Long phone;
 
-    private String photoUrl;
+    private String avatarUrl;
 
-    private String gender;
+    private String backgroundImageUrl;
+
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;
+
+    private Integer age;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
-    private Set<Role> roles;
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
+    private List<Role> roles;
 }
-
 
