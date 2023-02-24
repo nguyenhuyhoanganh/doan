@@ -92,7 +92,7 @@ const Slider = () => {
       // is song get id stored in localStorage
       dispatch(actions.setCurSongId(item.encodeId))
       dispatch(actions.play(true))
-      dispatch(actions.playAlbum(false))
+      dispatch(actions.setPlaylistData(null))
     }
     else if(item?.type === 4){
       console.log(item)
@@ -105,7 +105,7 @@ const Slider = () => {
 
     }
     else{
-      dispatch(actions.playAlbum(false))
+      dispatch(actions.setPlaylistData(null))
     }
   };
 

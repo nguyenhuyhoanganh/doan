@@ -23,7 +23,9 @@ const Player = () => {
   } = icons;
   // const [isPlaying, setIsPlaying] = useState(false)
   const dispatch = useDispatch();
-  const { curSongId, isPlaying, atAlbum } = useSelector((state) => state.music);
+  const { curSongId, isPlaying, atAlbum, songs } = useSelector(
+    (state) => state.music
+  );
   const [songInfo, setSongInfo] = useState(null);
   // const [source, setSource] = useState(null);
   const [currentSec, setCurrentSec] = useState(0);
@@ -41,11 +43,12 @@ const Player = () => {
       // console.log(res2);
       if (res1?.data.err === 0) {
         setSongInfo(res1.data.data);
-        // console.log(res1.data.data)
+        console.log(res1.data.data);
         setIsVipSong(false);
       }
       if (res2?.data.err === 0) {
         // setSource(res2.data.data['128'])
+        console.log(res2.data.data["128"]);
         // setCurrentSec(0);
         // thumbRef.current.style.cssText = `right: 100%`;
         audio.pause();
@@ -53,6 +56,7 @@ const Player = () => {
         setIsVipSong(false);
       } else {
         // ERROR occurred when call VIP songs
+        console.log(res2?.data.err);
         audio.pause();
         setAudio(new Audio());
         dispatch(actions.play(false));
@@ -60,7 +64,7 @@ const Player = () => {
         toast.warning("Không nghe nhạc VIP");
         setCurrentSec(0);
         setIsVipSong(true);
-        console.log(isVipSong);
+        // console.log(isVipSong);
         thumbRef.current.style.cssText = `right: 100%`;
       }
     };
@@ -79,10 +83,14 @@ const Player = () => {
         console.log(audio.currentTime);
         let percent =
           Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
-        // console.log(percent)
+        console.log(percent)
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
         // console.log(audio.currentTime)
+        if(percent > 99) {
+          console.log('Next bài')
+          handleNextSong()
+        }
       }, 100);
     }
   }, [audio]);
@@ -92,7 +100,7 @@ const Player = () => {
     if (isPlaying && !isVipSong) {
       audio.play();
       intervalId = setInterval(() => {
-        console.log(audio.currentTime);
+        // console.log(audio.currentTime);
         let percent =
           Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
         // console.log(percent)
@@ -123,7 +131,7 @@ const Player = () => {
     let second = sec - Math.floor(sec / 60) * 60;
     return second < 10 ? min + ":0" + second : min + ":" + second;
   };
-
+  // console.log(songs);
   const handleClickProgressbar = (e) => {
     console.log(e);
     // console.log(trackRef.current.getBoundingClientRect());
@@ -137,8 +145,53 @@ const Player = () => {
     setCurrentSec(Math.round((percent * songInfo.duration) / 100));
   };
   const handleNextSong = () => {
-    if (atAlbum) {
-      console.log("1");
+    if (songs != null) {
+      // console.log("1");
+
+      let curSongIndex;
+      songs?.forEach((item, index) => {
+        if (item.encodeId == curSongId) {
+          curSongIndex = index;
+        }
+      });
+
+      // dispatch(actions.setCurSongId(songs[curSongId + 1]?.encodeId));
+      if (curSongIndex < songs.length) {
+        dispatch(actions.setCurSongId(songs[curSongIndex + 1]?.encodeId));
+        dispatch(actions.play(true));
+      } else {
+        dispatch(actions.setCurSongId(songs[0]?.encodeId));
+        dispatch(actions.play(true));
+      }
+      // console.log(songs[curSongIndex + 1]?.encodeId);
+      // console.log(songs[curSongIndex + 1]);
+
+      // console.log(curSongIndex);
+    }
+  };
+  const handlePrevSong = () => {
+    if (songs != null) {
+      // console.log("1");
+
+      let curSongIndex;
+      songs?.forEach((item, index) => {
+        if (item.encodeId == curSongId) {
+          curSongIndex = index;
+        }
+      });
+
+      // dispatch(actions.setCurSongId(songs[curSongId + 1]?.encodeId));
+      if (curSongIndex > 0) {
+        dispatch(actions.setCurSongId(songs[curSongIndex - 1]?.encodeId));
+        dispatch(actions.play(true));
+      } else {
+        dispatch(actions.setCurSongId(songs[songs.length - 1]?.encodeId));
+        dispatch(actions.play(true));
+      }
+      // console.log(songs[curSongIndex + 1]?.encodeId);
+      // console.log(songs[curSongIndex + 1]);
+
+      // console.log(curSongIndex);
     }
   };
   return (
@@ -166,7 +219,13 @@ const Player = () => {
             <span className="hover:text-[#fff]" title="Bật phát ngẫu nhiên">
               <BsShuffle size={24} />
             </span>
-            <span className="hover:text-[#fff]" title="Lùi bài">
+            <span
+              onClick={handlePrevSong}
+              className={
+                !songs ? "text-gray-500 cursor-default" : "hover:text-[#fff]"
+              }
+              title="Lùi bài"
+            >
               <IoMdSkipBackward size={24} />
             </span>
             <span
@@ -188,7 +247,7 @@ const Player = () => {
             <span
               onClick={handleNextSong}
               className={`${
-                !atAlbum ? "text-gray-500 cursor-default" : "hover:text-[#fff]"
+                !songs ? "text-gray-500 cursor-default" : "hover:text-[#fff]"
               }`}
               title=""
             >
