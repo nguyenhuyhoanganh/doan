@@ -1,13 +1,30 @@
 import React from "react";
 import icons from "../utils/icons"
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const {GrCaretNext} = icons
+
 const HomeContainer = () => {
+  const { friday } = useSelector((state) => {
+    return state.app
+  });
+  // const [listTH, setListTH] = useState(null)
+  // setListTH(friday?.items)
+  // console.log(friday)
+  const navigate = useNavigate()
+
+  const handleClickPlaylist = (link) => {
+    const albumPath = link.split('.')[0]
+    console.log(albumPath)
+    navigate(albumPath)
+  }
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
         <span className="font-semibold text-lg">Mới phát hành</span>
-        <div className="flex  gap-4 ">
+        <div className="flex gap-4 ">
           <span className="border border-gray-300 rounded-lg p-1 px-6 shadow-lg bg-main-400">
             Tất cả
           </span>
@@ -79,7 +96,24 @@ const HomeContainer = () => {
           })}
         </div>
       </div>
-      <div></div>
+      <div className="flex flex-col gap-5">
+        {/* có thể bạn muốn nghe */}
+        <span className="font-semibold text-lg">{friday?.title}</span>
+        <div className="flex gap-3 justify-between cursor-pointer">
+          {/* list bài hát gợi ý */}
+          {friday && friday?.items?.map((item, index) => {
+            return (
+              <div 
+              onClick={() => {handleClickPlaylist(item.link)}}
+              key={index} className="flex flex-col w-[20%] items-center gap-2 text-center hover:shadow-md">
+                <img className="object-cover h-auto w-full rounded-sm" src={item.thumbnail} alt="ảnh"></img>
+                <span className="font-semibold text-[12px]">{item.title}</span>
+                <span className="text-gray-500 text-[10px]">{item.artistsNames}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   );
 };

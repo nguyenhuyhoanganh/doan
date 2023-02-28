@@ -2,6 +2,8 @@
 import actionTypes from "../actions/actionTypes";
 const initState = {
   banner: [],
+  // suggest song but now test
+  friday: [],
 };
 
 const appReducer = (state = initState, action) => {
@@ -10,8 +12,9 @@ const appReducer = (state = initState, action) => {
       return {
         ...state, 
         banner:
-          action.homeData?.find((item) => item.sectionType === "banner")
+          action.homeData?.find((item) => item.sectionId === "hSlider")
             ?.items || null,
+        friday: action.homeData?.find((item) => item.sectionId === "hArtistTheme")   
       };
     }
     default:

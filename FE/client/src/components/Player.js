@@ -31,6 +31,8 @@ const Player = () => {
   const [currentSec, setCurrentSec] = useState(0);
   const thumbRef = useRef();
   const trackRef = useRef();
+  const voiceRef = useRef();
+  const voiceRefTrack = useRef();
   const [isVipSong, setIsVipSong] = useState(false);
   // const audioElm = useRef(new Audio())
   const [audio, setAudio] = useState(new Audio());
@@ -79,17 +81,18 @@ const Player = () => {
     // audio.load();
     if (isPlaying && !isVipSong) {
       audio.play();
+      audio.volume = 0.75
       intervalId = setInterval(() => {
-        console.log(audio.currentTime);
+        // console.log(audio.currentTime);
         let percent =
           Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
-        console.log(percent)
+        // console.log(percent);
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
         // console.log(audio.currentTime)
-        if(percent > 99) {
-          console.log('Next bài')
-          handleNextSong()
+        if (percent > 99) {
+          console.log("Next bài");
+          handleNextSong();
         }
       }, 100);
     }
@@ -99,6 +102,7 @@ const Player = () => {
     intervalId && clearInterval(intervalId);
     if (isPlaying && !isVipSong) {
       audio.play();
+      audio.volume = 0.75
       intervalId = setInterval(() => {
         // console.log(audio.currentTime);
         let percent =
@@ -194,6 +198,19 @@ const Player = () => {
       // console.log(curSongIndex);
     }
   };
+  const handleClickVoiceConfig = (e) => {
+    const trackRect = voiceRefTrack.current.getBoundingClientRect();
+    console.log(trackRect.left + ": " + trackRect.width)
+    console.log(e.clientX)
+    const percent =
+      Math.round(((e.clientX - trackRect.left) * 10000) / trackRect.width) /
+      100;
+      console.log(percent)
+    voiceRef.current.style.cssText = `right: ${100 - percent}%`;
+    audio.volume = Math.floor(percent)/100
+  };
+
+  const handleShuffle = (e) => {}
   return (
     <div className="px-5 h-full flex justify-center bg-main-300">
       <div className="w-[30%] flex-auto flex items-center">
@@ -216,7 +233,9 @@ const Player = () => {
       <div className="w-[40%] flex-auto">
         <div className="flex flex-col justify-center items-center h-[100%]">
           <div className="flex h-[70%] gap-12 mt-4 items-center cursor-pointer">
-            <span className="hover:text-[#fff]" title="Bật phát ngẫu nhiên">
+            <span 
+            onClick={handleShuffle}
+            className="hover:text-[#fff]" title="Bật phát ngẫu nhiên">
               <BsShuffle size={24} />
             </span>
             <span
@@ -278,11 +297,23 @@ const Player = () => {
       </div>
       <div className="w-[30%] flex-auto gap-10 flex justify-between p-10 items-center">
         <span>
-          <BsVolumeUp size={24} />
+          <BsVolumeUp className="cursor-pointer hover:text-[#fff]" size={24} />
         </span>
-        <span>
-          <MdPlaylistPlay size={24} />
-        </span>
+        <div 
+        onClick={handleClickVoiceConfig}
+        ref={voiceRefTrack}
+        className="h-[2px] w-full hover:h-[5px] rounded-l-full rounded-r-full bg-main-100 relative">
+          <div
+            ref={voiceRef}
+            className="h-[100%] right-[25%] rounded-l-full rounded-r-full absolute top-0 left-0 bg-main-400"
+          ></div>
+        </div>
+        {/* <span>
+          <MdPlaylistPlay
+            className="cursor-pointer hover:text-[#fff]"
+            size={24}
+          />
+        </span> */}
       </div>
     </div>
   );
