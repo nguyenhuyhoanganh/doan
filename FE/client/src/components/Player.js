@@ -81,7 +81,7 @@ const Player = () => {
     // audio.load();
     if (isPlaying && !isVipSong) {
       audio.play();
-      audio.volume = 0.75
+      audio.volume = 0.75;
       intervalId = setInterval(() => {
         // console.log(audio.currentTime);
         let percent =
@@ -102,7 +102,7 @@ const Player = () => {
     intervalId && clearInterval(intervalId);
     if (isPlaying && !isVipSong) {
       audio.play();
-      audio.volume = 0.75
+      audio.volume = 0.75;
       intervalId = setInterval(() => {
         // console.log(audio.currentTime);
         let percent =
@@ -200,17 +200,44 @@ const Player = () => {
   };
   const handleClickVoiceConfig = (e) => {
     const trackRect = voiceRefTrack.current.getBoundingClientRect();
-    console.log(trackRect.left + ": " + trackRect.width)
-    console.log(e.clientX)
+    console.log(trackRect.left + ": " + trackRect.width);
+    console.log(e.clientX);
     const percent =
       Math.round(((e.clientX - trackRect.left) * 10000) / trackRect.width) /
       100;
-      console.log(percent)
+    console.log(percent);
     voiceRef.current.style.cssText = `right: ${100 - percent}%`;
-    audio.volume = Math.floor(percent)/100
+    audio.volume = Math.floor(percent) / 100;
   };
 
-  const handleShuffle = (e) => {}
+  function shuffle(array) {
+    const newArray = [...array]
+    const length = newArray.length
+  
+    for (let start = 0; start < length; start++) {
+      const randomPosition = Math.floor((newArray.length - start) * Math.random())
+      const randomItem = newArray.splice(randomPosition, 1)
+  
+      newArray.push(...randomItem)
+    }
+  
+    return newArray
+  }
+  const handleShuffle = (e) => {
+    console.log("truffle");
+    // console.log(songs);
+    // TH chưa có bài nào đc chọn
+    if (songs.find((s) => s.encodeId === curSongId)) {
+      console.log("bài trong list đc chọn");
+      const songSuf = shuffle(songs)
+      dispatch(actions.setPlaylistData(songSuf))
+      // console.log(suf)
+
+    } else {
+      console.log("bài trong list chưa được chọn");
+    }
+    // TH chọn 1 bài trong playlist rồi thì sẽ có id
+  };
   return (
     <div className="px-5 h-full flex justify-center bg-main-300">
       <div className="w-[30%] flex-auto flex items-center">
@@ -233,9 +260,11 @@ const Player = () => {
       <div className="w-[40%] flex-auto">
         <div className="flex flex-col justify-center items-center h-[100%]">
           <div className="flex h-[70%] gap-12 mt-4 items-center cursor-pointer">
-            <span 
-            onClick={handleShuffle}
-            className="hover:text-[#fff]" title="Bật phát ngẫu nhiên">
+            <span
+              onClick={handleShuffle}
+              className="hover:text-[#fff]"
+              title="Bật phát ngẫu nhiên"
+            >
               <BsShuffle size={24} />
             </span>
             <span
@@ -299,10 +328,11 @@ const Player = () => {
         <span>
           <BsVolumeUp className="cursor-pointer hover:text-[#fff]" size={24} />
         </span>
-        <div 
-        onClick={handleClickVoiceConfig}
-        ref={voiceRefTrack}
-        className="h-[2px] w-full hover:h-[5px] rounded-l-full rounded-r-full bg-main-100 relative">
+        <div
+          onClick={handleClickVoiceConfig}
+          ref={voiceRefTrack}
+          className="h-[2px] w-full hover:h-[5px] rounded-l-full rounded-r-full bg-main-100 relative"
+        >
           <div
             ref={voiceRef}
             className="h-[100%] right-[25%] rounded-l-full rounded-r-full absolute top-0 left-0 bg-main-400"

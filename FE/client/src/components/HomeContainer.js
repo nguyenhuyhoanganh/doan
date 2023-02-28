@@ -38,7 +38,7 @@ const HomeContainer = () => {
       </div>
       {/* 3 hàng mỗi hàng 4 bài */}
       <div className="flex w-[100%] justify-between p-5 ">
-        <div className="flex flex-col h-full border border-red-500 w-[30%]">
+        <div className="flex flex-col h-full w-[30%]">
           {[1, 2, 3, 4].map((el) => {
             return (
               <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">

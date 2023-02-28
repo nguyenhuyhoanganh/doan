@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import icons from "../utils/icons";
-import { useEffect, useSelector } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 const { BsToggleOff, BsToggleOn, GrCaretNext } = icons;
 const SidebarRight = () => {
   const [autoPlay, setAutoPlay] = useState(false);
   const [btnList, setBtnList] = useState(true);
-  const [song, setSong] = useState();
+  const [songList, setSongList] = useState(null);
+  const [firstSong, setFirstSong] = useState(null);
   // const useDispatch = useDispatch()
   // const { curSongId, isPlaying, atAlbum } = useSelector((state) => state.music);
-
+  const { songs } = useSelector((state) => state.music);
+  // console.log(songs);
+  // setSongList(songs)
+  useEffect(() => {
+    setSongList(songs);
+    if (songs !== null) {
+      setFirstSong(songs[0]);
+    }
+  }, [songs]);
   const handleAutoButton = () => {
     setAutoPlay(!autoPlay);
     console.log(autoPlay);
@@ -60,18 +70,26 @@ const SidebarRight = () => {
         //   audio.load()
         //   audio.play()
         // }}
-        className="flex gap-6 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
+        className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
       >
         <span className="text-[#fff] absolute pt-3 pl-[30px]">
           <GrCaretNext size={24} />
         </span>
         <img
-          src={song?.imageUrl}
+          src={firstSong?.thumbnailM}
           className="w-12 h-12 object-cover rounded-md ml-4"
         />
         <div className="flex flex-col gap-1 pl-2">
-          <span className="font-bold text-[#fff]">Tên bài hát</span>
-          <span className="text-sm text-[#e7e9e9]">Nghệ sỹ</span>
+          <span className="font-bold text-[#fff]">
+            {firstSong?.title.length < 25
+              ? firstSong?.title
+              : `${firstSong?.title.slice(0, 20)}...`}
+          </span>
+          <span className="text-sm text-[#e7e9e9]">
+            {firstSong?.artistsNames.length < 25
+              ? firstSong?.artistsNames
+              : `${firstSong?.artistsNames.slice(0, 20)}...`}
+          </span>
         </div>
       </div>
 
@@ -97,20 +115,40 @@ const SidebarRight = () => {
         </span>
       </div>
       {/* map list recommend */}
-      {/* {[1, 2, 3, 4, 5, 6, 7, 8].map((el) => {
-        return (
-          <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
-            <span className="absolute pt-3 pl-[30px]">
-              <GrCaretNext size={24} />
-            </span>
-            <img src="" className="w-12 h-12 object-cover rounded-md ml-4" />
-            <div className="flex flex-col gap-1 pl-2">
-              <span className="font-bold text-[#111010]">Tên bài hát</span>
-              <span className="text-sm text-[#171e1e]">Nghệ sỹ</span>
-            </div>
-          </div>
-        );
-      })} */}
+      <Scrollbars className="pl-5" style={{ width: "100%", height: 428 }}>
+        <div className="flex flex-col gap-3 mr-4">
+          {songList?.map((item, index) => {
+            if (index > 0) {
+              return (
+                <div
+                  key={item.encodeId}
+                  className="flex cursor-pointer bg-main-300 border border-[#0D7373] hover:shadow-md w-[100%] rounded-lg"
+                >
+                  <span className="absolute pt-3 pl-[30px]">
+                    <GrCaretNext size={24} />
+                  </span>
+                  <img
+                    src={item.thumbnailM}
+                    className="w-12 h-12 object-cover rounded-md ml-4"
+                  />
+                  <div className="flex flex-col gap-1 pl-2">
+                    <span className="font-bold text-[#111010]">
+                      {item.title.length < 25
+                        ? item.title
+                        : `${item.title.slice(0, 20)}...`}
+                    </span>
+                    <span className="text-sm text-[#171e1e]">
+                      {item.artistsNames.length < 25
+                        ? item.artistsNames
+                        : `${item.artistsNames.slice(0, 25)}...`}
+                    </span>
+                  </div>
+                </div>
+              );
+            }
+          })}
+        </div>
+      </Scrollbars>
     </div>
   );
 };

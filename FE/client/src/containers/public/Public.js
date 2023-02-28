@@ -14,14 +14,14 @@ const Public = () => {
         <div className="w-[240px] h-full flex-none border border-blue-500">
           <SidebarLeft />
         </div>
-        <div className="flex-auto border border-yellow-500">
+        <div className="flex-auto">
           <div className="h-[70px] px-[59px] flex items-center mb-5">
             <Header />
           </div>
           <Outlet></Outlet>
           {/*  sinh ra các element nằm trong route con */}
         </div>
-        <div className="w-[329px] h-screen hidden 1500:flex flex-none border border-red-500 animate-slide-left">
+        <div className="w-[329px] h-screen hidden 1500:flex flex-none animate-slide-left border-[5px] border-l-red-500">
           <SidebarRight />
         </div>
       </div>
