@@ -1,29 +1,50 @@
 import React, { useState } from "react";
 import icons from "../utils/icons";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import * as actions from "../store/actions";
+import * as api from "../apis";
 
 const { BsToggleOff, BsToggleOn, GrCaretNext } = icons;
 const SidebarRight = () => {
-  const [autoPlay, setAutoPlay] = useState(false);
+  // const [autoPlay, setAutoPlay] = useState(false);
   const [btnList, setBtnList] = useState(true);
   const [songList, setSongList] = useState(null);
   const [firstSong, setFirstSong] = useState(null);
+  const [curSong, setCurSong] = useState(null);
+  const dispatch = useDispatch();
   // const useDispatch = useDispatch()
   // const { curSongId, isPlaying, atAlbum } = useSelector((state) => state.music);
-  const { songs } = useSelector((state) => state.music);
+  const { songs, skip, curSongId } = useSelector((state) => state.music);
   // console.log(songs);
   // setSongList(songs)
   useEffect(() => {
-    setSongList(songs);
-    if (songs !== null) {
-      setFirstSong(songs[0]);
-    }
-  }, [songs]);
+    songs &&
+      songs.forEach((element, index) => {
+        if (element.encodeId == curSongId) {
+          setSongList(songs.slice(index));
+          // console.log(songs);
+          // console.log(songs.slice(index));
+        }
+      });
+  }, [curSongId]);
+
+  useEffect(() => {
+    const fetchDetailSong = async () => {
+      const res1 = await api.apiGetDetailSong(curSongId);
+      // console.log(res2);
+      if (res1?.data.err === 0) {
+        setCurSong(res1?.data?.data);
+        console.log(curSong);
+      }
+    };
+    fetchDetailSong();
+  }, [curSongId]);
+  // console.log('Skip', skip)
   const handleAutoButton = () => {
-    setAutoPlay(!autoPlay);
-    console.log(autoPlay);
+    let autoPlay = !skip;
+    dispatch(actions.setAutoSkip(autoPlay));
   };
   // useEffect(() => {
   //   console.log('re-render with songs')
@@ -64,31 +85,26 @@ const SidebarRight = () => {
       </div>
 
       <div
-        // onClick={() => {
-        //   console.log('object')
-        //   audio.src = song.sourceUrls[0]
-        //   audio.load()
-        //   audio.play()
-        // }}
-        className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
+        onClick={() => {}}
+        className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg cursor-pointer hover:shadow-md"
       >
-        <span className="text-[#fff] absolute pt-3 pl-[30px]">
+        {/* <span className="text-[#fff] absolute pt-3 pl-[30px]">
           <GrCaretNext size={24} />
-        </span>
+        </span> */}
         <img
-          src={firstSong?.thumbnailM}
+          src={curSong?.thumbnailM}
           className="w-12 h-12 object-cover rounded-md ml-4"
         />
         <div className="flex flex-col gap-1 pl-2">
           <span className="font-bold text-[#fff]">
-            {firstSong?.title.length < 25
-              ? firstSong?.title
-              : `${firstSong?.title.slice(0, 20)}...`}
+            {curSong?.title.length < 25
+              ? curSong?.title
+              : `${curSong?.title.slice(0, 20)}...`}
           </span>
           <span className="text-sm text-[#e7e9e9]">
-            {firstSong?.artistsNames.length < 25
-              ? firstSong?.artistsNames
-              : `${firstSong?.artistsNames.slice(0, 20)}...`}
+            {curSong?.artistsNames.length < 25
+              ? curSong?.artistsNames
+              : `${curSong?.artistsNames.slice(0, 20)}...`}
           </span>
         </div>
       </div>
@@ -107,7 +123,7 @@ const SidebarRight = () => {
             className={(autoPlay) => (autoPlay ? activeStyle : notActiveStyle)}
           />
           <BsToggleOn size={24} className="hidden" /> */}
-          {autoPlay ? (
+          {!skip ? (
             <BsToggleOff size={24}></BsToggleOff>
           ) : (
             <BsToggleOn size={24}></BsToggleOn>
@@ -122,11 +138,16 @@ const SidebarRight = () => {
               return (
                 <div
                   key={item.encodeId}
+                  onClick={() => {
+                    dispatch(actions.setCurSongId(item?.encodeId));
+                    dispatch(actions.play(true));
+                    dispatch(actions.playAlbum(true));
+                  }}
                   className="flex cursor-pointer bg-main-300 border border-[#0D7373] hover:shadow-md w-[100%] rounded-lg"
                 >
-                  <span className="absolute pt-3 pl-[30px]">
-                    <GrCaretNext size={24} />
-                  </span>
+                  {/* <span className="absolute pt-3 pl-[30px]">
+                      <GrCaretNext size={24} />
+                    </span> */}
                   <img
                     src={item.thumbnailM}
                     className="w-12 h-12 object-cover rounded-md ml-4"

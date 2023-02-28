@@ -20,6 +20,11 @@ export const setPlaylistData = (songs) => ({
     songs
 })
 
+export const setAutoSkip = (flag) => ({
+    type: actionTypes.SKIP,
+    flag
+})
+
 // export const fetchDetailPlaylist = (pid) => async (dispatch) => {
 //     try {
 //         const res = await apis.apiGetDetailPlaylist(pid)

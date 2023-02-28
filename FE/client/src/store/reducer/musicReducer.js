@@ -5,6 +5,7 @@ const initState = {
     isPlaying: false,
     atAlbum: false,
     songs: null,
+    skip: true,
 }
 
 const musicReducer = (state = initState, action) => {
@@ -31,6 +32,12 @@ const musicReducer = (state = initState, action) => {
             return {
                 ...state,
                 songs: action.songs || null
+            }
+        }
+        case actionTypes.SKIP:{
+            return {
+                ...state,
+                skip: action.flag
             }
         }
         default:

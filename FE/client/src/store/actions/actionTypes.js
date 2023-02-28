@@ -5,6 +5,7 @@ const actionTypes = {
     PLAY: 'PLAY',
     SET_ALBUM: 'SET_ALBUM',
     PLAYLIST: 'PLAYLIST',
+    SKIP: 'SKIP',
 }
 
 export default actionTypes

@@ -6,6 +6,7 @@ import * as actions from "../../src/store/actions"
 
 const { GrCaretNext } = icons;
 const List = ({ songs}) => {
+
   const dispatch = useDispatch()
   // console.log(songs);
   const handleTime = (sec) => {
@@ -23,6 +24,7 @@ const List = ({ songs}) => {
             dispatch(actions.setCurSongId(item?.encodeId))
             dispatch(actions.play(true))
             dispatch(actions.playAlbum(true))
+            dispatch(actions.setPlaylistData(songs))
           }}
           key={item.encodeId} className="flex gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
             <span className="absolute pt-3 pl-[30px] ">
