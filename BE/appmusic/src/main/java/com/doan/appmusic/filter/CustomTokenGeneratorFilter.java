@@ -4,10 +4,10 @@ import com.doan.appmusic.entity.User;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
-import com.doan.appmusic.security.SecurityConstants;
-import com.doan.appmusic.utils.JwtUtils;
+import com.doan.appmusic.security.JwtUtils;
 import com.doan.appmusic.utils.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -28,18 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Data
 public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
+    private JwtUtils jwtUtils;
 
-    public CustomTokenGeneratorFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    // authenticationManager được lấy từ bean khởi tạo trong lớp config
-    // authenticationManager trong class cha trả về null
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -61,27 +56,18 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         return null;
     }
 
-    // thay vì mặc định đưa user đã authenticated vào context
-    // => trả lại token khi login
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         // mapper
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
-            context.getDestination().setPassword("[Secured]");
-            return context.getDestination();
-        });
+        mapper.createTypeMap(User.class, UserDTO.class).addMappings(mapping -> mapping.skip(UserDTO::setPassword));
 
         // map to dto
         UserDTO user = mapper.map(((CustomUserDetails) authentication.getPrincipal()).getUser(), UserDTO.class);
 
-        String subject = authentication.getName();
-        String issuer = request.getRequestURL().toString();
-        String roles = JwtUtils.populateAuthorities(authentication.getAuthorities());
-        Map<String, String> claims = Map.of("roles", roles, "type", "access_token");
-        String accessToken = JwtUtils.generateToken(subject, SecurityConstants.ACCESS_TOKEN_LIFE_TIME, issuer, claims);
-        String refreshToken = JwtUtils.generateToken(subject, SecurityConstants.REFRESH_TOKEN_LIFE_TIME, issuer, Map.of("type", "refresh_token"));
+        String accessToken = jwtUtils.generateAccessToken(authentication);
+        String refreshToken = jwtUtils.generateRefreshToken(authentication);
 
         Map<String, Object> data = new HashMap<>();
         data.put("access_token", accessToken);

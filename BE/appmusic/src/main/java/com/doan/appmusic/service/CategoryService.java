@@ -73,7 +73,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getById(long id) {
-        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category is not found"));
+        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category cannot be found"));
         return convertToDTO(category);
     }
 
@@ -89,7 +89,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO update(long id, CategoryDTO categoryDTO) {
-        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category is not found"));
+        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category cannot be found"));
 
         if (!category.getSlug().equals(categoryDTO.getSlug()) && repository.findBySlug(categoryDTO.getSlug()).isPresent())
             throw new CustomSQLException("Error", Map.of("slug", "Slug already exists"));
@@ -105,7 +105,7 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(long id) {
-        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category is not found"));
+        Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category cannot be found"));
         repository.delete(category);
     }
 

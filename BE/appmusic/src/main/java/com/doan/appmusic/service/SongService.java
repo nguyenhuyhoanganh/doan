@@ -83,7 +83,7 @@ class SongServiceImpl implements SongService {
 
     @Override
     public SongDTO getById(long id) {
-        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song is not found"));
+        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
         return convertToDTO(song);
     }
 
@@ -101,7 +101,7 @@ class SongServiceImpl implements SongService {
 
     @Override
     public SongDTO update(long id, SongDTO songDTO) {
-        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song is not found"));
+        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
 
         if (!song.getSlug().equals(songDTO.getSlug()) && repository.findBySlug(songDTO.getSlug()).isPresent())
             throw new CustomSQLException("Error", Map.of("slug", "Slug already exists"));
@@ -117,7 +117,7 @@ class SongServiceImpl implements SongService {
 
     @Override
     public void delete(long id) {
-        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song is not found"));
+        Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
         repository.delete(song);
     }
 

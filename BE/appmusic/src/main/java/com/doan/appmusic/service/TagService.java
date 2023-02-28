@@ -55,7 +55,7 @@ class TagServiceImpl implements TagService {
 
     @Override
     public TagDTO update(long id, TagDTO tagDTO) {
-        Tag tag = repository.findById(id).orElseThrow(() -> new CommonException("Tag is not found"));
+        Tag tag = repository.findById(id).orElseThrow(() -> new CommonException("Tag cannot be found"));
 
         if (!tag.getTitle().equals(tagDTO.getTitle()) && repository.findByTitle(tagDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
@@ -65,13 +65,12 @@ class TagServiceImpl implements TagService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(TagDTO.class, Tag.class).setProvider(provider -> tag).addMappings(mapping -> mapping.skip(Tag::setId)).addMappings(mapping -> mapping.skip(Tag::setCreatedBy)).addMappings(mapping -> mapping.skip(Tag::setUpdatedBy));
-
         return convertToDTO(repository.save(mapper.map(tagDTO, Tag.class)));
     }
 
     @Override
     public void delete(long id) {
-        Tag tag = repository.findById(id).orElseThrow(() -> new CommonException("Tag is not found"));
+        Tag tag = repository.findById(id).orElseThrow(() -> new CommonException("Tag cannot be found"));
         repository.delete(tag);
     }
 
@@ -93,12 +92,12 @@ class TagServiceImpl implements TagService {
 
     @Override
     public TagDTO getBySlug(String slug) {
-        return convertToDTO(repository.findBySlug(slug).orElseThrow(() -> new CommonException("Tag is not found")));
+        return convertToDTO(repository.findBySlug(slug).orElseThrow(() -> new CommonException("Tag cannot be found")));
     }
 
     @Override
     public TagDTO getById(long id) {
-        return convertToDTO(repository.findById(id).orElseThrow(() -> new CommonException("Tag is not found")));
+        return convertToDTO(repository.findById(id).orElseThrow(() -> new CommonException("Tag cannot be found")));
     }
 
     private Tag convertToEntity(TagDTO tagDTO) {
