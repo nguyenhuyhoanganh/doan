@@ -75,7 +75,7 @@ class ComposerServiceImpl implements ComposerService {
 
     @Override
     public ComposerDTO getById(long id) {
-        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer is not found"));
+        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer cannot be found"));
         return convertToDTO(composer);
     }
 
@@ -89,7 +89,7 @@ class ComposerServiceImpl implements ComposerService {
 
     @Override
     public ComposerDTO update(long id, ComposerDTO composerDTO) {
-        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer is not found"));
+        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer cannot be found"));
 
         if (!composer.getSlug().equals(composerDTO.getSlug()) && repository.findBySlug(composerDTO.getSlug()).isPresent())
             throw new CustomSQLException("Error", Map.of("slug", "Slug already exists"));
@@ -103,7 +103,7 @@ class ComposerServiceImpl implements ComposerService {
 
     @Override
     public void delete(long id) {
-        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer is not found"));
+        Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer cannot be found"));
         repository.delete(composer);
     }
 

@@ -3,6 +3,7 @@ package com.doan.appmusic.controller;
 import com.doan.appmusic.entity.User;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
+import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +61,7 @@ public class UserController {
                 break;
             }
         }
-        if (((User) authentication.getPrincipal()).getId().equals(id) || isAdmin) {
+        if (((CustomUserDetails) authentication.getPrincipal()).getUser().getId().equals(id) || isAdmin) {
             UserDTO userUpdated = service.update(id, userDTO);
             ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(userUpdated).build();
             return ResponseEntity.ok(response);

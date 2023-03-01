@@ -17,13 +17,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
 
-    @Autowired private UserRepository repository;
+    @Autowired
+    private UserRepository repository;
+
+    @Bean
+    public JwtUtils jwtUtils() {
+        return new JwtUtils(repository);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,28 +45,26 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomTokenGeneratorFilter customTokenGeneratorFilter = new CustomTokenGeneratorFilter(authenticationManager);
-        customTokenGeneratorFilter.setFilterProcessesUrl("/api/login");
-
-        // cors, csrf
-        http.cors(c -> {
-            CorsConfigurationSource source = request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("*"));
-                config.setAllowedMethods(List.of("*"));
-                config.setAllowedHeaders(List.of("*"));
-                return config;
-            };
-            c.configurationSource(source);
-        });
+        /* cors, csrf */
+//        http.cors(c -> {
+//            CorsConfigurationSource source = request -> {
+//                CorsConfiguration config = new CorsConfiguration();
+//                config.setAllowedOrigins(List.of("*"));
+//                config.setAllowedMethods(List.of("*"));
+//                config.setAllowedHeaders(List.of("*"));
+//                return config;
+//            };
+//            c.configurationSource(source);
+//        });
+        http.cors();
         http.csrf().disable();
 
 //        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
-        // session
+        /* j_session */
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // matcher
+        /* matcher */
 //        http.authorizeRequests()
 //                .mvcMatchers("/api/login", "/api/register", "/api/refresh-token/**", "/api/logout",
 //                        "/api/files/upload", "/api/files/**")
@@ -67,10 +72,28 @@ public class SecurityConfig {
         http.authorizeRequests().anyRequest().permitAll();
 //                .authenticated();
 
-        // add filter
+        /* add filter */
+        CustomTokenGeneratorFilter customTokenGeneratorFilter = new CustomTokenGeneratorFilter();
+        customTokenGeneratorFilter.setAuthenticationManager(authenticationManager);
+        customTokenGeneratorFilter.setJwtUtils(jwtUtils());
+        CustomTokenValidatorFilter customTokenValidatorFilter = new CustomTokenValidatorFilter();
+        customTokenValidatorFilter.setJwtUtils(jwtUtils());
+
+        customTokenGeneratorFilter.setFilterProcessesUrl("/api/login");
         http.addFilter(customTokenGeneratorFilter);
-        http.addFilterBefore(new CustomTokenValidatorFilter(repository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(customTokenValidatorFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.doan.appmusic.config;
 
 import com.doan.appmusic.entity.User;
+import com.doan.appmusic.security.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ public class JPAConfiguration {
             if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
                 return Optional.empty();
             }
-            User user = (User) authentication.getPrincipal();
+            User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
             return Optional.ofNullable(user);
         };
     }

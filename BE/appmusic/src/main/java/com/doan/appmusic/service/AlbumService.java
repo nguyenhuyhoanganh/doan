@@ -78,7 +78,7 @@ class AlbumServiceImpl implements AlbumService {
 
     @Override
     public AlbumDTO getById(long id) {
-        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album is not found"));
+        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album cannot be found"));
         return convertToDTO(album);
     }
 
@@ -94,7 +94,7 @@ class AlbumServiceImpl implements AlbumService {
 
     @Override
     public AlbumDTO update(long id, AlbumDTO albumDTO) {
-        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album is not found"));
+        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album cannot be found"));
 
         if (!album.getTitle().equals(albumDTO.getTitle()) && repository.findByTitle(albumDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
@@ -110,7 +110,7 @@ class AlbumServiceImpl implements AlbumService {
 
     @Override
     public void delete(long id) {
-        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album is not found"));
+        Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album cannot be found"));
         repository.delete(album);
     }
 

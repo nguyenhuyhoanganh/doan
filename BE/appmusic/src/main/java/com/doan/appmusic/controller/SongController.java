@@ -1,7 +1,9 @@
 package com.doan.appmusic.controller;
 
+import com.doan.appmusic.model.CommentDTO;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.SongDTO;
+import com.doan.appmusic.service.CommentService;
 import com.doan.appmusic.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import java.util.Map;
 public class SongController {
     @Autowired
     private SongService service;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("")
     public ResponseEntity<?> getAll(HttpServletRequest request, @RequestParam(required = false, defaultValue = "id") String[] sortBy, @RequestParam(required = false, defaultValue = "desc") String[] orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
@@ -67,5 +71,15 @@ public class SongController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{songId}/comments")
+    public ResponseEntity<?> getCommentsById(@RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit, @PathVariable long songId) {
+        page = page < 1 ? 1 : page;
+        limit = limit < 0 ? 10 : limit;
+
+        List<CommentDTO> comments = commentService.findCommentBySongId(page - 1, limit, songId);
+        ResponseDTO<?> response = ResponseDTO.builder().data(comments).limit(limit).page(page).build();
+        return ResponseEntity.ok(response);
     }
 }

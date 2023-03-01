@@ -85,7 +85,7 @@ class ArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistDTO getById(long id) {
-        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist is not found"));
+        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist cannot be found"));
         return convertToDTO(artist);
     }
 
@@ -100,7 +100,7 @@ class ArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistDTO update(long id, ArtistDTO artistDTO) {
-        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist is not found"));
+        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist cannot be found"));
 
         if (!artist.getSlug().equals(artistDTO.getSlug()) && repository.findBySlug(artistDTO.getSlug()).isPresent())
             throw new CustomSQLException("Error", Map.of("slug", "Slug already exists"));
@@ -114,7 +114,7 @@ class ArtistServiceImpl implements ArtistService {
 
     @Override
     public void delete(long id) {
-        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist is not found"));
+        Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist cannot be found"));
         repository.delete(artist);
     }
 
@@ -128,8 +128,8 @@ class ArtistServiceImpl implements ArtistService {
     public void follow(long artistId, long userId) {
         Optional<ArtistFollow> optionalArtistFollow = followRepository.findByUserIdAndArtistId(userId, artistId);
         if (optionalArtistFollow.isPresent()) return;
-        Artist artist = repository.findById(artistId).orElseThrow(() -> new CommonException("Artist is not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new CommonException("User is not found"));
+        Artist artist = repository.findById(artistId).orElseThrow(() -> new CommonException("Artist cannot be found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CommonException("User cannot be found"));
         artist.incrementFollowCount();
         repository.save(artist);
         followRepository.save(ArtistFollow.builder().artist(artist).user(user).build());

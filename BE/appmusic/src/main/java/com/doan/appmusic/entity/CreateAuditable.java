@@ -16,7 +16,6 @@ import javax.persistence.*;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class CreateAuditable extends DateAuditable {
-
     @CreatedBy
     @JoinColumn(name = "created_by", nullable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)

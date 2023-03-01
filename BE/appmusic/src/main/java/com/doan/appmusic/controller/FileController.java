@@ -37,7 +37,6 @@ public class FileController {
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(fileUpload.getId()).toUri();
         return ResponseEntity.created(location).body(response);
-
     }
 
     @GetMapping("/{fileId}")

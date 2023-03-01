@@ -7,6 +7,7 @@ import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
+import com.doan.appmusic.security.CustomUserDetails;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,7 +36,7 @@ public interface UserService {
 
     UserDTO getById(long id);
 
-    UserDTO create(UserDTO userDTO);
+    Authentication create(UserDTO userDTO);
 
     UserDTO update(long id, UserDTO userDTO);
 
@@ -90,24 +93,25 @@ class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getById(long id) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
         return convertToDTO(user);
     }
 
     @Override
-    public UserDTO create(UserDTO userDTO) {
+    public Authentication create(UserDTO userDTO) {
         if (repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         User user = convertToEntity(userDTO);
         Role role = roleRepository.findByRoleName("ROLE_USER").orElse(null);
         if (role != null) user.setRoles(List.of(role));
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return convertToDTO(repository.save(user));
+        CustomUserDetails customUserDetails = new CustomUserDetails(repository.save(user));
+        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
     }
 
     @Override
     public UserDTO update(long id, UserDTO userDTO) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
 
         if (!user.getEmail().equals(userDTO.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
@@ -121,7 +125,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long id) {
-        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
         repository.delete(user);
     }
 
@@ -135,9 +139,7 @@ class UserServiceImpl implements UserService {
         // mapper
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
-        mapper.createTypeMap(User.class, UserDTO.class).setPostConverter(context -> {
-            context.getDestination().setPassword("[PROTECTED]");
-
+        mapper.createTypeMap(User.class, UserDTO.class).addMappings(mapping -> mapping.skip(UserDTO::setPassword)).setPostConverter(context -> {
             List<Role> roles = context.getSource().getRoles();
             if (roles != null)
                 context.getDestination().setRoles(roles.stream().map(role -> RoleDTO.builder().roleName(role.getRoleName()).id(role.getId()).build()).collect(Collectors.toList()));

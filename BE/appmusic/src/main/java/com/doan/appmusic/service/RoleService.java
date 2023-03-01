@@ -52,7 +52,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO getById(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role cannot be found"));
         return convertToDTO(role);
     }
 
@@ -66,7 +66,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO update(long id, RoleDTO roleDTO) {
-        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role cannot be found"));
 
         if (!role.getRoleName().equals(roleDTO.getRoleName()) && repository.findByRoleName(roleDTO.getRoleName()).isPresent())
             throw new CustomSQLException("Error", Map.of("role_name", "Role name already exists"));
@@ -80,7 +80,7 @@ class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(long id) {
-        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role is not found"));
+        Role role = repository.findById(id).orElseThrow(() -> new CommonException("Role cannot be found"));
         repository.delete(role);
     }
 
