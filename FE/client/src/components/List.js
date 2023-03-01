@@ -30,10 +30,10 @@ const List = ({ songs}) => {
             <span className="absolute pt-3 pl-[30px] ">
               <GrCaretNext size={24} className="hover:inline hidden" />
             </span>
-            <div className="flex ">
+            <div className="flex " title={item.title}>
               <img src={item.thumbnail} className="w-12 h-12 object-cover rounded-md ml-4" />
               <div className="flex flex-col gap-1 pl-2">
-                <span className="font-bold text-[#111010]">{item.title}</span>
+                <span className="font-bold text-[#111010]">{item.title.length < 40? item.title : `${item.title.slice(0, 40)}...`}</span>
                 <span className="text-sm text-[#171e1e]">{item.artistsNames}</span>
               </div>
             </div>

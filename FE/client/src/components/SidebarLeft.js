@@ -19,7 +19,7 @@ const SidebarLeft = () => {
         {sidebarMenu.map((item) => (
           <NavLink to={item.path} key={item.path} end={item.end} className={({isActive}) => isActive ? activeStyle : notActiveStyle}>
             {item.icons}
-            <span>{item.text}</span>
+            <span className="hover:text-[#0F7070]">{item.text}</span>
 
           </NavLink>
         ))}

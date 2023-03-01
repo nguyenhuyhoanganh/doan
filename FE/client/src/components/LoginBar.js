@@ -4,7 +4,7 @@ import icons from "../utils/icons";
 const { RiVipFill } = icons;
 const LoginBar = () => {
   return (
-    <div className="h-10 border flex rounded-md">
+    <div className="h-10 border flex rounded-md hover:shadow-md hover:bg-main-300">
       <div>
         <span>
           <RiVipFill size={24} color="gray" />

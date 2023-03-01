@@ -67,7 +67,7 @@ const Player = () => {
         toast.warning("Không nghe nhạc VIP");
         setCurrentSec(0);
         setIsVipSong(true);
-        handleNextSong()
+        handleNextSong();
         // console.log(isVipSong);
         thumbRef.current.style.cssText = `right: 100%`;
       }
@@ -101,14 +101,14 @@ const Player = () => {
   }, [audio]);
   const handleEnd = () => {
     intervalId && clearInterval(intervalId);
-    console.log('hết bài')
-    if(songs[songs.length - 1].encodeId == curSongId){
-      console.log('là bài cuối')
-    }else {
-      handleNextSong()
+    console.log("hết bài");
+    if (songs[songs.length - 1].encodeId == curSongId) {
+      console.log("là bài cuối");
+    } else {
+      handleNextSong();
     }
-  }
-  audio.addEventListener('ended', handleEnd);
+  };
+  audio.addEventListener("ended", handleEnd);
 
   useEffect(() => {
     intervalId && clearInterval(intervalId);
@@ -122,7 +122,7 @@ const Player = () => {
         // console.log(percent)
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
-        console.log(Math.floor(audio.currentTime), songInfo.duration)
+        console.log(Math.floor(audio.currentTime), songInfo.duration);
         // if (Math.floor(audio.currentTime) == songInfo.duration) {
         //   console.log("Next bài");
         //   // handleNextSong();
@@ -168,7 +168,7 @@ const Player = () => {
   const handleNextSong = () => {
     if (songSuf != null) {
       // phát theo list này
-      console.log('phát theo suffle')
+      console.log("phát theo suffle");
     } else {
       if (songs != null) {
         // console.log("1");
@@ -251,28 +251,30 @@ const Player = () => {
     console.log("truffle");
     // console.log(songs);
     // TH chưa có bài nào đc chọn
-    if (songs.find((s) => s.encodeId === curSongId)) {
-      console.log("bài trong list đc chọn");
-      songSuf = songs;
-      // dispatch(actions.setPlaylistData(songSuf));
-      // xử lý trộn bài loại bỏ 1
-      songSuf.forEach((element, index) => {
-        if(element.encodeId === curSongId){
-          songSuf.splice(index, 1)
-        }
-      });
-      songSuf = shuffle(songSuf)
-      dispatch(actions.setPlaylistData(songSuf));
-      dispatch(actions.setCurSongId(songSuf[0].encodeId))
-      dispatch(actions.play(true))
-    } else {
-      console.log("bài trong list chưa được chọn");
-      const songSuf = shuffle(songs);
-      dispatch(actions.setPlaylistData(songSuf));
-      // phát luôn bài đầu tiên này
-      console.log(songSuf[0].encodeId);
-      console.log(songSuf[0]);
-      dispatch(actions.setCurSongId(songSuf[0].encodeId));
+    if (songs) {
+      if (songs.find((s) => s.encodeId === curSongId)) {
+        console.log("bài trong list đc chọn");
+        songSuf = songs;
+        // dispatch(actions.setPlaylistData(songSuf));
+        // xử lý trộn bài loại bỏ 1
+        songSuf.forEach((element, index) => {
+          if (element.encodeId === curSongId) {
+            songSuf.splice(index, 1);
+          }
+        });
+        songSuf = shuffle(songSuf);
+        dispatch(actions.setPlaylistData(songSuf));
+        dispatch(actions.setCurSongId(songSuf[0].encodeId));
+        dispatch(actions.play(true));
+      } else {
+        console.log("bài trong list chưa được chọn");
+        const songSuf = shuffle(songs);
+        dispatch(actions.setPlaylistData(songSuf));
+        // phát luôn bài đầu tiên này
+        console.log(songSuf[0].encodeId);
+        console.log(songSuf[0]);
+        songSuf && dispatch(actions.setCurSongId(songSuf[0].encodeId));
+      }
     }
     // TH chọn 1 bài trong playlist rồi thì sẽ có id
   };
@@ -291,8 +293,8 @@ const Player = () => {
         </div>
         <div className="flex gap-3 ml-8 cursor-pointer">
           {/* icons */}
-          <AiOutlineHeart size={24} className="hover:bg-red-500" />
-          <MdInfoOutline size={24} />
+          <AiOutlineHeart size={24} className="hover:text-red-500" />
+          <MdInfoOutline size={24} className="hover:text-[#fff]" title="Info" />
         </div>
       </div>
       <div className="w-[40%] flex-auto">
