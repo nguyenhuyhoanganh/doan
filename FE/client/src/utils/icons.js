@@ -19,6 +19,7 @@ import { RiVipFill } from "react-icons/ri";
 import { IoMdSkipBackward, IoMdSkipForward} from "react-icons/io"
 import { RxLoop} from "react-icons/rx"
 import { GrCaretNext} from "react-icons/gr"
+import { TbRepeat, TbRepeatOnce} from "react-icons/tb"
 
 const icons = {
   MdOutlineLibraryMusic,
@@ -42,6 +43,8 @@ const icons = {
   MdPlaylistPlay,
   BsToggleOff,
   BsToggleOn,
-  GrCaretNext
+  GrCaretNext,
+  TbRepeat,
+  TbRepeatOnce
 };
 export default icons;

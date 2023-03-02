@@ -1,25 +1,34 @@
-import React from "react";
-import icons from "../utils/icons"
+import React, { useEffect } from "react";
+import icons from "../utils/icons";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SkeletonCard from "./SkeletonCard";
 
-const {GrCaretNext} = icons
-
+const { GrCaretNext } = icons;
+var fakeWaitAPI;
 const HomeContainer = () => {
+  const [skeleton, setSkeleton] = useState(true);
   const { friday } = useSelector((state) => {
-    return state.app
+    return state.app;
   });
   // const [listTH, setListTH] = useState(null)
   // setListTH(friday?.items)
   // console.log(friday)
-  const navigate = useNavigate()
+  const setList = () => {
+    setSkeleton(false);
+    fakeWaitAPI && clearTimeout(fakeWaitAPI);
+  };
+  useEffect(() => {
+    fakeWaitAPI = setTimeout(setList, 4000);
+  }, []);
+  const navigate = useNavigate();
 
   const handleClickPlaylist = (link) => {
-    const albumPath = link.split('.')[0]
-    console.log(albumPath)
-    navigate(albumPath)
-  }
+    const albumPath = link.split(".")[0];
+    console.log(albumPath);
+    navigate(albumPath);
+  };
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
@@ -41,7 +50,10 @@ const HomeContainer = () => {
         <div className="flex flex-col h-full w-[30%]">
           {[1, 2, 3, 4].map((el) => {
             return (
-              <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
+              <div
+                key={el}
+                className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
+              >
                 <span className="absolute pt-3 pl-[30px]">
                   <GrCaretNext size={24} />
                 </span>
@@ -58,9 +70,12 @@ const HomeContainer = () => {
           })}
         </div>
         <div className="flex flex-col h-full border border-red-500 w-[30%]">
-        {[1, 2, 3, 4].map((el) => {
+          {[1, 2, 3, 4].map((el) => {
             return (
-              <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
+              <div
+                key={el}
+                className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
+              >
                 <span className="absolute pt-3 pl-[30px]">
                   <GrCaretNext size={24} />
                 </span>
@@ -77,9 +92,12 @@ const HomeContainer = () => {
           })}
         </div>
         <div className="flex flex-col h-full border border-red-500 w-[30%]">
-        {[1, 2, 3, 4].map((el) => {
+          {[1, 2, 3, 4].map((el) => {
             return (
-              <div key={el} className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg">
+              <div
+                key={el}
+                className="flex gap-6 bg-main-200 border border-[#CED9D9] shadow-lg w-[100%] rounded-lg"
+              >
                 <span className="absolute pt-3 pl-[30px]">
                   <GrCaretNext size={24} />
                 </span>
@@ -96,24 +114,41 @@ const HomeContainer = () => {
           })}
         </div>
       </div>
-      <div className="flex flex-col gap-5">
-        {/* có thể bạn muốn nghe */}
-        <span className="font-semibold text-lg">{friday?.title}</span>
-        <div className="flex gap-3 justify-between cursor-pointer">
-          {/* list bài hát gợi ý */}
-          {friday && friday?.items?.map((item, index) => {
-            return (
-              <div 
-              onClick={() => {handleClickPlaylist(item.link)}}
-              key={index} className="flex flex-col w-[20%] items-center gap-2 text-center hover:shadow-md">
-                <img className="object-cover h-auto w-full rounded-sm" src={item.thumbnail} alt="ảnh"></img>
-                <span className="font-semibold text-[12px]">{item.title}</span>
-                <span className="text-gray-500 text-[10px]">{item.artistsNames}</span>
-              </div>
-            )
-          })}
+      {skeleton ? (
+        <SkeletonCard />
+      ) : (
+        <div className="flex flex-col gap-5">
+          {/* có thể bạn muốn nghe */}
+          <span className="font-semibold text-lg">{friday?.title}</span>
+          <div className="flex gap-3 justify-between cursor-pointer">
+            {/* list bài hát gợi ý */}
+            {friday &&
+              friday?.items?.map((item, index) => {
+                return (
+                  <div
+                    onClick={() => {
+                      handleClickPlaylist(item.link);
+                    }}
+                    key={index}
+                    className="flex flex-col w-[20%] items-center gap-2 text-center hover:shadow-md"
+                  >
+                    <img
+                      className="object-cover h-auto w-full rounded-sm"
+                      src={item.thumbnail}
+                      alt="ảnh"
+                    ></img>
+                    <span className="font-semibold text-[12px]">
+                      {item.title}
+                    </span>
+                    <span className="text-gray-500 text-[10px]">
+                      {item.artistsNames}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

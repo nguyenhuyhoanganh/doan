@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import * as actions from "../store/actions";
 import * as api from "../apis";
+import { SkeletonSong } from "../components";
 
 const { BsToggleOff, BsToggleOn, GrCaretNext } = icons;
 const SidebarRight = () => {
@@ -13,6 +14,7 @@ const SidebarRight = () => {
   const [songList, setSongList] = useState(null);
   const [firstSong, setFirstSong] = useState(null);
   const [curSong, setCurSong] = useState(null);
+  const [skeleton, setSkeleton] = useState(true);
   const dispatch = useDispatch();
   // const useDispatch = useDispatch()
   // const { curSongId, isPlaying, atAlbum } = useSelector((state) => state.music);
@@ -31,12 +33,14 @@ const SidebarRight = () => {
   }, [curSongId]);
 
   useEffect(() => {
+    setSkeleton(true);
     const fetchDetailSong = async () => {
       const res1 = await api.apiGetDetailSong(curSongId);
       // console.log(res2);
       if (res1?.data.err === 0) {
         setCurSong(res1?.data?.data);
         console.log(curSong);
+        setSkeleton(false);
       }
     };
     fetchDetailSong();
@@ -84,13 +88,39 @@ const SidebarRight = () => {
         </div>
       </div>
 
-      <div
+      {/* bài hát hiện tại */}
+      {skeleton ? (
+        <SkeletonSong></SkeletonSong>
+      ) : (
+        <div
+          onClick={() => {}}
+          className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg cursor-pointer hover:shadow-md"
+        >
+          {/* <span className="text-[#fff] absolute pt-3 pl-[30px]">
+          <GrCaretNext size={24} />
+        </span> */}
+          <img
+            src={curSong?.thumbnailM}
+            className="w-12 h-12 object-cover rounded-md ml-4"
+          />
+          <div className="flex flex-col gap-1 pl-2">
+            <span className="font-bold text-[#fff]">
+              {curSong?.title.length < 25
+                ? curSong?.title
+                : `${curSong?.title.slice(0, 20)}...`}
+            </span>
+            <span className="text-sm text-[#e7e9e9]">
+              {curSong?.artistsNames.length < 25
+                ? curSong?.artistsNames
+                : `${curSong?.artistsNames.slice(0, 20)}...`}
+            </span>
+          </div>
+        </div>
+      )}
+      {/* <div
         onClick={() => {}}
         className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg cursor-pointer hover:shadow-md"
       >
-        {/* <span className="text-[#fff] absolute pt-3 pl-[30px]">
-          <GrCaretNext size={24} />
-        </span> */}
         <img
           src={curSong?.thumbnailM}
           className="w-12 h-12 object-cover rounded-md ml-4"
@@ -107,7 +137,7 @@ const SidebarRight = () => {
               : `${curSong?.artistsNames.slice(0, 20)}...`}
           </span>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex pt-5 m-5 gap-10 justify-between">
         <div className="flex flex-col">

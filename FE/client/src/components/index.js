@@ -7,3 +7,8 @@ export { default as Player } from './Player';
 export { default as LoginBar } from './LoginBar';
 export { default as HomeContainer } from './HomeContainer';
 export { default as List } from './List';
+export { default as SkeletonComment } from './SkeletonComment';
+export { default as Skeleton } from './Skeleton';
+export { default as SkeletonCard } from './SkeletonCard';
+export { default as SkeletonSlider } from './SkeletonSlider';
+export { default as SkeletonSong } from './SkeletonSong';

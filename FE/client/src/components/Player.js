@@ -6,6 +6,7 @@ import icons from "../utils/icons";
 import * as actions from "../store/actions";
 import { useRef } from "react";
 import { toast } from "react-toastify";
+import SkeletonComment from "./SkeletonComment";
 
 var intervalId;
 const Player = () => {
@@ -20,6 +21,8 @@ const Player = () => {
     RxLoop,
     MdPlaylistPlay,
     BsVolumeUp,
+    TbRepeat,
+    TbRepeatOnce,
   } = icons;
   // const [isPlaying, setIsPlaying] = useState(false)
   let songSuf = null;
@@ -35,10 +38,14 @@ const Player = () => {
   const voiceRef = useRef();
   const voiceRefTrack = useRef();
   const [isVipSong, setIsVipSong] = useState(false);
+  const [skeleton, setSkeleton] = useState(true);
+  const [loopBtn, setLoopBtn] = useState(false);
   // const audioElm = useRef(new Audio())
+  var tempSource;
   const [audio, setAudio] = useState(new Audio());
   useEffect(() => {
     const fetchDetailSong = async () => {
+      setSkeleton(true);
       const [res1, res2] = await Promise.all([
         api.apiGetDetailSong(curSongId),
         api.apiGetSong(curSongId),
@@ -56,7 +63,9 @@ const Player = () => {
         // thumbRef.current.style.cssText = `right: 100%`;
         audio.pause();
         setAudio(new Audio(res2.data.data["128"]));
+        tempSource = res2.data.data["128"];
         setIsVipSong(false);
+        setSkeleton(false);
       } else {
         // ERROR occurred when call VIP songs
         console.log(res2?.data.err);
@@ -72,6 +81,7 @@ const Player = () => {
         thumbRef.current.style.cssText = `right: 100%`;
       }
     };
+
     fetchDetailSong();
   }, [curSongId]);
 
@@ -99,15 +109,38 @@ const Player = () => {
       }, 100);
     }
   }, [audio]);
+  console.log("AT ALBUM", atAlbum);
+
   const handleEnd = () => {
     intervalId && clearInterval(intervalId);
-    console.log("hết bài");
-    if (songs[songs.length - 1].encodeId == curSongId) {
-      console.log("là bài cuối");
+    // trường hợp có lặp
+    if (loopBtn) {
+      console.log("lặp lại bài");
+      // setAudio(new Audio(tempSource))
+      audio.currentTime = 0;
+      audio.play();
+      intervalId = setInterval(() => {
+        // console.log(audio.currentTime);
+        let percent =
+          Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
+        // console.log(percent);
+        thumbRef.current.style.cssText = `right: ${100 - percent}%`;
+        setCurrentSec(Math.floor(audio.currentTime));
+
+      }, 100);
+
     } else {
-      handleNextSong();
+      console.log("loop", loopBtn);
+      console.log("hết bài");
+      if (!songs || songs[songs.length - 1].encodeId == curSongId) {
+        console.log("là bài cuối");
+      } else {
+        handleNextSong();
+      }
     }
+    audio.removeEventListener("ended", handleEnd);
   };
+  // trường hợp không lặp bài
   audio.addEventListener("ended", handleEnd);
 
   useEffect(() => {
@@ -196,12 +229,12 @@ const Player = () => {
     }
   };
   const handlePrevSong = () => {
-    if (songs != null) {
+    if (songs !== null) {
       // console.log("1");
 
       let curSongIndex;
       songs?.forEach((item, index) => {
-        if (item.encodeId == curSongId) {
+        if (item.encodeId === curSongId) {
           curSongIndex = index;
         }
       });
@@ -275,12 +308,44 @@ const Player = () => {
         console.log(songSuf[0]);
         songSuf && dispatch(actions.setCurSongId(songSuf[0].encodeId));
       }
+    } else {
+      toast.info("chưa có bài hát trong danh sách phát");
     }
     // TH chọn 1 bài trong playlist rồi thì sẽ có id
   };
+  const handleCLickLoop = () => {
+    console.log("repeat loop");
+    setLoopBtn((pre) => !pre);
+  };
   return (
     <div className="px-5 h-full flex justify-center bg-main-300">
-      <div className="w-[30%] flex-auto flex items-center">
+      {/* thông tin bài hát */}
+      {skeleton ? (
+        <SkeletonComment />
+      ) : (
+        <div className="w-[30%] flex-auto flex items-center">
+          <img
+            src={songInfo?.thumbnail}
+            className="w-16 h-16 object-cover rounded-md ml-4"
+          />
+          <div className="flex flex-col gap-1 pl-2">
+            <span className="font-semibold">{songInfo?.title}</span>
+            <span className="text-sm text-gray-500">
+              {songInfo?.artistsNames}
+            </span>
+          </div>
+          <div className="flex gap-3 ml-8 cursor-pointer">
+            {/* icons */}
+            <AiOutlineHeart size={24} className="hover:text-red-500" />
+            <MdInfoOutline
+              size={24}
+              className="hover:text-[#fff]"
+              title="Info"
+            />
+          </div>
+        </div>
+      )}
+      {/* <div className="w-[30%] flex-auto flex items-center">
         <img
           src={songInfo?.thumbnail}
           className="w-16 h-16 object-cover rounded-md ml-4"
@@ -292,11 +357,10 @@ const Player = () => {
           </span>
         </div>
         <div className="flex gap-3 ml-8 cursor-pointer">
-          {/* icons */}
           <AiOutlineHeart size={24} className="hover:text-red-500" />
           <MdInfoOutline size={24} className="hover:text-[#fff]" title="Info" />
         </div>
-      </div>
+      </div> */}
       <div className="w-[40%] flex-auto">
         <div className="flex flex-col justify-center items-center h-[100%]">
           <div className="flex h-[70%] gap-12 mt-4 items-center cursor-pointer">
@@ -341,8 +405,12 @@ const Player = () => {
             >
               <IoMdSkipForward size={24} />
             </span>
-            <span className="hover:text-[#fff]" title="Lặp bài hát">
-              <RxLoop size={24} />
+            <span
+              onClick={handleCLickLoop}
+              className="hover:text-[#fff]"
+              title="Lặp bài hát"
+            >
+              {!loopBtn ? <TbRepeat size={30} /> : <TbRepeatOnce size={30} />}
             </span>
           </div>
           <div className="flex h-[30%] gap-6 justify-center cursor-pointer m-auto items-center w-full">

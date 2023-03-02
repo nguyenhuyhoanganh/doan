@@ -3,7 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Home, Login, Pubic, Personal, Zingchart, Follow, Album } from "./containers/public/";
 import { Routes, Route } from "react-router-dom";
 import path from "./utils/path";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as actions from './store/actions'
 import {useDispatch} from 'react-redux'
 

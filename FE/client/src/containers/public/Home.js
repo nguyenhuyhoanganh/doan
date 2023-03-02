@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { Header, Slider } from "../../components";
+import { Header, Slider, SkeletonComment, Skeleton, SkeletonCard, SkeletonSlider, SkeletonSong } from "../../components";
 import HomeContainer from "../../components/HomeContainer";
+
 
 const Home = () => {
   return (
@@ -11,8 +12,13 @@ const Home = () => {
         <Header />
       </div> */}
         <Slider />
-        <div className="h-auto p-5">
+        <div className="flex flex-col gap-5 h-auto p-5">
           <HomeContainer />
+          <SkeletonComment/>
+          <Skeleton/>
+          <SkeletonCard/>
+          <SkeletonSlider/>
+          <SkeletonSong/>
         </div>
       </div>
     </Scrollbars>

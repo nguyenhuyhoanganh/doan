@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/actions";
 import { useNavigate } from "react-router-dom";
+import { SkeletonSlider } from "./";
 
 // const { banner } = useSelector(state => state.app)
-
+var fakeWaitAPI
 const getArrSlider = (start, end, number) => {
   const limit = start > end ? number : end;
   let output = [];
@@ -20,11 +21,23 @@ const getArrSlider = (start, end, number) => {
 };
 
 const Slider = () => {
+  const [skeleton, setSkeleton] = useState(null);
+  const dispatch = useDispatch(); // redux
   const { banner } = useSelector((state) => {
     // console.log(state)
-    return state.app
+
+    return state.app;
   });
-  const dispatch = useDispatch()
+  const getSlider = () => {
+    console.log("ok slider");
+    setSkeleton(false);
+    fakeWaitAPI && clearTimeout(fakeWaitAPI);
+  };
+  useEffect(() => {
+    fakeWaitAPI = setTimeout(getSlider, 4000);
+    // fakeWaitAPI
+    setSkeleton(true); 
+  }, []);
   useEffect(() => {
     const sliderEls = document.getElementsByClassName("slider-item");
     let min = 0;
@@ -85,45 +98,46 @@ const Slider = () => {
       intervalId && clearInterval(intervalId);
     };
   }, []);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleClickBanner = (item) => {
     // console.log(item);
-    if(item?.type === 1){
+    if (item?.type === 1) {
       // is song get id stored in localStorage
-      dispatch(actions.setCurSongId(item.encodeId))
-      dispatch(actions.play(true))
-      dispatch(actions.setPlaylistData(null))
-    }
-    else if(item?.type === 4){
-      console.log(item)
+      dispatch(actions.setCurSongId(item.encodeId));
+      dispatch(actions.play(true));
+      dispatch(actions.setPlaylistData(null));
+    } else if (item?.type === 4) {
+      console.log(item);
       // link = /album/Nhac-Moi-Moi-Ngay-Sam-Smith-Vu-Cat-Tuong-STAYC-Hoang-Thuy-Linh/67WIO6CF.html
-      const albumPath = item?.link?.split('.')[0]
+      const albumPath = item?.link?.split(".")[0];
       // console.log(albumPath)
       //chuyển qua trang album
-      
-      navigate(albumPath)
 
-    }
-    else{
-      dispatch(actions.setPlaylistData(null))
+      navigate(albumPath);
+    } else {
+      dispatch(actions.setPlaylistData(null));
     }
   };
 
   return (
     <div className="w-full overflow-hidden px-[59px]">
-      <div className="flex w-full gap-8 pt-8">
-        {banner?.map((item, index) => (
-          <img
-            key={item.encodeId}
-            src={item.banner}
-            onClick={() => handleClickBanner(item)}
-            className={`slider-item flex-1 object-contain w-[30%] rounded-lg ${
-              index <= 2 ? "block" : "hidden"
-            }`}
-          />
-        ))}
-      </div>
-      
+      {console.log(skeleton)}
+      {skeleton ? (
+        <SkeletonSlider />
+      ) : (
+        <div className="flex w-full gap-8 pt-8">
+          {banner?.map((item, index) => (
+            <img
+              key={item.encodeId}
+              src={item.banner}
+              onClick={() => handleClickBanner(item)}
+              className={`slider-item flex-1 object-contain w-[30%] rounded-lg ${
+                index <= 2 ? "block" : "hidden"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
