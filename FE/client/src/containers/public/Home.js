@@ -4,7 +4,8 @@ import { Header, Slider, SkeletonComment, Skeleton, SkeletonCard, SkeletonSlider
 import HomeContainer from "../../components/HomeContainer";
 
 
-const Home = () => {
+const Home = ({ useSkeleton}) => {
+  console.log('skeleton', useSkeleton)
   return (
     <Scrollbars className="pl-5" style={{ width: "100%", height: 560 }}>
       <div className="overflow-y-auto">

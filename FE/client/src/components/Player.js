@@ -7,6 +7,8 @@ import * as actions from "../store/actions";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 import SkeletonComment from "./SkeletonComment";
+import { useNavigate } from "react-router-dom";
+
 
 var intervalId;
 const Player = () => {
@@ -24,6 +26,7 @@ const Player = () => {
     TbRepeat,
     TbRepeatOnce,
   } = icons;
+  const navigate = useNavigate()
   // const [isPlaying, setIsPlaying] = useState(false)
   let songSuf = null;
   const dispatch = useDispatch();
@@ -321,7 +324,7 @@ const Player = () => {
     <div className="px-5 h-full flex justify-center bg-main-300">
       {/* thông tin bài hát */}
       {skeleton ? (
-        <SkeletonComment />
+        <div className='w-[30%]'><SkeletonComment /></div>
       ) : (
         <div className="w-[30%] flex-auto flex items-center">
           <img
@@ -338,6 +341,9 @@ const Player = () => {
             {/* icons */}
             <AiOutlineHeart size={24} className="hover:text-red-500" />
             <MdInfoOutline
+              onClick={() => {
+                navigate('/song/' + curSongId)
+              }}
               size={24}
               className="hover:text-[#fff]"
               title="Info"
