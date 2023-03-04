@@ -6,6 +6,8 @@ import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.*;
 import com.doan.appmusic.repository.SongLikeRepository;
 import com.doan.appmusic.repository.SongRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

@@ -1,6 +1,6 @@
 package com.doan.appmusic.entity;
 
-import com.doan.appmusic.utils.GenderEnum;
+import com.doan.appmusic.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +41,7 @@ public class User {
     private String backgroundImageUrl;
 
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
+    private Gender gender;
 
     private Integer age;
 

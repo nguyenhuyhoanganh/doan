@@ -5,7 +5,6 @@ import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.security.JwtUtils;
-import com.doan.appmusic.utils.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -31,9 +30,10 @@ import java.util.Map;
 
 @Data
 public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFilter {
-
     private AuthenticationManager authenticationManager;
+    private ObjectMapper objectMapper;
     private JwtUtils jwtUtils;
+
 
     @SneakyThrows
     @Override
@@ -42,7 +42,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         try {
             byte[] inputStreamBytes = StreamUtils.copyToByteArray(request.getInputStream());
-            Map<String, String> jsonRequest = new ObjectMapper().readValue(inputStreamBytes, Map.class);
+            Map<String, String> jsonRequest = objectMapper.readValue(inputStreamBytes, Map.class);
             String email = jsonRequest.get("email");
             String password = jsonRequest.get("password");
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -51,7 +51,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.FORBIDDEN.value());
             ResponseDTO<?> responseBody = ResponseDTO.builder().message("Email or password is incorrect").code(HttpStatus.FORBIDDEN.value()).build();
-            Mapper.writeValue(response.getOutputStream(), responseBody);
+            objectMapper.writeValue(response.getOutputStream(), responseBody);
         }
         return null;
     }
@@ -77,7 +77,7 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
         ResponseDTO<?> responseBody = ResponseDTO.builder().data(data).code(HttpStatus.OK.value()).build();
-        Mapper.writeValue(response.getOutputStream(), responseBody);
+        objectMapper.writeValue(response.getOutputStream(), responseBody);
     }
 }
 

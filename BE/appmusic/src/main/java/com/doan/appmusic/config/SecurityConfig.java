@@ -1,8 +1,10 @@
-package com.doan.appmusic.security;
+package com.doan.appmusic.config;
 
 import com.doan.appmusic.filter.CustomTokenGeneratorFilter;
 import com.doan.appmusic.filter.CustomTokenValidatorFilter;
 import com.doan.appmusic.repository.UserRepository;
+import com.doan.appmusic.security.JwtUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,8 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Bean
     public JwtUtils jwtUtils() {
@@ -44,18 +48,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, JwtUtils jwtUtils) throws Exception {
         /* cors, csrf */
-//        http.cors(c -> {
-//            CorsConfigurationSource source = request -> {
-//                CorsConfiguration config = new CorsConfiguration();
-//                config.setAllowedOrigins(List.of("*"));
-//                config.setAllowedMethods(List.of("*"));
-//                config.setAllowedHeaders(List.of("*"));
-//                return config;
-//            };
-//            c.configurationSource(source);
-//        });
         http.cors();
         http.csrf().disable();
 
@@ -75,11 +69,14 @@ public class SecurityConfig {
         /* add filter */
         CustomTokenGeneratorFilter customTokenGeneratorFilter = new CustomTokenGeneratorFilter();
         customTokenGeneratorFilter.setAuthenticationManager(authenticationManager);
-        customTokenGeneratorFilter.setJwtUtils(jwtUtils());
-        CustomTokenValidatorFilter customTokenValidatorFilter = new CustomTokenValidatorFilter();
-        customTokenValidatorFilter.setJwtUtils(jwtUtils());
-
+        customTokenGeneratorFilter.setJwtUtils(jwtUtils);
+        customTokenGeneratorFilter.setObjectMapper(objectMapper);
         customTokenGeneratorFilter.setFilterProcessesUrl("/api/login");
+
+        CustomTokenValidatorFilter customTokenValidatorFilter = new CustomTokenValidatorFilter();
+        customTokenValidatorFilter.setJwtUtils(jwtUtils);
+        customTokenGeneratorFilter.setObjectMapper(objectMapper);
+
         http.addFilter(customTokenGeneratorFilter);
         http.addFilterBefore(customTokenValidatorFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

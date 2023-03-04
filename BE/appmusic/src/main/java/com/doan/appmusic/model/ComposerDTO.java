@@ -1,6 +1,6 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.GenderEnum;
+import com.doan.appmusic.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +27,7 @@ public class ComposerDTO {
     private Integer age;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private GenderEnum gender;
+    private Gender gender;
 
     @NotBlank(message = "Slug is required", groups = {OnCreate.class, OnUpdate.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)

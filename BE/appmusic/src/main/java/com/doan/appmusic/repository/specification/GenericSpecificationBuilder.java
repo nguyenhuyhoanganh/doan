@@ -1,4 +1,4 @@
-package com.doan.appmusic.service;
+package com.doan.appmusic.repository.specification;
 
 import lombok.SneakyThrows;
 import org.springframework.data.jpa.domain.Specification;

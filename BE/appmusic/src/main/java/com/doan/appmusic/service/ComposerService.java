@@ -9,6 +9,8 @@ import com.doan.appmusic.model.ComposerDTO;
 import com.doan.appmusic.model.SongDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.ComposerRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

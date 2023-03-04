@@ -1,5 +1,5 @@
-package com.doan.appmusic.utils;
+package com.doan.appmusic.enums;
 
-public enum StatusEnum {
+public enum Status {
     DRAFT, PUBLISH, PUBLIC, PRIVATE, ACTIVE, CANCEL, PENDING
 }

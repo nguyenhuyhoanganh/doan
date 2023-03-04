@@ -1,6 +1,6 @@
 package com.doan.appmusic.entity;
 
-import com.doan.appmusic.utils.GenderEnum;
+import com.doan.appmusic.enums.Gender;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ public class Artist extends UpdateAuditable {
     private Integer age;
 
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender = GenderEnum.UNKNOWN;
+    private Gender gender = Gender.UNKNOWN;
 
     @Column(unique = true, nullable = false)
     private String slug;
