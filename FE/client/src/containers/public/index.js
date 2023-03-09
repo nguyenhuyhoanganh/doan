@@ -1,3 +1,8 @@
 export {default as Home } from './Home'
 export {default as Login} from './Login'
 export {default as Pubic} from './Public'
+export {default as Personal} from './Personal'
+export {default as Zingchart} from './Zingchart'
+export {default as Follow} from './Follow'
+export {default as Album} from './Album'
+export {default as SongInfo} from './SongInfo'

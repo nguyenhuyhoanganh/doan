@@ -1,12 +1,25 @@
-import { MdOutlineLibraryMusic, MdOutlineContactPage } from "react-icons/md";
+import {
+  MdOutlineLibraryMusic,
+  MdOutlineContactPage,
+  MdInfoOutline,
+  MdPlaylistPlay
+} from "react-icons/md";
 import { BiDisc } from "react-icons/bi";
 import {
   AiOutlineBarChart,
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
-  AiOutlineSearch
+  AiOutlineSearch,
+  AiOutlineHeart,
+  AiOutlinePlayCircle,
+  AiOutlinePauseCircle,
 } from "react-icons/ai";
-import { BsMicFill} from "react-icons/bs"
+import { BsMicFill, BsShuffle, BsVolumeUp, BsToggleOff, BsToggleOn } from "react-icons/bs";
+import { RiVipFill } from "react-icons/ri";
+import { IoMdSkipBackward, IoMdSkipForward} from "react-icons/io"
+import { RxLoop} from "react-icons/rx"
+import { GrCaretNext} from "react-icons/gr"
+import { TbRepeat, TbRepeatOnce} from "react-icons/tb"
 
 const icons = {
   MdOutlineLibraryMusic,
@@ -16,6 +29,22 @@ const icons = {
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
   AiOutlineSearch,
-  BsMicFill
+  BsMicFill,
+  RiVipFill,
+  AiOutlineHeart,
+  MdInfoOutline,
+  BsShuffle,
+  AiOutlinePlayCircle,
+  AiOutlinePauseCircle,
+  IoMdSkipBackward,
+  IoMdSkipForward,
+  RxLoop,
+  BsVolumeUp,
+  MdPlaylistPlay,
+  BsToggleOff,
+  BsToggleOn,
+  GrCaretNext,
+  TbRepeat,
+  TbRepeatOnce
 };
 export default icons;

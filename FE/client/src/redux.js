@@ -2,11 +2,13 @@ import rootReducer from "./store/reducer/rootReducer";
 import { createStore, applyMiddleware } from "redux";
 // configureStore replace createStore?
 import thunk from "redux-thunk";
+import { persistStore } from "redux-persist";
 
 
 const reduxConfig = () => {
     const store = createStore(rootReducer, applyMiddleware(thunk))
-    return store
+    const persistor = persistStore(store)
+    return {store, persistor}
 }
 
 export default reduxConfig
