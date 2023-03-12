@@ -35,6 +35,8 @@ public interface ArtistService {
 
     ArtistDTO getById(long id);
 
+    ArtistDTO getBySlug(String slug);
+
     ArtistDTO create(ArtistDTO artistDTO);
 
     ArtistDTO update(long id, ArtistDTO artistDTO);
@@ -88,6 +90,12 @@ class ArtistServiceImpl implements ArtistService {
     @Override
     public ArtistDTO getById(long id) {
         Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist cannot be found"));
+        return convertToDTO(artist);
+    }
+
+    @Override
+    public ArtistDTO getBySlug(String slug) {
+        Artist artist = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Artist cannot be found"));
         return convertToDTO(artist);
     }
 

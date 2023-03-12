@@ -41,9 +41,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable long id) {
-        CategoryDTO categoryDTO = service.getById(id);
+    @GetMapping("/{slug}")
+    public ResponseEntity<?> getById(@PathVariable String slug) {
+        CategoryDTO categoryDTO = service.getBySlug(slug);
         ResponseDTO<?> response = ResponseDTO.builder().data(categoryDTO).build();
         return ResponseEntity.ok(response);
     }

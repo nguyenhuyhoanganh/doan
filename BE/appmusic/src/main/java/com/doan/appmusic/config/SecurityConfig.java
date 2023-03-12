@@ -4,7 +4,6 @@ import com.doan.appmusic.filter.CustomTokenGeneratorFilter;
 import com.doan.appmusic.filter.CustomTokenValidatorFilter;
 import com.doan.appmusic.repository.UserRepository;
 import com.doan.appmusic.security.JwtUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +27,6 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository repository;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Bean
     public JwtUtils jwtUtils() {
@@ -70,12 +67,10 @@ public class SecurityConfig {
         CustomTokenGeneratorFilter customTokenGeneratorFilter = new CustomTokenGeneratorFilter();
         customTokenGeneratorFilter.setAuthenticationManager(authenticationManager);
         customTokenGeneratorFilter.setJwtUtils(jwtUtils);
-        customTokenGeneratorFilter.setObjectMapper(objectMapper);
         customTokenGeneratorFilter.setFilterProcessesUrl("/api/login");
 
         CustomTokenValidatorFilter customTokenValidatorFilter = new CustomTokenValidatorFilter();
         customTokenValidatorFilter.setJwtUtils(jwtUtils);
-        customTokenGeneratorFilter.setObjectMapper(objectMapper);
 
         http.addFilter(customTokenGeneratorFilter);
         http.addFilterBefore(customTokenValidatorFilter, UsernamePasswordAuthenticationFilter.class);

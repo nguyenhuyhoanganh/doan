@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from 'axios'
 import { toast } from 'react-toastify'
-import path from '../constants/path'
+import PATH from '../constants/paths'
 
 import {
   clearLocalStorage,
@@ -39,13 +39,13 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if (url === path.login || url === path.register) {
+        if (url === PATH.auth.login || url === PATH.auth.register) {
           const data = response.data
           this.accessToken = data?.data.access_token
           setAcessTokenToLocalStorage(this.accessToken)
           setProfileToLocalStorage(data?.data.user)
         }
-        if (url === path.logout) {
+        if (url === PATH.auth.logout) {
           this.accessToken = ''
           clearLocalStorage()
         }

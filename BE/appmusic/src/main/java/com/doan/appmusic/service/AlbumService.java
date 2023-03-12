@@ -36,6 +36,8 @@ public interface AlbumService {
 
     AlbumDTO getById(long id);
 
+    AlbumDTO getBySlug(String slug);
+
     AlbumDTO create(AlbumDTO albumDTO);
 
     AlbumDTO update(long id, AlbumDTO albumDTO);
@@ -81,6 +83,12 @@ class AlbumServiceImpl implements AlbumService {
     @Override
     public AlbumDTO getById(long id) {
         Album album = repository.findById(id).orElseThrow(() -> new CommonException("Album cannot be found"));
+        return convertToDTO(album);
+    }
+
+    @Override
+    public AlbumDTO getBySlug(String slug) {
+        Album album = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Album cannot be found"));
         return convertToDTO(album);
     }
 

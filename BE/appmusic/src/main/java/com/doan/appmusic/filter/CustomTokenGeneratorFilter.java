@@ -6,6 +6,7 @@ import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.security.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -31,13 +32,14 @@ import java.util.Map;
 @Data
 public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
-    private ObjectMapper objectMapper;
     private JwtUtils jwtUtils;
-
 
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         if (!request.getMethod().equals("POST"))
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         try {
@@ -77,6 +79,9 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
         ResponseDTO<?> responseBody = ResponseDTO.builder().data(data).code(HttpStatus.OK.value()).build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.writeValue(response.getOutputStream(), responseBody);
     }
 }

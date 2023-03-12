@@ -30,6 +30,8 @@ public interface SongService {
 
     SongDTO getById(long id);
 
+    SongDTO getBySlug(String slug);
+
     SongDTO create(SongDTO songDTO);
 
     SongDTO update(long id, SongDTO songDTO);
@@ -86,6 +88,12 @@ class SongServiceImpl implements SongService {
     @Override
     public SongDTO getById(long id) {
         Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
+        return convertToDTO(song);
+    }
+
+    @Override
+    public SongDTO getBySlug(String slug) {
+        Song song = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Song cannot be found"));
         return convertToDTO(song);
     }
 

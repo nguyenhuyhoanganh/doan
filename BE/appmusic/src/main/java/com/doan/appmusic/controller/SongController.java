@@ -45,9 +45,9 @@ public class SongController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable long id) {
-        SongDTO songDTO = service.getById(id);
+    @GetMapping("/{slug}")
+    public ResponseEntity<?> getById(@PathVariable String slug) {
+        SongDTO songDTO = service.getBySlug(slug);
         ResponseDTO<?> response = ResponseDTO.builder().data(songDTO).build();
         return ResponseEntity.ok(response);
     }

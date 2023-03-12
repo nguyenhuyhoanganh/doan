@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import path from '../../constants/path'
+import PATH from '../../constants/paths'
 
 const Footer = () => {
   return (
-    <footer className='bg-neutral-100 py-16'>
+    <footer className='bg-white py-16'>
       <div className='mx-auto max-w-7xl px-4'>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
           <div className='content-center justify-items-center lg:col-span-2'>
-            <NavLink to={path.dashBoard}>
+            <NavLink to={PATH.dashboard.root}>
               <svg
                 viewBox='0 0 1134 340'
                 className='h-12

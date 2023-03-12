@@ -29,9 +29,9 @@ public class TagController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable long id) {
-        TagDTO tagDTO = service.getById(id);
+    @GetMapping("/{slug}")
+    public ResponseEntity<?> getById(@PathVariable String slug) {
+        TagDTO tagDTO = service.getBySlug(slug);
         ResponseDTO<?> response = ResponseDTO.builder().data(tagDTO).build();
         return ResponseEntity.ok(response);
     }

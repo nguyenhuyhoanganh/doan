@@ -33,6 +33,8 @@ public interface ComposerService {
 
     ComposerDTO getById(long id);
 
+    ComposerDTO getBySlug(String slug);
+
     ComposerDTO create(ComposerDTO composerDTO);
 
     ComposerDTO update(long id, ComposerDTO composerDTO);
@@ -78,6 +80,12 @@ class ComposerServiceImpl implements ComposerService {
     @Override
     public ComposerDTO getById(long id) {
         Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer cannot be found"));
+        return convertToDTO(composer);
+    }
+
+    @Override
+    public ComposerDTO getBySlug(String slug) {
+        Composer composer = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Composer cannot be found"));
         return convertToDTO(composer);
     }
 

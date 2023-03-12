@@ -31,6 +31,8 @@ public interface CategoryService {
 
     CategoryDTO getById(long id);
 
+    CategoryDTO getBySlug(String slug);
+
     CategoryDTO create(CategoryDTO categoryDTO);
 
     CategoryDTO update(long id, CategoryDTO categoryDTO);
@@ -76,6 +78,13 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO getById(long id) {
         Category category = repository.findById(id).orElseThrow(() -> new CommonException("Category cannot be found"));
+        return convertToDTO(category);
+    }
+
+    @Override
+    public CategoryDTO getBySlug(String slug) {
+        Category category = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Category cannot be " +
+                "found"));
         return convertToDTO(category);
     }
 
