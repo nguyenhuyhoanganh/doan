@@ -36,7 +36,7 @@ const SongList = () => {
     }
 
     const onEnded = () => {
-      if (!audio.paused) {
+      if (audio.paused) {
         audio.play()
       }
     }

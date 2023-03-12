@@ -4,6 +4,7 @@ import { BiLoader } from 'react-icons/bi'
 import { NavLink } from 'react-router-dom'
 import Tippy from '@tippyjs/react'
 import SongDetails from './SongDetails'
+import Tooltip from '../../../components/Tooltip'
 
 const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
   const [isShowDetails, setIsShowDetails] = useState(false)
@@ -54,7 +55,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
           <div className='flex flex-col gap-1 pl-2'>
             <span className='truncate pt-1 text-base font-bold text-gray-800'>{song.title}</span>
             <span className='truncate'>
-              {/* {song.artists &&
+              {song.artists &&
                 song.artists.map((artist, index, artists) => (
                   <Fragment key={artist?.id}>
                     <NavLink
@@ -65,13 +66,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
                     </NavLink>
                     {index === artists.length - 1 ? '' : ', '}
                   </Fragment>
-                ))} */}
-              <NavLink
-                to={`/dashboard/composer/${song?.composer?.slug}`}
-                className='text-xs text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
-              >
-                {song?.composer?.fullName}
-              </NavLink>
+                ))}
             </span>
           </div>
         </div>
@@ -80,7 +75,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
             to={`/dashboard/album/${song.album?.slug}`}
             className='text-sm text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
           >
-            {song.title}
+            {song.album.title}
           </NavLink>
         </div>
         <div className='relative col-span-1'>
@@ -104,14 +99,14 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
                   </svg>
                 </div>
               </SongDetails>
-              <Tippy content={<span className='tippy text-sm'>Edit song</span>}>
+              <Tooltip content='Edit song'>
                 <div className='flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-6 w-6'>
                     <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
                     <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
                   </svg>
                 </div>
-              </Tippy>
+              </Tooltip>
               <Tippy content={<span className='tippy text-sm'>Delete song</span>}>
                 <div className='flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>

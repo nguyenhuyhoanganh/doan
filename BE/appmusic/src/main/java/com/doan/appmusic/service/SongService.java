@@ -197,7 +197,7 @@ class SongServiceImpl implements SongService {
             // album
             Album album = context.getSource().getAlbum();
             if (album != null)
-                context.getDestination().setAlbum(AlbumDTO.builder().id(album.getId()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build());
+                context.getDestination().setAlbum(AlbumDTO.builder().id(album.getId()).slug(album.getSlug()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build());
 
             // tags
             List<Tag> tags = context.getSource().getTags();

@@ -2,17 +2,28 @@ import { BsDownload, BsCardText, BsHeadphones } from 'react-icons/bs'
 import { AiOutlineHeart } from 'react-icons/ai'
 import { FaRegComments } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import Popover from '../../../components/Popover'
+import { Fragment } from 'react'
 
 const SongDetails = ({ children, song, onChangeOpen }) => {
+  const navigate = useNavigate()
   const renderMoreDetails = (
     <div tabIndex='-1' className={`} w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Artist</span>
-        <NavLink to='' className='text-sm font-medium line-clamp-2 hover:text-main-color'>
-          {song.composer.fullName}
-        </NavLink>
+        {song.artists &&
+          song.artists.map((artist, index, artists) => (
+            <Fragment key={artist?.id}>
+              <NavLink
+                to={`/dashboard/artist/${artist?.slug}`}
+                className='text-sm font-medium line-clamp-2 hover:text-main-color'
+              >
+                {artist?.fullName}
+              </NavLink>
+              {index === artists.length - 1 ? '' : ', '}
+            </Fragment>
+          ))}
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Album</span>
@@ -28,9 +39,18 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Gender</span>
-        <NavLink to='' className='text-sm font-medium line-clamp-2 hover:text-main-color'>
-          {song.album.title}
-        </NavLink>
+        {song.categories &&
+          song.categories.map((category, index, categories) => (
+            <Fragment key={category?.id}>
+              <NavLink
+                to={`/dashboard/artist/${category?.slug}`}
+                className='text-sm font-medium line-clamp-2 hover:text-main-color'
+              >
+                {category?.title}
+              </NavLink>
+              {index === categories.length - 1 ? '' : ', '}
+            </Fragment>
+          ))}
       </div>
     </div>
   )
@@ -50,7 +70,10 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
           <img src={song.imageUrl} alt='' className='h-full w-full object-cover' />
         </figure>
         <div className='ml-2 flex w-40 flex-col justify-center'>
-          <button className='w-full truncate text-left text-sm font-medium leading-[1.3] hover:text-main-color'>
+          <button
+            className='w-full truncate text-left text-sm font-medium leading-[1.3] hover:text-main-color'
+            onClick={() => navigate(`/dashboard/song/${song.slug}`)}
+          >
             {song.title}
           </button>
           <div className='flex w-full items-center text-left text-xs text-gray-500'>
