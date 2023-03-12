@@ -1,13 +1,20 @@
 import { BsDownload, BsCardText, BsHeadphones } from 'react-icons/bs'
 import { AiOutlineHeart } from 'react-icons/ai'
-import { FaRegComments } from 'react-icons/fa'
-import { FiLink } from 'react-icons/fi'
+import { HiOutlineLink } from 'react-icons/hi'
+import { FaRegComment } from 'react-icons/fa'
 import { NavLink, useNavigate } from 'react-router-dom'
 import Popover from '../../../components/Popover'
 import { Fragment } from 'react'
+import Tooltip from '../../../components/Tooltip'
+import PATH from '../../../constants/paths'
 
-const SongDetails = ({ children, song, onChangeOpen }) => {
+const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
   const navigate = useNavigate()
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+  }
+
   const renderMoreDetails = (
     <div tabIndex='-1' className={`} w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}>
       <div className='flex flex-col justify-around'>
@@ -27,13 +34,19 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Album</span>
-        <NavLink to='' className='text-sm font-medium line-clamp-2 hover:text-main-color '>
-          {song.album.title}
+        <NavLink
+          to={`/dashboard/album/${song.album?.slug}`}
+          className='text-sm font-medium line-clamp-2 hover:text-main-color '
+        >
+          {song.album?.title}
         </NavLink>
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Composer</span>
-        <NavLink to='' className='text-sm font-medium line-clamp-2 hover:text-main-color'>
+        <NavLink
+          to={`/dashboard/composer/${song.composer?.slug}`}
+          className='text-sm font-medium line-clamp-2 hover:text-main-color'
+        >
           {song.composer.fullName}
         </NavLink>
       </div>
@@ -43,7 +56,7 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
           song.categories.map((category, index, categories) => (
             <Fragment key={category?.id}>
               <NavLink
-                to={`/dashboard/artist/${category?.slug}`}
+                to={`/dashboard/category/${category?.slug}`}
                 className='text-sm font-medium line-clamp-2 hover:text-main-color'
               >
                 {category?.title}
@@ -65,6 +78,7 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
         offsetValue={{ mainAxis: -3, crossAxis: 20 }}
         clasaName='flex pt-4 px-4 pb-3'
         zindex={100}
+        delayHover={{ open: 0, close: 700 }}
       >
         <figure className='h-10 w-10 shrink-0 overflow-hidden rounded'>
           <img src={song.imageUrl} alt='' className='h-full w-full object-cover' />
@@ -109,28 +123,33 @@ const SongDetails = ({ children, song, onChangeOpen }) => {
         </div>
       </div>
       <button className='flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100'>
-        <FaRegComments />
+        <FaRegComment className='scale-x-[-1] transform' />
         Comments
       </button>
-      <button className='flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100'>
-        <FiLink />
+      <button
+        className='flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100'
+        onClick={() => handleCopy(`http://localhost:3000${PATH.dashboard.song.root}/${song.slug}`)}
+      >
+        <HiOutlineLink size={16} />
         Copy link
       </button>
     </div>
   )
 
   return (
-    <Popover
-      placement='left'
-      trigger='click'
-      shrinkedPopoverPosition='right'
-      renderPopover={renderDetails}
-      onOpenChange={onChangeOpen}
-      offsetValue={{ mainAxis: -3, crossAxis: 40 }}
-    >
-      {children}
-    </Popover>
+    <Tooltip content='More' open={!isOpen}>
+      <Popover
+        placement='left'
+        trigger='click'
+        shrinkedPopoverPosition='right'
+        renderPopover={renderDetails}
+        onOpenChange={onChangeOpen}
+        offsetValue={{ mainAxis: -3, crossAxis: 40 }}
+      >
+        {children}
+      </Popover>
+    </Tooltip>
   )
 }
 
-export default SongDetails
+export default SongInfo

@@ -55,8 +55,9 @@ const Header = (props) => {
             </NavLink>
           </div>
           <Popover
-            className='flex items-center'
+            trigger='click'
             hasArrow
+            className='flex items-center'
             renderPopover={
               <div className='mb-4 list-none divide-y divide-gray-200 rounded bg-gray-50 text-base shadow'>
                 <div className='overflow-hidden px-4 py-3'>
@@ -95,7 +96,10 @@ const Header = (props) => {
               <div className='flex rounded-full bg-gray-800 text-sm hover:ring-4 hover:ring-gray-300'>
                 <img
                   className='h-8 w-8 rounded-full'
-                  src={profile?.avatarUrl || 'http://localhost:8080/api/files/1'}
+                  src={
+                    profile?.avatarUrl ||
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjYmlp9JDeNMaFZzw9S3G1dVztGqF_2vq9nA&usqp=CAU'
+                  }
                   alt='user'
                 />
               </div>

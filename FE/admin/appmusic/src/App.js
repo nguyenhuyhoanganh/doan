@@ -1,6 +1,5 @@
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import 'tippy.js/dist/tippy.css'
 
 import useRouteElements from './hoocs/useRouteElements'
 

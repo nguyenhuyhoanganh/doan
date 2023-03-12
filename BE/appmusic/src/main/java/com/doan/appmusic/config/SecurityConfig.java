@@ -56,10 +56,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         /* matcher */
-//        http.authorizeRequests()
-//                .mvcMatchers("/api/login", "/api/register", "/api/refresh-token/**", "/api/logout",
-//                        "/api/files/upload", "/api/files/**")
-//                .permitAll();
+        http.authorizeRequests().mvcMatchers("/api/login", "/api/register", "/api/refresh-token/**", "/api/logout", "/api/files/upload", "/api/files/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**").permitAll();
         http.authorizeRequests().anyRequest().permitAll();
 //                .authenticated();
 

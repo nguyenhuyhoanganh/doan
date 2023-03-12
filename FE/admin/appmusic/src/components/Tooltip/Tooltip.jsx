@@ -9,7 +9,7 @@ import {
   useDismiss
 } from '@floating-ui/react-dom-interactions'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 const Tooltip = ({
   children,
@@ -18,7 +18,8 @@ const Tooltip = ({
   as: Element = 'div',
   initialOpen,
   placement = 'top',
-  offsetValue = 10
+  offsetValue = 10,
+  open = true
 }) => {
   const id = useId()
   const [isOpen, setIsOpen] = useState(initialOpen || false)
@@ -27,13 +28,19 @@ const Tooltip = ({
     middleware: [offset(offsetValue), shift(), arrow({ element: arrowRef })],
     placement: placement,
     open: isOpen,
-    onOpenChange: setIsOpen
+    onOpenChange: (newIsOpen) => {
+      open ? setIsOpen(newIsOpen) : setIsOpen(false)
+    }
   })
+
+  useEffect(() => {
+    !open && setIsOpen(false)
+  }, [open])
 
   const hover = useHover(context, {
     delay: {
       open: 0,
-      close: 700
+      close: 0
     }
   })
   const dismiss = useDismiss(context, {
@@ -43,7 +50,6 @@ const Tooltip = ({
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, dismiss])
   return (
     <Element className={clasaName} ref={reference} {...getReferenceProps()}>
-      {console.log(middlewareData.arrow?.y)}
       {children}
       <FloatingPortal id={id}>
         <AnimatePresence>
@@ -56,7 +62,7 @@ const Tooltip = ({
                 top: y ?? 0,
                 left: x ?? 0,
                 width: 'max-content',
-                transformOrigin: `${middlewareData.arrow?.x}px bottom`,
+                transformOrigin: `bottom`,
                 zIndex: 50
               }}
               initial={{ opacity: 0, transform: 'scale(0)' }}
@@ -67,7 +73,7 @@ const Tooltip = ({
               <span className='rounded-lg bg-gray-700 px-3 py-1 text-white shadow-lg'>{content}</span>
               <span
                 ref={arrowRef}
-                className={`absolute bottom-[-35px] translate-y-[-95%] border-[0.5rem] border-x-transparent border-b-transparent border-t-gray-700`}
+                className={`absolute bottom-[-32px] translate-y-[-95%] border-[0.5rem] border-x-transparent border-b-transparent border-t-gray-700`}
                 style={{
                   left: middlewareData.arrow?.x
                 }}

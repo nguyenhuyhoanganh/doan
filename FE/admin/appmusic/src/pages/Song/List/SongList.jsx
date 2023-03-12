@@ -49,6 +49,7 @@ const SongList = () => {
 
     return () => {
       if (audio instanceof Audio) {
+        audio.pause()
         audio.removeEventListener('loadstart', onLoading)
         audio.removeEventListener('canplay', onLoadded)
         audio.removeEventListener('ended', onEnded)
@@ -62,10 +63,8 @@ const SongList = () => {
   }, [isPlay, audio])
 
   useEffect(() => {
-    audio && audio instanceof Audio && !audio.paused && audio.pause()
     source !== '' && setAudio(new Audio(source))
     setIsPlay(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source])
 
   const handlePlayAudio = (sourceNew) => {
@@ -102,21 +101,24 @@ const SongList = () => {
           Create
         </NavLink>
       </div>
-      <div className='mt-2 flex flex-auto flex-col gap-5'>
+      <div className='mt-2 flex flex-auto flex-col gap-5 shadow'>
         <div>
-          {data &&
-            data.data.data?.map((song) => {
-              return (
-                <SongItem
-                  key={song.id}
-                  isLoading={isLoading}
-                  isPlay={isPlay}
-                  song={song}
-                  source={source}
-                  onPlayAudio={handlePlayAudio}
-                />
-              )
-            })}
+          {data
+            ? data.data.data?.map((song) => {
+                return (
+                  <SongItem
+                    key={song.id}
+                    isLoading={isLoading}
+                    isPlay={isPlay}
+                    song={song}
+                    source={source}
+                    onPlayAudio={handlePlayAudio}
+                  />
+                )
+              })
+            : Array(10)
+                .fill(0)
+                .map((_, index) => <LoadingItem key={index} />)}
         </div>
       </div>
       <Pagination />
@@ -125,3 +127,23 @@ const SongList = () => {
 }
 
 export default SongList
+
+const LoadingItem = () => {
+  return (
+    <div className='grid h-auto w-[100%] animate-pulse grid-cols-4 gap-4 rounded-md border-b-[1px] border-t-[1px] pr-[10px]'>
+      <div className='col-span-2 flex p-3'>
+        <div className='h-14 w-14 rounded-md bg-slate-600'></div>
+        <div className='flex flex-col gap-3 pl-2 pt-2'>
+          <div className='h-4 w-60 rounded bg-slate-600'></div>
+          <div className='h-3 w-40 rounded bg-slate-600'></div>
+        </div>
+      </div>
+      <div className='col-span-1 flex items-center justify-start p-2 pr-4'>
+        <div className='h-3 w-44 rounded bg-slate-600'></div>
+      </div>
+      <div className='col-span-1 flex items-center justify-end pr-3'>
+        <div className='h-3 w-14 rounded bg-slate-600'></div>
+      </div>
+    </div>
+  )
+}
