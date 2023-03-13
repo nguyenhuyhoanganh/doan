@@ -7,6 +7,8 @@ import com.doan.appmusic.model.RoleDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.RoleRepository;
 import com.doan.appmusic.repository.UserRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import com.doan.appmusic.security.CustomUserDetails;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;

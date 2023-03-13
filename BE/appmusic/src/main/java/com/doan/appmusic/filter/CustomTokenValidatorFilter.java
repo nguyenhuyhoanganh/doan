@@ -3,7 +3,8 @@ package com.doan.appmusic.filter;
 import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.security.JwtUtils;
-import com.doan.appmusic.utils.Mapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,6 @@ import java.io.IOException;
 
 @Data
 public class CustomTokenValidatorFilter extends OncePerRequestFilter {
-
     private JwtUtils jwtUtils;
 
     @Override
@@ -37,7 +37,10 @@ public class CustomTokenValidatorFilter extends OncePerRequestFilter {
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.setStatus(HttpStatus.FORBIDDEN.value());
                     ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.FORBIDDEN.value()).build();
-                    Mapper.writeValue(response.getOutputStream(), responseBody);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.findAndRegisterModules();
+                    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                    objectMapper.writeValue(response.getOutputStream(), responseBody);
                 }
                 return;
             }

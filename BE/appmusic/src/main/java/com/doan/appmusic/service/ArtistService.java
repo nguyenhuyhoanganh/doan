@@ -10,6 +10,8 @@ import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.ArtistFollowRepository;
 import com.doan.appmusic.repository.ArtistRepository;
 import com.doan.appmusic.repository.UserRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -32,6 +34,8 @@ public interface ArtistService {
     List<ArtistDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     ArtistDTO getById(long id);
+
+    ArtistDTO getBySlug(String slug);
 
     ArtistDTO create(ArtistDTO artistDTO);
 
@@ -86,6 +90,12 @@ class ArtistServiceImpl implements ArtistService {
     @Override
     public ArtistDTO getById(long id) {
         Artist artist = repository.findById(id).orElseThrow(() -> new CommonException("Artist cannot be found"));
+        return convertToDTO(artist);
+    }
+
+    @Override
+    public ArtistDTO getBySlug(String slug) {
+        Artist artist = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Artist cannot be found"));
         return convertToDTO(artist);
     }
 

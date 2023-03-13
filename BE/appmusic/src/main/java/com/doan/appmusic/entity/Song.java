@@ -1,6 +1,6 @@
 package com.doan.appmusic.entity;
 
-import com.doan.appmusic.utils.StatusEnum;
+import com.doan.appmusic.enums.Status;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class Song extends UpdateAuditable {
     private String slug;
 
     @Enumerated(EnumType.STRING)
-    private StatusEnum status;
+    private Status status;
 
     private String imageUrl;
 

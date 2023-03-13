@@ -1,8 +1,15 @@
-import path from '../constants/path'
 import http from './../utils/http'
 
-export const registerAccount = (body) => http.post(path.register, body)
+const authApi = {
+  registerAccount(body) {
+    return http.post('/register', body)
+  },
+  login(body) {
+    return http.post('/login', body)
+  },
+  logout() {
+    return http.post('/logout')
+  }
+}
 
-export const login = (body) => http.post(path.login, body)
-
-export const logout = () => http.post(path.logout)
+export default authApi

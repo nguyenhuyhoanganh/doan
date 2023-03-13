@@ -9,6 +9,8 @@ import com.doan.appmusic.model.ComposerDTO;
 import com.doan.appmusic.model.SongDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.repository.ComposerRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -30,6 +32,8 @@ public interface ComposerService {
     List<ComposerDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     ComposerDTO getById(long id);
+
+    ComposerDTO getBySlug(String slug);
 
     ComposerDTO create(ComposerDTO composerDTO);
 
@@ -76,6 +80,12 @@ class ComposerServiceImpl implements ComposerService {
     @Override
     public ComposerDTO getById(long id) {
         Composer composer = repository.findById(id).orElseThrow(() -> new CommonException("Composer cannot be found"));
+        return convertToDTO(composer);
+    }
+
+    @Override
+    public ComposerDTO getBySlug(String slug) {
+        Composer composer = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Composer cannot be found"));
         return convertToDTO(composer);
     }
 

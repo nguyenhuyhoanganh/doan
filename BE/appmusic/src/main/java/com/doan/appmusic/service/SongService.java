@@ -6,6 +6,8 @@ import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.*;
 import com.doan.appmusic.repository.SongLikeRepository;
 import com.doan.appmusic.repository.SongRepository;
+import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
+import com.doan.appmusic.repository.specification.SearchCriteria;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -27,6 +29,8 @@ public interface SongService {
     List<SongDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
 
     SongDTO getById(long id);
+
+    SongDTO getBySlug(String slug);
 
     SongDTO create(SongDTO songDTO);
 
@@ -84,6 +88,12 @@ class SongServiceImpl implements SongService {
     @Override
     public SongDTO getById(long id) {
         Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
+        return convertToDTO(song);
+    }
+
+    @Override
+    public SongDTO getBySlug(String slug) {
+        Song song = repository.findBySlug(slug).orElseThrow(() -> new CommonException("Song cannot be found"));
         return convertToDTO(song);
     }
 
@@ -187,7 +197,7 @@ class SongServiceImpl implements SongService {
             // album
             Album album = context.getSource().getAlbum();
             if (album != null)
-                context.getDestination().setAlbum(AlbumDTO.builder().id(album.getId()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build());
+                context.getDestination().setAlbum(AlbumDTO.builder().id(album.getId()).slug(album.getSlug()).title(album.getTitle()).backgroundImageUrl(album.getBackgroundImageUrl()).build());
 
             // tags
             List<Tag> tags = context.getSource().getTags();

@@ -7,11 +7,11 @@ import { useContext } from 'react'
 
 import { registerSchema } from '../../utils/validate.form'
 import Input from '../../components/Input'
-import { registerAccount } from '../../apis/auth.api'
+import authApi from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { AppContext } from '../../contexts/app.context'
 import Button from '../../components/Button'
-import path from '../../constants/path'
+import PATH from '../../constants/paths'
 
 const Register = () => {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -26,7 +26,7 @@ const Register = () => {
   })
 
   const registerAccountMutation = useMutation({
-    mutationFn: (body) => registerAccount(body)
+    mutationFn: (body) => authApi.registerAccount(body)
   })
 
   const onSubmit = handleSubmit((data) => {
@@ -35,7 +35,7 @@ const Register = () => {
       onSuccess: (data) => {
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
-        navigate(path.dashBoard)
+        navigate(PATH.dashboard.root)
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError(error)) {
@@ -52,7 +52,7 @@ const Register = () => {
     })
   })
   return (
-    <div className='bg-main-color'>
+    <div className='max-h-[44.25rem] bg-banner-image bg-cover bg-center'>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
@@ -94,7 +94,7 @@ const Register = () => {
               </div>
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>Have an account?</span>
-                <NavLink className='ml-1 text-main-color hover:underline hover:underline-offset-1' to={path.login}>
+                <NavLink className='ml-1 text-main-color hover:underline hover:underline-offset-1' to={PATH.auth.login}>
                   Login
                 </NavLink>
               </div>

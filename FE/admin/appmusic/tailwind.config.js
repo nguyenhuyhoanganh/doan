@@ -12,7 +12,7 @@ module.exports = {
         'main-color': '#1ed760'
       },
       backgroundImage: {
-        'hero-img': "url('/src/imgs/herro-img.jpg')"
+        'banner-image': "url('/src/imgs/banner.jpg')"
       }
     }
   },

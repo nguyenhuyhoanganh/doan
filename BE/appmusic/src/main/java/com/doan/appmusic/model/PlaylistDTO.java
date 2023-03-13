@@ -1,6 +1,6 @@
 package com.doan.appmusic.model;
 
-import com.doan.appmusic.utils.StatusEnum;
+import com.doan.appmusic.enums.Status;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class PlaylistDTO {
     private String slug;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private StatusEnum status;
+    private Status status;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date createdAt;
