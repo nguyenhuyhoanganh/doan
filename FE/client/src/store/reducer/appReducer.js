@@ -8,13 +8,20 @@ const initState = {
 
 const appReducer = (state = initState, action) => {
   switch (action.type) {
+    // case actionTypes.GET_HOME: {
+    //   return {
+    //     ...state, 
+    //     banner:
+    //       action.homeData?.find((item) => item.sectionId === "hSlider")
+    //         ?.items || null,
+    //     friday: action.homeData?.find((item) => item.sectionId === "hArtistTheme")   
+    //   };
+    // }
     case actionTypes.GET_HOME: {
       return {
         ...state, 
         banner:
-          action.homeData?.find((item) => item.sectionId === "hSlider")
-            ?.items || null,
-        friday: action.homeData?.find((item) => item.sectionId === "hArtistTheme")   
+          action.homeData || null
       };
     }
     default:

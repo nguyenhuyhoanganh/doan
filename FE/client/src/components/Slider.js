@@ -24,7 +24,7 @@ const Slider = () => {
   const [skeleton, setSkeleton] = useState(null);
   const dispatch = useDispatch(); // redux
   const { banner } = useSelector((state) => {
-    // console.log(state)
+    console.log(state.app)
 
     return state.app;
   });
@@ -101,6 +101,10 @@ const Slider = () => {
   const navigate = useNavigate();
   const handleClickBanner = (item) => {
     // console.log(item);
+    const albumPath = "album/" + item?.slug + `/${item?.id}`
+    navigate(albumPath);
+    
+    // code for song in homepage
     if (item?.type === 1) {
       // is song get id stored in localStorage
       dispatch(actions.setCurSongId(item.encodeId));
@@ -109,11 +113,11 @@ const Slider = () => {
     } else if (item?.type === 4) {
       console.log(item);
       // link = /album/Nhac-Moi-Moi-Ngay-Sam-Smith-Vu-Cat-Tuong-STAYC-Hoang-Thuy-Linh/67WIO6CF.html
-      const albumPath = item?.link?.split(".")[0];
+      // const albumPath = item?.link?.split(".")[0];
       // console.log(albumPath)
       //chuyển qua trang album
 
-      navigate(albumPath);
+      // navigate(albumPath);
     } else {
       dispatch(actions.setPlaylistData(null));
     }
@@ -128,8 +132,8 @@ const Slider = () => {
         <div className="flex w-full gap-8 pt-8">
           {banner?.map((item, index) => (
             <img
-              key={item.encodeId}
-              src={item.banner}
+              key={item.id}
+              src={item.backgroundImageUrl}
               onClick={() => handleClickBanner(item)}
               className={`slider-item flex-1 object-contain w-[30%] rounded-lg ${
                 index <= 2 ? "block" : "hidden"

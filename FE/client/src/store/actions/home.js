@@ -4,10 +4,12 @@ export const getHome = () => async (dispatch) => {
     try {
         // console.log("dispatch", dispatch)
         const response = await apis.getHome()
-        if(response?.data.err === 0){
+        console.log(response.data)
+        if(response?.data.code === 200){
+            // console.log('catch')
             dispatch({
                 type: actionTypes.GET_HOME,
-                homeData: response.data.data.items
+                homeData: response?.data?.data
                 // send objiect action 
             })
         }else {
