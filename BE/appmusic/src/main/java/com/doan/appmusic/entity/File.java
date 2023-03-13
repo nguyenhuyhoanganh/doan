@@ -1,5 +1,6 @@
 package com.doan.appmusic.entity;
 
+import com.doan.appmusic.enums.StorageOption;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,7 @@ public class File {
     private String type;
     @Lob
     private byte[] data;
+
+    @Enumerated(EnumType.STRING)
+    private StorageOption storageOption;
 }
