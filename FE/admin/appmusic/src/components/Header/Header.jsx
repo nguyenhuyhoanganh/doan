@@ -55,7 +55,6 @@ const Header = (props) => {
             </NavLink>
           </div>
           <Popover
-            trigger='click'
             hasArrow
             className='flex items-center'
             renderPopover={

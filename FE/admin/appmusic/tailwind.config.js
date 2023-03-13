@@ -16,6 +16,7 @@ module.exports = {
       }
     }
   },
+  mode: 'jit',
   plugins: [
     plugin(function ({ addComponents, theme }) {
       addComponents({
