@@ -4,13 +4,19 @@ import { HiOutlineLink } from 'react-icons/hi'
 import { FaRegComment } from 'react-icons/fa'
 import { NavLink, useNavigate } from 'react-router-dom'
 import Popover from '../../../components/Popover'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Tooltip from '../../../components/Tooltip'
 import PATH from '../../../constants/paths'
+import Modal from '../../../components/Modal/Modal'
 
 const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
+  const [isShowComments, setIsShowComments] = useState(false)
+
   const navigate = useNavigate()
 
+  const handleClose = () => {
+    setIsShowComments(false)
+  }
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
   }
@@ -78,7 +84,7 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
         offsetValue={{ mainAxis: -3, crossAxis: 20 }}
         clasaName='flex pt-4 px-4 pb-3'
         zindex={100}
-        delayHover={{ open: 0, close: 700 }}
+        delayHover={{ open: 0, close: 100 }}
       >
         <figure className='h-10 w-10 shrink-0 overflow-hidden rounded'>
           <img src={song.imageUrl} alt='' className='h-full w-full object-cover' />
@@ -122,7 +128,10 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
           </div>
         </div>
       </div>
-      <button className='flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100'>
+      <button
+        className='flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100'
+        onClick={() => setIsShowComments(true)}
+      >
         <FaRegComment className='scale-x-[-1] transform' />
         Comments
       </button>
@@ -137,18 +146,40 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
   )
 
   return (
-    <Tooltip content='More' open={!isOpen}>
-      <Popover
-        placement='left'
-        trigger='click'
-        shrinkedPopoverPosition='right'
-        renderPopover={renderDetails}
-        onOpenChange={onChangeOpen}
-        offsetValue={{ mainAxis: -3, crossAxis: 40 }}
-      >
-        {children}
-      </Popover>
-    </Tooltip>
+    <>
+      <Tooltip content='More' open={!isOpen}>
+        <Popover
+          placement='left'
+          trigger='click'
+          shrinkedPopoverPosition='right'
+          renderPopover={renderDetails}
+          onOpenChange={onChangeOpen}
+          offsetValue={{ mainAxis: -3, crossAxis: 40 }}
+        >
+          {children}
+        </Popover>
+      </Tooltip>
+      {isShowComments && (
+        <Modal onClose={handleClose} size='medium'>
+          <div className='rounded-lg bg-white p-5'>
+            <h3 className='mb-[10px]text-sm font-bold capitalize text-gray-900'>Lyrics "{song.title}"</h3>
+            <div className='mã-h-[340px] bor overflow-y-auto rounded-md bg-gray-900 py-3 px-[14px] text-[14px] text-white'>
+              {/* {song.lyric.map((lyric, id) => (
+                <p key={id} className={cx('line')}>
+                  {lyric.text}
+                </p>
+              ))} */}
+            </div>
+            <button
+              onClick={handleClose}
+              className='mt-[20px] flex cursor-pointer items-center justify-center rounded-full py-2 px-6 font-normal uppercase'
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
   )
 }
 

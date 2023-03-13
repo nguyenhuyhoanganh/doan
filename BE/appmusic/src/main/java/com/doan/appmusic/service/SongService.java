@@ -174,7 +174,7 @@ class SongServiceImpl implements SongService {
                 if (entry.getKey().startsWith("categories")) searchCriteria.setJoinType(Category.class);
                 if (entry.getKey().startsWith("artists")) searchCriteria.setJoinType(Artist.class);
                 if (entry.getKey().startsWith("composer")) searchCriteria.setJoinType(Composer.class);
-                if (entry.getKey().startsWith("albums")) searchCriteria.setJoinType(Album.class);
+                if (entry.getKey().startsWith("album")) searchCriteria.setJoinType(Album.class);
                 if (entry.getKey().startsWith("createdBy")) searchCriteria.setJoinType(User.class);
                 if (entry.getKey().startsWith("updatedBy")) searchCriteria.setJoinType(User.class);
                 builder.with(searchCriteria);
