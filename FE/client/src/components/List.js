@@ -26,9 +26,10 @@ const List = ({ songs}) => {
             dispatch(actions.playAlbum(true))
             dispatch(actions.setPlaylistData(songs))
           }}
-          key={item.encodeId} className="flex gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
-            <span className="absolute pt-3 pl-[30px] ">
-              <GrCaretNext size={24} className="hover:inline hidden" />
+          key={item.encodeId} className="flex relative gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
+            
+            <span className="absolute pt-3 pl-[30px] top-0 left-0 w-full h-full hover:opacity-100 opacity-0">
+              <GrCaretNext size={24} />
             </span>
             <div className="flex " title={item.title}>
               <img src={item.thumbnail} className="w-12 h-12 object-cover rounded-md ml-4" />

@@ -61,6 +61,7 @@ const Player = () => {
       }
       if (res2?.data.err === 0) {
         // setSource(res2.data.data['128'])
+        console.log(res2)
         console.log(res2.data.data["128"]);
         // setCurrentSec(0);
         // thumbRef.current.style.cssText = `right: 100%`;
@@ -321,6 +322,7 @@ const Player = () => {
     setLoopBtn((pre) => !pre);
   };
   return (
+    
     <div className="px-5 h-full flex justify-center bg-main-300">
       {/* thông tin bài hát */}
       {skeleton ? (
