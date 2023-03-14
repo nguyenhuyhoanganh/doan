@@ -23,8 +23,8 @@ const SearchInput = () => {
         <input
           type='text'
           id='voice-search'
-          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500  focus:outline-none focus:ring-blue-500'
-          placeholder='Search Mockups, Logos, Design Templates...'
+          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 outline-none'
+          placeholder='Search Songs, Artists, Albums...'
           required
         />
         <button type='button' className='absolute inset-y-0 right-0 flex items-center pr-3'>

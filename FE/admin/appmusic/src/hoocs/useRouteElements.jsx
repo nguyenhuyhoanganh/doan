@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import { useContext } from 'react'
 
-import { AppContext } from '../contexts/app.context'
+import { AuthContext } from '../contexts/auth.context'
 import PATH from '../constants/paths'
 
 // layout
@@ -18,16 +18,17 @@ import SongCreate from '../pages/Song/Create'
 import Analytics from '../pages/Analytics'
 import ArtistList from '../pages/Artist/List'
 import ArtistCreate from '../pages/Artist/Create'
+import { AudioProvider } from '../contexts/audio.context'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated } = useContext(AuthContext)
   return isAuthenticated ? <Outlet /> : <Navigate to={PATH.auth.login} />
 }
 
 // prevent authenticated user from returning to the login page
 function RejectedRoute() {
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated } = useContext(AuthContext)
   return !isAuthenticated ? <Outlet /> : <Navigate to={PATH.dashboard.root} />
 }
 
@@ -87,7 +88,14 @@ const useRouteElements = () => {
               path: 'song',
               children: [
                 { element: <Navigate to={PATH.dashboard.song.root} replace /> },
-                { path: '', element: <SongList /> },
+                {
+                  path: '',
+                  element: (
+                    <AudioProvider>
+                      <SongList />
+                    </AudioProvider>
+                  )
+                },
                 { path: 'create', element: <SongCreate /> }
               ]
             },

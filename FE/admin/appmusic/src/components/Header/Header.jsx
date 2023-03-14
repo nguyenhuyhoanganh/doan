@@ -4,12 +4,12 @@ import { NavLink, useLocation } from 'react-router-dom'
 
 import authApi from '../../apis/auth.api'
 import PATH from '../../constants/paths'
-import { AppContext } from '../../contexts/app.context'
+import { AuthContext } from '../../contexts/auth.context'
 import Popover from '../Popover'
 
 const Header = (props) => {
   const location = useLocation()
-  const { setIsAuthenticated, setProfile, profile } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile, profile } = useContext(AuthContext)
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {

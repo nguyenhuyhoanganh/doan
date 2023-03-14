@@ -8,12 +8,12 @@ import Input from '../../components/Input'
 import authApi from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityError } from '../../utils/utils'
 import { useContext } from 'react'
-import { AppContext } from '../../contexts/app.context'
+import { AuthContext } from '../../contexts/auth.context'
 import Button from '../../components/Button'
 import PATH from '../../constants/paths'
 
 const Login = () => {
-  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AuthContext)
   const navigate = useNavigate()
   const {
     register,

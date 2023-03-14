@@ -1,75 +1,59 @@
 import { useQuery } from '@tanstack/react-query'
-
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { omitBy, isUndefined } from 'lodash'
 import songApi from '../../../apis/song.api'
 import PATH from '../../../constants/paths'
-
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
 import Pagination from '../../../components/Pagination/Pagination'
 import useQueryParams from '../../../hoocs/useQueryParams'
 import SearchInput from '../../../components/SearchInput'
-import { NavLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import SongItem from './SongItem'
+import { BiFilterAlt } from 'react-icons/bi'
+import Filter from './Filter'
+import { useContext } from 'react'
+import { AudioContext } from '../../../contexts/audio.context'
 
 const SongList = () => {
-  // handle playAudio
-  const [audio, setAudio] = useState(null)
-  const [isPlay, setIsPlay] = useState(false)
-  const [source, setSource] = useState('')
-  const [isLoading, setIsLoading] = useState('')
-  // fetch songs
+  const [isActiveFilter, setIsActiveFilter] = useState(false)
+  const { audio, setSongSelected, setIsPlaying, setIsLoading } = useContext(AudioContext)
+  // rrd
+  const navigate = useNavigate()
+  const { search } = useLocation()
+  //  query
   const queryParams = useQueryParams()
+  // omitBy: remove undefined values
+  const queryConfig = omitBy(
+    {
+      page: queryParams.page || 1,
+      limit: queryParams.limit || 10,
+      sortBy: queryParams.sort_by,
+      orderBy: queryParams.order_by,
+      title: queryParams.title
+    },
+    isUndefined
+  )
+  // scroll to top, pause audio when change query
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    audio instanceof Audio && audio.pause()
+    setSongSelected(null)
+    setIsPlaying(false)
+    setIsLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search])
+
+  // fetch songs
   const { data } = useQuery({
-    queryKey: ['songs', queryParams],
+    queryKey: ['songs', queryConfig],
     queryFn: () => {
-      return songApi.getSongs(queryParams)
-    }
+      return songApi.getSongs(queryConfig)
+    },
+    keepPreviousData: true
   })
 
-  useEffect(() => {
-    const onLoadded = () => {
-      setIsLoading(false)
-    }
-
-    const onLoading = () => {
-      setIsLoading(true)
-    }
-
-    const onEnded = () => {
-      if (audio.paused) {
-        audio.play()
-      }
-    }
-
-    if (audio instanceof Audio) {
-      audio.addEventListener('loadstart', onLoading)
-      audio.addEventListener('canplay', onLoadded)
-      audio.addEventListener('ended', onEnded)
-    }
-
-    return () => {
-      if (audio instanceof Audio) {
-        audio.pause()
-        audio.removeEventListener('loadstart', onLoading)
-        audio.removeEventListener('canplay', onLoadded)
-        audio.removeEventListener('ended', onEnded)
-      }
-    }
-  }, [audio])
-
-  useEffect(() => {
-    if (audio && isPlay === true) audio.play()
-    if (audio && isPlay === false) audio.pause()
-  }, [isPlay, audio])
-
-  useEffect(() => {
-    source !== '' && setAudio(new Audio(source))
-    setIsPlay(true)
-  }, [source])
-
-  const handlePlayAudio = (sourceNew) => {
-    source !== sourceNew && setSource(sourceNew)
-    source === sourceNew && setIsPlay((prevState) => !prevState)
+  const handleClickCreateBtn = () => {
+    navigate(PATH.dashboard.song.create)
   }
 
   return (
@@ -91,37 +75,35 @@ const SongList = () => {
           }
         ]}
       />
-      <div className='mt-4 flex items-center'>
+      <div className='mt-4 flex items-center gap-1'>
+        <button
+          className='flex items-center justify-around gap-1 rounded-lg px-4 py-2.5 text-gray-700 hover:bg-gray-100'
+          onClick={() => setIsActiveFilter((prev) => !prev)}
+        >
+          <BiFilterAlt /> Filter
+        </button>
         <SearchInput />
-        <NavLink
-          to={PATH.dashboard.song.create}
+        <button
+          onClick={handleClickCreateBtn}
           type='button'
-          className='ml-2 min-w-[5.5rem] rounded-lg bg-green-500 py-2.5 px-4 text-center text-sm font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300'
+          className='ml-2 min-w-[5.5rem] rounded-lg bg-green-500 py-2.5 px-4 text-center text-sm font-medium text-white hover:bg-green-600'
         >
           Create
-        </NavLink>
+        </button>
       </div>
+      <Filter active={isActiveFilter} />
       <div className='mt-2 flex flex-auto flex-col gap-5 shadow'>
         <div>
           {data
             ? data.data.data?.map((song) => {
-                return (
-                  <SongItem
-                    key={song.id}
-                    isLoading={isLoading}
-                    isPlay={isPlay}
-                    song={song}
-                    source={source}
-                    onPlayAudio={handlePlayAudio}
-                  />
-                )
+                return <SongItem key={song.id} song={song} />
               })
-            : Array(10)
+            : Array(queryConfig.limit)
                 .fill(0)
                 .map((_, index) => <LoadingItem key={index} />)}
         </div>
       </div>
-      <Pagination />
+      {data && <Pagination queryConfig={queryConfig} results={data.data.results} />}
     </>
   )
 }
