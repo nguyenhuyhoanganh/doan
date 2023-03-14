@@ -1,6 +1,6 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Home, Login, Pubic, Personal, Zingchart, Follow, Album, SongInfo } from "./containers/public/";
+import { Home, Login, Pubic, Personal, Zingchart, Follow, Album, SongInfo, Search } from "./containers/public/";
 import { Routes, Route } from "react-router-dom";
 import path from "./utils/path";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-      <div className="">
+      <div>
         <Routes>
           <Route path={path.PUBLIC} element={<Pubic/>}>
             // nằm trong rt khác thì lấy path cha + con
@@ -29,6 +29,7 @@ function App() {
             <Route path={path.ALBUM__TITLE__PID} element={<Album />}/>
             <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
             <Route path={path.SONG__SID} element={<SongInfo />}/>
+            <Route path={path.SEARCH} element={<Search />}/>
 
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

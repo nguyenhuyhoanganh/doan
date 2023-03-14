@@ -24,20 +24,8 @@ const Slider = () => {
   const [skeleton, setSkeleton] = useState(null);
   const dispatch = useDispatch(); // redux
   const { banner } = useSelector((state) => {
-    console.log(state.app)
-
     return state.app;
   });
-  const getSlider = () => {
-    console.log("ok slider");
-    setSkeleton(false);
-    fakeWaitAPI && clearTimeout(fakeWaitAPI);
-  };
-  useEffect(() => {
-    fakeWaitAPI = setTimeout(getSlider, 4000);
-    // fakeWaitAPI
-    setSkeleton(true); 
-  }, []);
   useEffect(() => {
     const sliderEls = document.getElementsByClassName("slider-item");
     let min = 0;
@@ -103,13 +91,14 @@ const Slider = () => {
     // console.log(item);
     const albumPath = "album/" + item?.slug + `/${item?.id}`
     navigate(albumPath);
+    dispatch(actions.setPlaylistData(null));
     
     // code for song in homepage
     if (item?.type === 1) {
       // is song get id stored in localStorage
       dispatch(actions.setCurSongId(item.encodeId));
       dispatch(actions.play(true));
-      dispatch(actions.setPlaylistData(null));
+      // dispatch(actions.setPlaylistData(null));
     } else if (item?.type === 4) {
       console.log(item);
       // link = /album/Nhac-Moi-Moi-Ngay-Sam-Smith-Vu-Cat-Tuong-STAYC-Hoang-Thuy-Linh/67WIO6CF.html
@@ -125,7 +114,7 @@ const Slider = () => {
 
   return (
     <div className="w-full overflow-hidden px-[59px]">
-      {console.log(skeleton)}
+      {/* {console.log(skeleton)} */}
       {skeleton ? (
         <SkeletonSlider />
       ) : (

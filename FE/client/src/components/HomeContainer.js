@@ -21,7 +21,7 @@ const HomeContainer = () => {
   };
   useEffect(() => {
     fakeWaitAPI = setTimeout(setList, 1000);
-    console.log('reset')
+    // console.log('reset')
   }, []);
   const navigate = useNavigate();
 

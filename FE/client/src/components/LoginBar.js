@@ -5,18 +5,6 @@ import { NavLink } from "react-router-dom";
 const { RiVipFill } = icons;
 const LoginBar = () => {
   const loginImg = document.getElementById("loginImg");
-  console.log(loginImg);
-  // loginImg?.addEventListener("mouseenter", () => {
-  //   const userInfo = document.getElementById("userInfo");
-  //   userInfo.style.display = "flex";
-  //   console.log(userInfo)
-  //   console.log('hover');
-  // });
-  // loginImg?.addEventListener("mouseout", () => {
-  //   console.log('mouse leave')
-  //   const userInfo = document.getElementById("userInfo");
-  //   userInfo.style.display = "hidden";
-  // });
   return (
     <div className="h-10 border flex rounded-md hover:shadow-md hover:bg-main-300 cursor-pointer">
       <div>

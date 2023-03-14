@@ -4,7 +4,6 @@ export const getHome = () => async (dispatch) => {
     try {
         // console.log("dispatch", dispatch)
         const response = await apis.getHome()
-        console.log(response.data)
         if(response?.data.code === 200){
             // console.log('catch')
             dispatch({

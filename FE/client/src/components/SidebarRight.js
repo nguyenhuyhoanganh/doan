@@ -19,15 +19,11 @@ const SidebarRight = () => {
   // const useDispatch = useDispatch()
   // const { curSongId, isPlaying, atAlbum } = useSelector((state) => state.music);
   const { songs, skip, curSongId } = useSelector((state) => state.music);
-  // console.log(songs);
-  // setSongList(songs)
   useEffect(() => {
     songs &&
       songs.forEach((element, index) => {
-        if (element.encodeId == curSongId) {
+        if (element.id == +curSongId) {
           setSongList(songs.slice(index));
-          // console.log(songs);
-          // console.log(songs.slice(index));
         }
       });
   }, [curSongId]);
@@ -36,10 +32,8 @@ const SidebarRight = () => {
     setSkeleton(true);
     const fetchDetailSong = async () => {
       const res1 = await api.apiGetDetailSong(curSongId);
-      // console.log(res2);
-      if (res1?.data.err === 0) {
-        setCurSong(res1?.data?.data);
-        console.log(curSong);
+      if (res1?.data.code === 200) {
+        setCurSong(res1?.data?.data[0]);
         setSkeleton(false);
       }
     };
@@ -50,26 +44,10 @@ const SidebarRight = () => {
     let autoPlay = !skip;
     dispatch(actions.setAutoSkip(autoPlay));
   };
-  // useEffect(() => {
-  //   console.log('re-render with songs')
-  // }, [])
+
   const activeStyle = "";
   const notActiveStyle = "hidden";
-  console.log("re-render");
 
-  // useEffect(() => {
-  //   var requestOptions = {
-  //     method: "GET",
-  //     redirect: "follow",
-  //   };
-  // TEST API
-  //   fetch("http://localhost:8080/api/songs", requestOptions)
-  //     .then((response) => response.json())
-  //     // .then(result => JSON.parse(result))
-  //     .then((result) => setSong(result.data[0]))
-  //     .catch((error) => console.log("error", error));
-  // }, []);
-  // const audio = new Audio()
   return (
     <div className="bg-main-200 w-full h-screen flex flex-col gap-4">
       {/* {console.log(song)} */}
@@ -100,19 +78,19 @@ const SidebarRight = () => {
           <GrCaretNext size={24} />
         </span> */}
           <img
-            src={curSong?.thumbnailM}
+            src={curSong?.imageUrl}
             className="w-12 h-12 object-cover rounded-md ml-4"
           />
           <div className="flex flex-col gap-1 pl-2">
             <span className="font-bold text-[#fff]">
-              {curSong?.title.length < 25
+              {curSong?.title?.length < 25
                 ? curSong?.title
-                : `${curSong?.title.slice(0, 20)}...`}
+                : `${curSong?.title?.slice(0, 20)}...`}
             </span>
             <span className="text-sm text-[#e7e9e9]">
-              {curSong?.artistsNames.length < 25
-                ? curSong?.artistsNames
-                : `${curSong?.artistsNames.slice(0, 20)}...`}
+              {curSong?.artists[0]?.fullName.length < 25
+                ? curSong?.artists[0].fullName
+                : `${curSong?.artists[0]?.fullName.slice(0, 20)}...`}
             </span>
           </div>
         </div>
@@ -167,9 +145,9 @@ const SidebarRight = () => {
             if (index > 0) {
               return (
                 <div
-                  key={item.encodeId}
+                  key={item.id}
                   onClick={() => {
-                    dispatch(actions.setCurSongId(item?.encodeId));
+                    dispatch(actions.setCurSongId(item?.id));
                     dispatch(actions.play(true));
                     dispatch(actions.playAlbum(true));
                   }}
@@ -179,7 +157,7 @@ const SidebarRight = () => {
                       <GrCaretNext size={24} />
                     </span> */}
                   <img
-                    src={item.thumbnailM}
+                    src={item.imageUrl}
                     className="w-12 h-12 object-cover rounded-md ml-4"
                   />
                   <div className="flex flex-col gap-1 pl-2">
@@ -189,9 +167,9 @@ const SidebarRight = () => {
                         : `${item.title.slice(0, 20)}...`}
                     </span>
                     <span className="text-sm text-[#171e1e]">
-                      {item.artistsNames.length < 25
-                        ? item.artistsNames
-                        : `${item.artistsNames.slice(0, 25)}...`}
+                      {item.artists[0]?.fullName.length < 25
+                        ? item.artists[0]?.fullName
+                        : `${item.artists[0]?.fullName.slice(0, 25)}...`}
                     </span>
                   </div>
                 </div>

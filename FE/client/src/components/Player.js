@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import SkeletonComment from "./SkeletonComment";
 import { useNavigate } from "react-router-dom";
 
-
 var intervalId;
 const Player = () => {
   const {
@@ -26,15 +25,13 @@ const Player = () => {
     TbRepeat,
     TbRepeatOnce,
   } = icons;
-  const navigate = useNavigate()
-  // const [isPlaying, setIsPlaying] = useState(false)
+  const navigate = useNavigate();
   let songSuf = null;
   const dispatch = useDispatch();
   const { curSongId, isPlaying, atAlbum, songs } = useSelector(
     (state) => state.music
   );
   const [songInfo, setSongInfo] = useState(null);
-  // const [source, setSource] = useState(null);
   const [currentSec, setCurrentSec] = useState(0);
   const thumbRef = useRef();
   const trackRef = useRef();
@@ -43,40 +40,25 @@ const Player = () => {
   const [isVipSong, setIsVipSong] = useState(false);
   const [skeleton, setSkeleton] = useState(true);
   const [loopBtn, setLoopBtn] = useState(false);
-  // const audioElm = useRef(new Audio())
   var tempSource;
   const [audio, setAudio] = useState(new Audio());
   useEffect(() => {
     const fetchDetailSong = async () => {
       setSkeleton(true);
-      const [res1, res2] = await Promise.all([
-        api.apiGetDetailSong(curSongId),
-        api.apiGetSong(curSongId),
-      ]);
-      // console.log(res2);
-      if (res1?.data.err === 0) {
-        setSongInfo(res1.data.data);
-        console.log(res1.data.data);
-        setIsVipSong(false);
-      }
-      if (res2?.data.err === 0) {
-        // setSource(res2.data.data['128'])
-        console.log(res2)
-        console.log(res2.data.data["128"]);
-        // setCurrentSec(0);
-        // thumbRef.current.style.cssText = `right: 100%`;
-        audio.pause();
-        setAudio(new Audio(res2.data.data["128"]));
-        tempSource = res2.data.data["128"];
-        setIsVipSong(false);
+      const res = await api.apiGetDetailSong(curSongId);
+      if (res?.data.code === 200) {
+        audio.pause()
+        setSongInfo(res?.data?.data[0]);
+        setAudio(new Audio(res?.data?.data[0]?.sourceUrls[0]))
         setSkeleton(false);
+        setIsVipSong(false);
       } else {
         // ERROR occurred when call VIP songs
-        console.log(res2?.data.err);
+        console.log(res?.data.code);
         audio.pause();
         setAudio(new Audio());
         dispatch(actions.play(false));
-        toast.warning(res2.data.msg);
+        toast.warning(res.data.msg);
         toast.warning("Không nghe nhạc VIP");
         setCurrentSec(0);
         setIsVipSong(true);
@@ -89,7 +71,10 @@ const Player = () => {
     fetchDetailSong();
   }, [curSongId]);
 
-  console.log(isVipSong);
+  // useEffect(()=>{
+  //   console.log()
+  // }, [isPlaying])
+  // console.log(isVipSong);
   useEffect(() => {
     // dispatch(actions.play(true))
     intervalId && clearInterval(intervalId);
@@ -113,14 +98,13 @@ const Player = () => {
       }, 100);
     }
   }, [audio]);
-  console.log("AT ALBUM", atAlbum);
+  // console.log("AT ALBUM", atAlbum);
 
   const handleEnd = () => {
     intervalId && clearInterval(intervalId);
     // trường hợp có lặp
     if (loopBtn) {
       console.log("lặp lại bài");
-      // setAudio(new Audio(tempSource))
       audio.currentTime = 0;
       audio.play();
       intervalId = setInterval(() => {
@@ -130,13 +114,11 @@ const Player = () => {
         // console.log(percent);
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
-
       }, 100);
-
     } else {
       console.log("loop", loopBtn);
       console.log("hết bài");
-      if (!songs || songs[songs.length - 1].encodeId == curSongId) {
+      if (!songs || songs[songs.length - 1].id === curSongId) {
         console.log("là bài cuối");
       } else {
         handleNextSong();
@@ -159,12 +141,6 @@ const Player = () => {
         // console.log(percent)
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
-        console.log(Math.floor(audio.currentTime), songInfo.duration);
-        // if (Math.floor(audio.currentTime) == songInfo.duration) {
-        //   console.log("Next bài");
-        //   // handleNextSong();
-        // }
-        // console.log(audio.currentTime)
       }, 100);
     }
   }, [isPlaying]);
@@ -174,7 +150,6 @@ const Player = () => {
     if (!isVipSong) {
       if (!isVipSong) {
         if (isPlaying) {
-          console.log("pause");
           audio.pause();
           dispatch(actions.play(false));
         } else {
@@ -203,26 +178,27 @@ const Player = () => {
     setCurrentSec(Math.round((percent * songInfo.duration) / 100));
   };
   const handleNextSong = () => {
+    console.log(songs)
     if (songSuf != null) {
       // phát theo list này
       console.log("phát theo suffle");
     } else {
       if (songs != null) {
-        // console.log("1");
+        console.log("1");
 
         let curSongIndex;
         songs?.forEach((item, index) => {
-          if (item.encodeId == curSongId) {
+          if (item.id === +curSongId) {
             curSongIndex = index;
           }
         });
 
         // dispatch(actions.setCurSongId(songs[curSongId + 1]?.encodeId));
-        if (curSongIndex < songs.length) {
-          dispatch(actions.setCurSongId(songs[curSongIndex + 1]?.encodeId));
+        if (curSongIndex < songs.length-1) {
+          dispatch(actions.setCurSongId(songs[curSongIndex + 1]?.id));
           dispatch(actions.play(true));
         } else {
-          dispatch(actions.setCurSongId(songs[0]?.encodeId));
+          dispatch(actions.setCurSongId(songs[0]?.id));
           dispatch(actions.play(true));
         }
         // console.log(songs[curSongIndex + 1]?.encodeId);
@@ -238,17 +214,17 @@ const Player = () => {
 
       let curSongIndex;
       songs?.forEach((item, index) => {
-        if (item.encodeId === curSongId) {
+        if (item.id === +curSongId) {
           curSongIndex = index;
         }
       });
 
       // dispatch(actions.setCurSongId(songs[curSongId + 1]?.encodeId));
       if (curSongIndex > 0) {
-        dispatch(actions.setCurSongId(songs[curSongIndex - 1]?.encodeId));
+        dispatch(actions.setCurSongId(songs[curSongIndex - 1]?.id));
         dispatch(actions.play(true));
       } else {
-        dispatch(actions.setCurSongId(songs[songs.length - 1]?.encodeId));
+        dispatch(actions.setCurSongId(songs[songs.length - 1]?.id));
         dispatch(actions.play(true));
       }
       // console.log(songs[curSongIndex + 1]?.encodeId);
@@ -285,32 +261,30 @@ const Player = () => {
     return newArray;
   }
   const handleShuffle = (e) => {
-    console.log("truffle");
-    // console.log(songs);
     // TH chưa có bài nào đc chọn
     if (songs) {
-      if (songs.find((s) => s.encodeId === curSongId)) {
+      if (songs.find((s) => s.id === curSongId)) {
         console.log("bài trong list đc chọn");
         songSuf = songs;
         // dispatch(actions.setPlaylistData(songSuf));
         // xử lý trộn bài loại bỏ 1
         songSuf.forEach((element, index) => {
-          if (element.encodeId === curSongId) {
-            songSuf.splice(index, 1);
-          }
+          // if (element.id === curSongId) {
+          //   songSuf.splice(index, 1);
+          // }
         });
         songSuf = shuffle(songSuf);
         dispatch(actions.setPlaylistData(songSuf));
-        dispatch(actions.setCurSongId(songSuf[0].encodeId));
+        dispatch(actions.setCurSongId(songSuf[0].id));
         dispatch(actions.play(true));
       } else {
         console.log("bài trong list chưa được chọn");
         const songSuf = shuffle(songs);
         dispatch(actions.setPlaylistData(songSuf));
         // phát luôn bài đầu tiên này
-        console.log(songSuf[0].encodeId);
-        console.log(songSuf[0]);
-        songSuf && dispatch(actions.setCurSongId(songSuf[0].encodeId));
+        console.log(songSuf[0].id);
+
+        songSuf && dispatch(actions.setCurSongId(songSuf[0].id));
       }
     } else {
       toast.info("chưa có bài hát trong danh sách phát");
@@ -322,21 +296,22 @@ const Player = () => {
     setLoopBtn((pre) => !pre);
   };
   return (
-    
     <div className="px-5 h-full flex justify-center bg-main-300">
       {/* thông tin bài hát */}
       {skeleton ? (
-        <div className='w-[30%]'><SkeletonComment /></div>
+        <div className="w-[30%]">
+          <SkeletonComment />
+        </div>
       ) : (
         <div className="w-[30%] flex-auto flex items-center">
           <img
-            src={songInfo?.thumbnail}
+            src={songInfo?.imageUrl}
             className="w-16 h-16 object-cover rounded-md ml-4"
           />
           <div className="flex flex-col gap-1 pl-2">
             <span className="font-semibold">{songInfo?.title}</span>
             <span className="text-sm text-gray-500">
-              {songInfo?.artistsNames}
+              {songInfo?.artists[0].fullName}
             </span>
           </div>
           <div className="flex gap-3 ml-8 cursor-pointer">
@@ -344,7 +319,7 @@ const Player = () => {
             <AiOutlineHeart size={24} className="hover:text-red-500" />
             <MdInfoOutline
               onClick={() => {
-                navigate('/song/' + curSongId)
+                navigate("/song/" + songInfo?.slug);
               }}
               size={24}
               className="hover:text-[#fff]"
@@ -447,7 +422,7 @@ const Player = () => {
         <div
           onClick={handleClickVoiceConfig}
           ref={voiceRefTrack}
-          className="h-[2px] w-full hover:h-[5px] rounded-l-full rounded-r-full bg-main-100 relative"
+          className="h-[2px] w-full hover:h-[5px] rounded-l-full rounded-r-full bg-main-100 relative cursor-pointer"
         >
           <div
             ref={voiceRef}
