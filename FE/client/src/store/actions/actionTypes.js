@@ -6,6 +6,8 @@ const actionTypes = {
     SET_ALBUM: 'SET_ALBUM',
     PLAYLIST: 'PLAYLIST',
     SKIP: 'SKIP',
+    GET_NEW_RELEASE: 'GET_NEW_RELEASE',
+    GET_TOP_10: 'GET_TOP_10'
 }
 
 export default actionTypes

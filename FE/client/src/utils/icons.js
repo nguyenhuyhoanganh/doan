@@ -4,7 +4,7 @@ import {
   MdInfoOutline,
   MdPlaylistPlay
 } from "react-icons/md";
-import { BiDisc } from "react-icons/bi";
+import { BiDisc, BiLogOutCircle, BiInfoCircle, BiLogInCircle } from "react-icons/bi";
 import {
   AiOutlineBarChart,
   AiOutlineArrowLeft,
@@ -18,8 +18,8 @@ import { BsMicFill, BsShuffle, BsVolumeUp, BsToggleOff, BsToggleOn } from "react
 import { RiVipFill } from "react-icons/ri";
 import { IoMdSkipBackward, IoMdSkipForward} from "react-icons/io"
 import { RxLoop} from "react-icons/rx"
-import { GrCaretNext} from "react-icons/gr"
-import { TbRepeat, TbRepeatOnce} from "react-icons/tb"
+import { TbRepeat, TbRepeatOnce, TbPlayerTrackNext} from "react-icons/tb"
+import { GrContactInfo} from "react-icons/gr"
 
 const icons = {
   MdOutlineLibraryMusic,
@@ -43,8 +43,13 @@ const icons = {
   MdPlaylistPlay,
   BsToggleOff,
   BsToggleOn,
-  GrCaretNext,
+  TbPlayerTrackNext,
   TbRepeat,
-  TbRepeatOnce
+  TbRepeatOnce,
+  TbPlayerTrackNext,
+  GrContactInfo,
+  BiLogOutCircle,
+  BiInfoCircle,
+  BiLogInCircle
 };
 export default icons;

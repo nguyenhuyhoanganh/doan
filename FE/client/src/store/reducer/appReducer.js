@@ -2,26 +2,32 @@
 import actionTypes from "../actions/actionTypes";
 const initState = {
   banner: [],
-  // suggest song but now test
+  // new songs
   friday: [],
+  top10: []
 };
 
 const appReducer = (state = initState, action) => {
   switch (action.type) {
-    // case actionTypes.GET_HOME: {
-    //   return {
-    //     ...state, 
-    //     banner:
-    //       action.homeData?.find((item) => item.sectionId === "hSlider")
-    //         ?.items || null,
-    //     friday: action.homeData?.find((item) => item.sectionId === "hArtistTheme")   
-    //   };
-    // }
     case actionTypes.GET_HOME: {
       return {
         ...state, 
         banner:
-          action.homeData || null
+          action.homeData || null,
+      };
+    }
+    case actionTypes.GET_NEW_RELEASE: {
+      return {
+        ...state, 
+        friday:
+          action.newReleaseData || null,
+      };
+    }
+    case actionTypes.GET_TOP_10: {
+      return {
+        ...state, 
+        top10:
+          action.top10 || null,
       };
     }
     default:

@@ -13,6 +13,8 @@ function App() {
   const dispatch = useDispatch() // redux
   useEffect(() => {
     dispatch(actions.getHome())
+    dispatch(actions.getNewRelease())
+    dispatch(actions.getTop10())
   }, [])
 
   return (
@@ -30,7 +32,7 @@ function App() {
             <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
             <Route path={path.SONG__SID} element={<SongInfo />}/>
             <Route path={path.SEARCH} element={<Search />}/>
-
+            
             <Route path={path.STAR} element={<Home/>}/>
           </Route>
         </Routes>

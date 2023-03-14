@@ -13,13 +13,8 @@ const Home = ({ useSkeleton}) => {
         <Header />
       </div> */}
         <Slider />
-        <div className="flex flex-col gap-5 h-auto p-5">
+        <div className="flex flex-col gap-5 h-auto p-5 pt-10">
           <HomeContainer />
-          <SkeletonComment/>
-          <Skeleton/>
-          <SkeletonCard/>
-          <SkeletonSlider/>
-          <SkeletonSong/>
         </div>
       </div>
     </Scrollbars>

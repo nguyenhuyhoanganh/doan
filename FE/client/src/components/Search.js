@@ -14,6 +14,7 @@ const Search = () => {
     if (event.key === "Enter") {
       // Xử lý khi người dùng nhấn phím Enter
       navigate('search/' + event.target.value)
+      setInput("")
     }
   };
   return (

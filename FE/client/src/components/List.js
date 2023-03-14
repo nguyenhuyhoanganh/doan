@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../src/store/actions"
 
 
-const { GrCaretNext } = icons;
+const { TbPlayerTrackNext } = icons;
 const List = ({ songs}) => {
 
   const dispatch = useDispatch()
@@ -15,7 +15,7 @@ const List = ({ songs}) => {
     return second < 10? min + ':0' + second : min + ':' + second
   }
   return (
-    <div className="flex flex-col gap-2 overflow-x-hidden">
+    <div className="flex flex-col gap-2 pr-2 overflow-x-hidden">
       {/*  playlist */}
       {songs?.map((item) => {
         return (
@@ -29,13 +29,13 @@ const List = ({ songs}) => {
           key={item.id} className="flex relative gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
             
             <span className="absolute pt-3 pl-[30px] top-0 left-0 hover:opacity-100 opacity-0">
-              <GrCaretNext size={24} />
+              <TbPlayerTrackNext size={24} />
             </span>
             <div className="flex " title={item.title}>
               <img src={item.imageUrl} className="w-12 h-12 object-cover rounded-md ml-4" />
               <div className="flex flex-col gap-1 pl-2">
                 <span className="font-bold text-[#111010]">{item.title.length < 40? item.title : `${item.title.slice(0, 40)}...`}</span>
-                <span className="text-sm text-[#171e1e]">{item.artistsNames}</span>
+                <span className="text-sm text-[#171e1e]">{item.artists[0].fullName}</span>
               </div>
             </div>
             <span>{handleTime(item.duration)}</span>
