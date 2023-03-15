@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom'
 const HeaderBreadcrumbs = ({ links, title }) => {
   // const { pathname } = useLocation()
   return (
-    <>
+    <div>
       <span className='text-lg font-bold text-gray-500'>{title}</span>
-      <nav className='flex border-b border-gray-300 pb-3 pt-2 text-gray-700'>
+      <nav className='flex pb-3 pt-2 text-gray-700'>
         {/*rounded-lg border border-gray-200 bg-gray-50 */}
         <ol className='inline-flex items-center space-x-1 md:space-x-3'>
           {links.map((link, index) =>
@@ -72,7 +72,7 @@ const HeaderBreadcrumbs = ({ links, title }) => {
           )}
         </ol>
       </nav>
-    </>
+    </div>
   )
 }
 

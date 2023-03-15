@@ -17,7 +17,6 @@ import { AudioContext } from '../../../contexts/audio.context'
 const SongList = () => {
   const [isActiveFilter, setIsActiveFilter] = useState(false)
   const { audio, setSongSelected, setIsPlaying, setIsLoading } = useContext(AudioContext)
-  // rrd
   const navigate = useNavigate()
   const { search } = useLocation()
   //  query
@@ -58,23 +57,42 @@ const SongList = () => {
 
   return (
     <>
-      <HeaderBreadcrumbs
-        title='Song List'
-        links={[
-          {
-            title: 'Dashboard',
-            to: PATH.dashboard.root
-          },
-          {
-            title: 'Song',
-            to: PATH.dashboard.song.root
-          },
-          {
-            title: 'List',
-            to: PATH.dashboard.song.root
-          }
-        ]}
-      />
+      <div className='flex items-center justify-between border-b border-gray-300'>
+        <HeaderBreadcrumbs
+          title='Song List'
+          links={[
+            {
+              title: 'Dashboard',
+              to: PATH.dashboard.root
+            },
+            {
+              title: 'Song',
+              to: PATH.dashboard.song.root
+            },
+            {
+              title: 'List',
+              to: PATH.dashboard.song.root
+            }
+          ]}
+        />
+        <button
+          onClick={handleClickCreateBtn}
+          type='button'
+          className='ml-2 flex min-w-[5.5rem] items-center gap-1 rounded-lg bg-green-500/80 py-2.5 px-4 text-sm font-medium text-white shadow hover:bg-green-500 hover:drop-shadow-lg'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            strokeWidth={1.5}
+            stroke='currentColor'
+            className='h-5 w-5'
+          >
+            <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z' />
+          </svg>
+          New Song
+        </button>
+      </div>
       <div className='mt-4 flex items-center gap-1'>
         <button
           className='flex items-center justify-around gap-1 rounded-lg px-4 py-2.5 text-gray-700 hover:bg-gray-100'
@@ -83,13 +101,6 @@ const SongList = () => {
           <BiFilterAlt /> Filter
         </button>
         <SearchInput />
-        <button
-          onClick={handleClickCreateBtn}
-          type='button'
-          className='ml-2 min-w-[5.5rem] rounded-lg bg-green-500 py-2.5 px-4 text-center text-sm font-medium text-white hover:bg-green-600'
-        >
-          Create
-        </button>
       </div>
       <Filter active={isActiveFilter} />
       <div className='mt-2 flex flex-auto flex-col gap-5 shadow'>

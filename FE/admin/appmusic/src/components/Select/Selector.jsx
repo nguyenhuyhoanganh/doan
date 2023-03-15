@@ -1,9 +1,24 @@
+import { useEffect, useRef } from 'react'
 import { useState } from 'react'
 
 const Selector = ({ id, options, selected, onSelected }) => {
   const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [ref])
+
   return (
-    <div className='relative w-full' id={id}>
+    <div className='relative w-full' id={id} ref={ref}>
       <div
         onClick={() => setOpen(!open)}
         className={`flex h-[40px] w-full items-center justify-between rounded-lg border border-gray-300 bg-gray-50 p-[10px] text-sm ${

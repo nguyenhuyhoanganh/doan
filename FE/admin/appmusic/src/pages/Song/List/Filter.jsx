@@ -18,7 +18,9 @@ const Filter = ({ active }) => {
 
   return (
     <div
-      className={`mx-2 my-4 grid grid-cols-12 gap-3 transition-all ${!active ? 'max-h-0 opacity-0' : 'max-h-screen'}`}
+      className={`mx-2 my-4 grid grid-cols-12 gap-3 transition-all ${
+        !active ? 'my-0 max-h-0 opacity-0' : 'max-h-screen'
+      }`}
     >
       <div className='col-span-6 flex items-center justify-between gap-2'>
         <label htmlFor='title' className='mb-2 block w-32 text-right text-sm font-medium text-gray-900'>
