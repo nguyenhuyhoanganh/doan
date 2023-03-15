@@ -1,6 +1,6 @@
-const SearchInput = () => {
+const SearchInput = ({ value, onChange, onActive }) => {
   return (
-    <div className='relative flex w-full flex-1 items-center'>
+    <div className='relative flex w-full flex-1 items-center' onClick={onActive}>
       <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
         <svg
           aria-hidden='true'
@@ -18,7 +18,9 @@ const SearchInput = () => {
       </div>
       <input
         type='text'
-        className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 outline-none'
+        value={value || ''}
+        onChange={(event) => onChange(event.target.value)}
+        className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 outline-none`}
         placeholder='Search Songs, Artists, Albums...'
       />
     </div>

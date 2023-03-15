@@ -63,7 +63,10 @@ const Pagination = ({ queryConfig, results }) => {
         return (
           <li key={index}>
             <NavLink
-              to={{ pathname: pathname, search: createSearchParams({ ...queryConfig, page: pageNumber }).toString() }}
+              to={{
+                pathname: pathname,
+                search: createSearchParams({ ...queryConfig, page: pageNumber }).toString()
+              }}
               className={`${
                 page === pageNumber && 'bg-gray-100 text-gray-700'
               } border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700`}
@@ -76,7 +79,7 @@ const Pagination = ({ queryConfig, results }) => {
   }
 
   return (
-    <div className='mt-5 flex flex-col items-center'>
+    <div className='mt-5 mb-5 flex flex-col items-center'>
       <span className='text-sm text-gray-700'>
         Showing <span className='font-semibold text-gray-900 '>{(page - 1) * limit + 1}</span> to{' '}
         <span className='font-semibold text-gray-900 '>{page * limit <= results ? page * limit : results}</span> of{' '}
@@ -92,7 +95,10 @@ const Pagination = ({ queryConfig, results }) => {
               </span>
             ) : (
               <NavLink
-                to={{ pathname: pathname, search: createSearchParams({ ...queryConfig, page: page - 1 }).toString() }}
+                to={{
+                  pathname: pathname,
+                  search: createSearchParams({ ...queryConfig, page: page - 1 }).toString()
+                }}
                 className='rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700'
               >
                 Prev
@@ -107,7 +113,10 @@ const Pagination = ({ queryConfig, results }) => {
               </span>
             ) : (
               <NavLink
-                to={{ pathname: pathname, search: createSearchParams({ ...queryConfig, page: page + 1 }).toString() }}
+                to={{
+                  pathname: pathname,
+                  search: createSearchParams({ ...queryConfig, page: page + 1 }).toString()
+                }}
                 className='rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700'
               >
                 Next

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useState } from 'react'
 
-const Selector = ({ id, options, selected, onSelected }) => {
+const Selector = ({ placeHolder, options, selected, onSelected }) => {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -18,7 +18,7 @@ const Selector = ({ id, options, selected, onSelected }) => {
   }, [ref])
 
   return (
-    <div className='relative w-full' id={id} ref={ref}>
+    <div className='relative w-full' ref={ref}>
       <div
         onClick={() => setOpen(!open)}
         className={`flex h-[40px] w-full items-center justify-between rounded-lg border border-gray-300 bg-gray-50 p-[10px] text-sm ${
@@ -29,7 +29,7 @@ const Selector = ({ id, options, selected, onSelected }) => {
           ? selected?.title?.length > 25
             ? selected?.title?.substring(0, 25) + '...'
             : selected?.title
-          : 'Select option...'}
+          : placeHolder || 'Select option...'}
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'

@@ -9,6 +9,7 @@ const HeaderBreadcrumbs = ({ links, title }) => {
         {/*rounded-lg border border-gray-200 bg-gray-50 */}
         <ol className='inline-flex items-center space-x-1 md:space-x-3'>
           {links.map((link, index) =>
+            // last
             index === links.length - 1 ? (
               <li aria-current='page' key={link.title}>
                 <div className='flex min-h-[24px] items-center'>
@@ -34,7 +35,14 @@ const HeaderBreadcrumbs = ({ links, title }) => {
                 </div>
               </li>
             ) : index === 0 ? (
-              <li className='inline-flex items-center' key={link.title}>
+              // first
+              <li
+                className='inline-flex items-center'
+                key={link.title}
+                onClick={() => {
+                  link.trigger && link.trigger()
+                }}
+              >
                 <NavLink
                   to={link?.to}
                   className='inline-flex items-center text-sm font-medium text-gray-700 hover:text-main-color hover:underline hover:underline-offset-1'
@@ -44,7 +52,13 @@ const HeaderBreadcrumbs = ({ links, title }) => {
                 </NavLink>
               </li>
             ) : (
-              <li key={link.title}>
+              // middle
+              <li
+                key={link.title}
+                onClick={() => {
+                  link.trigger && link.trigger()
+                }}
+              >
                 <div className='flex items-center'>
                   <svg
                     aria-hidden='true'
