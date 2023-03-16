@@ -1,11 +1,13 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { BsPlayFill, BsPauseCircle } from 'react-icons/bs'
 import { BiLoader } from 'react-icons/bi'
 import { NavLink } from 'react-router-dom'
 import SongInfo from './SongInfo'
 import Tooltip from '../../../components/Tooltip'
+import { AudioContext } from '../../../contexts/audio.context'
 
-const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
+const SongItem = ({ song }) => {
+  const { songSelected, isLoading, isPlaying, handlePlayAudio: onPlayAudio } = useContext(AudioContext)
   const [isOpenInfo, setIsOpenInfo] = useState(false)
   const covertTime = (sec) => {
     let min = Math.floor(sec / 60)
@@ -18,18 +20,18 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
   return (
     <>
       <div
-        className={`group  grid h-auto w-[100%] cursor-pointer grid-cols-4 gap-4 rounded-md border-b-[1px] border-t-[1px] pr-[10px] hover:bg-gray-100 
-        ${song.sourceUrls.includes(source) && 'bg-gray-100'} ${isOpenInfo && 'bg-gray-100'}`}
+        className={`group  grid h-auto w-[100%] cursor-pointer grid-cols-12 gap-4 rounded-md border-b-[1px] border-t-[1px] pr-[10px] hover:bg-gray-100 
+        ${song === songSelected && 'bg-gray-100'} ${isOpenInfo && 'bg-gray-100'}`}
       >
-        <div className='col-span-2 flex p-3'>
-          <div className='relative h-14 w-14 rounded-md object-cover' onClick={() => onPlayAudio(song.sourceUrls[0])}>
+        <div className='col-span-5 flex p-3'>
+          <div className='relative h-14 w-14 rounded-md object-cover' onClick={() => onPlayAudio(song)}>
             <span className='absolute top-0 left-0 h-full w-full'>
-              {song.sourceUrls.includes(source) &&
+              {song === songSelected &&
                 (isLoading ? (
                   <div className='absolute top-1/2 flex w-full -translate-y-1/2 transform items-center justify-center'>
                     <BiLoader size={36} className='animate-spin text-white' />
                   </div>
-                ) : isPlay ? (
+                ) : isPlaying ? (
                   <div className='absolute top-1/2 flex w-full -translate-y-1/2 transform items-center justify-center'>
                     <span
                       className={`h-6 w-6 bg-contain bg-center bg-no-repeat`}
@@ -41,7 +43,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
                 ) : (
                   <BsPauseCircle size={36} className='absolute top-1/2 w-full -translate-y-1/2 transform text-white' />
                 ))}
-              {!song.sourceUrls.includes(source) && (
+              {song !== songSelected && (
                 <BsPlayFill
                   size={36}
                   className={`absolute top-1/2 w-full -translate-y-1/2 transform text-white group-hover:opacity-100 
@@ -51,7 +53,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
             </span>
             <img src={song.imageUrl} alt={song.title} className='h-14 w-14 rounded-md object-cover' />
           </div>
-          <div className='flex flex-col gap-1 pl-2'>
+          <div className='flex max-w-sm flex-col gap-1 overflow-hidden whitespace-nowrap pl-2'>
             <span className='truncate pt-1 text-base font-bold text-gray-800'>{song.title}</span>
             <span className='truncate'>
               {song.artists &&
@@ -69,7 +71,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
             </span>
           </div>
         </div>
-        <div className='col-span-1 flex items-center justify-start p-2 pr-4'>
+        <div className='col-span-5 flex items-center justify-start p-2 pr-4'>
           <NavLink
             to={`/dashboard/album/${song.album?.slug}`}
             className='text-sm text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
@@ -77,7 +79,7 @@ const SongItem = ({ song, source, isLoading, isPlay, onPlayAudio }) => {
             {song.album.title}
           </NavLink>
         </div>
-        <div className='relative col-span-1'>
+        <div className='relative col-span-2'>
           <div className='absolute right-4 top-[50%] -translate-y-1/2 opacity-0 group-hover:opacity-100'>
             <div className='flex items-center justify-items-end'>
               <Tooltip content='Edit'>

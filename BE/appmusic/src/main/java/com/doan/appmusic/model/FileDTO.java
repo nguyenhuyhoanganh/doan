@@ -1,5 +1,6 @@
 package com.doan.appmusic.model;
 
+import com.doan.appmusic.enums.StorageOption;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,8 @@ public class FileDTO {
     private String type;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String url;
+    private StorageOption storageOption;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private byte[] data;
 }

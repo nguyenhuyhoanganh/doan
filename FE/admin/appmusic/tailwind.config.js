@@ -13,6 +13,9 @@ module.exports = {
       },
       backgroundImage: {
         'banner-image': "url('/src/imgs/banner.jpg')"
+      },
+      fontFamily: {
+        Poppins: 'Poppins'
       }
     }
   },

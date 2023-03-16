@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 import App from './App'
-import { AppProvider } from './contexts/app.context'
+import { AuthProvider } from './contexts/auth.context'
 import './index.css'
 
 // import reportWebVitals from './reportWebVitals'
@@ -23,9 +23,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <AppProvider>
+        <AuthProvider>
           <App />
-        </AppProvider>
+        </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </BrowserRouter>

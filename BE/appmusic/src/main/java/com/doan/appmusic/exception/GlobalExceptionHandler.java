@@ -54,11 +54,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleException(RuntimeException exception, WebRequest request) {
-        log.error("Error:" + exception.getMessage());
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message("Server error, please try again later").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<Object> handleException(RuntimeException exception, WebRequest request) {
+//        log.error("Error:" + exception.getMessage());
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message("Server error, please try again later").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 }

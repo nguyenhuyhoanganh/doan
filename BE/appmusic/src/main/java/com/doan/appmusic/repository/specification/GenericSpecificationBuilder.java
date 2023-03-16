@@ -30,9 +30,7 @@ public class GenericSpecificationBuilder {
         Specification result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
-            result = Specification.where(result).and(specs.get(i));
-//                    params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i))
-//                    : Specification.where(result).and(specs.get(i));
+            result = params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i)) : Specification.where(result).and(specs.get(i));
         }
         return result;
     }

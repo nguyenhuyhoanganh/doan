@@ -3,12 +3,13 @@ import { NavLink } from 'react-router-dom'
 const HeaderBreadcrumbs = ({ links, title }) => {
   // const { pathname } = useLocation()
   return (
-    <>
+    <div>
       <span className='text-lg font-bold text-gray-500'>{title}</span>
-      <nav className='flex border-b border-gray-300 pb-3 pt-2 text-gray-700'>
+      <nav className='flex pb-3 pt-2 text-gray-700'>
         {/*rounded-lg border border-gray-200 bg-gray-50 */}
         <ol className='inline-flex items-center space-x-1 md:space-x-3'>
           {links.map((link, index) =>
+            // last
             index === links.length - 1 ? (
               <li aria-current='page' key={link.title}>
                 <div className='flex min-h-[24px] items-center'>
@@ -34,7 +35,14 @@ const HeaderBreadcrumbs = ({ links, title }) => {
                 </div>
               </li>
             ) : index === 0 ? (
-              <li className='inline-flex items-center' key={link.title}>
+              // first
+              <li
+                className='inline-flex items-center'
+                key={link.title}
+                onClick={() => {
+                  link.trigger && link.trigger()
+                }}
+              >
                 <NavLink
                   to={link?.to}
                   className='inline-flex items-center text-sm font-medium text-gray-700 hover:text-main-color hover:underline hover:underline-offset-1'
@@ -44,7 +52,13 @@ const HeaderBreadcrumbs = ({ links, title }) => {
                 </NavLink>
               </li>
             ) : (
-              <li key={link.title}>
+              // middle
+              <li
+                key={link.title}
+                onClick={() => {
+                  link.trigger && link.trigger()
+                }}
+              >
                 <div className='flex items-center'>
                   <svg
                     aria-hidden='true'
@@ -72,7 +86,7 @@ const HeaderBreadcrumbs = ({ links, title }) => {
           )}
         </ol>
       </nav>
-    </>
+    </div>
   )
 }
 

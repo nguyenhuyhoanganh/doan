@@ -1,20 +1,20 @@
 import { createContext, useState } from 'react'
 import { getAccessTokenFromLocalStorage, getProfileFromLocalStorage } from '../utils/auth'
 
-const initialAppContext = {
+const initialAuthContext = {
   isAuthenticated: getAccessTokenFromLocalStorage(),
   setIsAuthenticated: () => null,
   profile: getProfileFromLocalStorage(),
   setProfile: () => null
 }
 
-export const AppContext = createContext(initialAppContext)
+export const AuthContext = createContext(initialAuthContext)
 
-export const AppProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(initialAppContext.isAuthenticated)
-  const [profile, setProfile] = useState(initialAppContext.profile)
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(initialAuthContext.isAuthenticated)
+  const [profile, setProfile] = useState(initialAuthContext.profile)
   return (
-    <AppContext.Provider
+    <AuthContext.Provider
       value={{
         isAuthenticated,
         setIsAuthenticated,
@@ -23,6 +23,6 @@ export const AppProvider = ({ children }) => {
       }}
     >
       {children}
-    </AppContext.Provider>
+    </AuthContext.Provider>
   )
 }

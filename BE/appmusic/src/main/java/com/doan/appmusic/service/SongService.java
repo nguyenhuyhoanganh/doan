@@ -160,14 +160,26 @@ class SongServiceImpl implements SongService {
     private Specification<Song> buildSpecification(Map<String, String[]> query) {
         GenericSpecificationBuilder builder = new GenericSpecificationBuilder();
         for (Map.Entry<String, String[]> entry : query.entrySet()) {
+            // if entry with key is "search" => search by title, artist name, composer name, album title
+            if (entry.getKey().equals("search")) {
+                builder.with(SearchCriteria.builder().key("title").operation("=").value(entry.getValue()[0]).isOrPredicate(true).build());
+                builder.with(SearchCriteria.builder().key("artists.fullName").operation("=").value(entry.getValue()[0]).isOrPredicate(true).joinType(Artist.class).build());
+                builder.with(SearchCriteria.builder().key("album.title").operation("=").value(entry.getValue()[0]).isOrPredicate(true).joinType(Album.class).build());
+                builder.with(SearchCriteria.builder().key("composer.fullName").operation("=").value(entry.getValue()[0]).isOrPredicate(true).joinType(Composer.class).build());
+                continue;
+            }
             SearchCriteria searchCriteria = null;
+            // request.getParameterMap() can't check query has characters ">" and "<"
+            // => return 1 entry with value is "" and key is query itself
+            // check case query has characters ">" and "<"
             if (entry.getValue()[0].equals("")) {
+                // query split
                 Pattern pattern = Pattern.compile("(\\w+)([><])(\\d+)");
                 Matcher matcher = pattern.matcher(entry.getKey());
                 if (matcher.find()) {
-                    searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3), User.class);
+                    searchCriteria = new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3), Song.class);
                 }
-            } else searchCriteria = new SearchCriteria(entry.getKey(), "=", entry.getValue()[0], User.class);
+            } else searchCriteria = new SearchCriteria(entry.getKey(), "=", entry.getValue()[0], Song.class);
 
             if (searchCriteria != null) {
                 if (entry.getKey().startsWith("tags")) searchCriteria.setJoinType(Tag.class);
@@ -177,6 +189,7 @@ class SongServiceImpl implements SongService {
                 if (entry.getKey().startsWith("album")) searchCriteria.setJoinType(Album.class);
                 if (entry.getKey().startsWith("createdBy")) searchCriteria.setJoinType(User.class);
                 if (entry.getKey().startsWith("updatedBy")) searchCriteria.setJoinType(User.class);
+                if (entry.getKey().startsWith("search")) searchCriteria.setOrPredicate(true);
                 builder.with(searchCriteria);
             }
 

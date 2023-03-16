@@ -27,6 +27,8 @@ public class Album extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
+    private String thumbnailUrl;
+
     @ManyToMany(mappedBy = "albums")
     private List<Artist> artists;
 

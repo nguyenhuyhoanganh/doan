@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useContext, Fragment, useState, useEffect } from 'react'
 
-import { AppContext } from '../../../contexts/app.context'
+import { AuthContext } from '../../../contexts/auth.context'
 import authApi from '../../../apis/auth.api'
 import { NavLink, useLocation } from 'react-router-dom'
 import sideBarItems from '../../../constants/sideBarItems'
@@ -12,7 +12,7 @@ const Aside = ({ isOpenAside }) => {
   const [tabActive, setTabActive] = useState('')
   const [tabsOpen, setTabsOpen] = useState([])
   // handle logout
-  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AuthContext)
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
