@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import path from "../../utils/path"
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,7 +15,11 @@ const Login = () => {
   };
   return (
     <div className="flex h-screen w-auto">
-      <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-300 h-screen w-screen flex z-40"></div>
+      <div 
+      onClick={() => {
+        window.history.back()
+      }}
+      className="absolute top-0 left-0 right-0 bottom-0 bg-gray-300 bg-opacity-80 h-screen w-screen flex z-40"></div>
       <div className="flex w-full">
         <div className="flex flex-col w-[400px] h-[500px] text-[#38d1d1] bg-slate-600 z-50 gap-5 p-5">
           <h1 className="flex justify-center">ĐĂNG NHẬP</h1>
@@ -32,7 +37,7 @@ const Login = () => {
             <input
               className="w-[80%] rounded-md p-1"
               type="password"
-              id="email-input"
+              id="pass-input"
               name="password"
             />
           </div>

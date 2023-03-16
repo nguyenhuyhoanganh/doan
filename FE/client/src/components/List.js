@@ -15,7 +15,7 @@ const List = ({ songs}) => {
     return second < 10? min + ':0' + second : min + ':' + second
   }
   return (
-    <div className="flex flex-col gap-2 pr-2 overflow-x-hidden">
+    <div className="flex flex-col gap-2 pr-2 overflow-x-hidden p-2">
       {/*  playlist */}
       {songs?.map((item) => {
         return (

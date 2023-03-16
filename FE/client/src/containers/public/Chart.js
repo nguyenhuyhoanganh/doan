@@ -4,7 +4,7 @@ import List from "../../components/List";
 import handleDuration from "../../utils/formatDuration";
 import { Scrollbars } from "react-custom-scrollbars-2";
 
-const Zingchart = () => {
+const Chart = () => {
   const [listChart, setListChart] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +27,7 @@ const Zingchart = () => {
               return (
                 <div
                   key={index}
-                  className="flex gap-5 justify-between rounded-lg text-[#0D7373] hover:text-[#fff] border border-[#629898] hover:bg-main-400 mt-5 items-center cursor-pointer hover:shadow-lg"
+                  className="flex gap-5 justify-between p-1 rounded-lg text-[#0D7373] hover:text-[#fff] border border-[#629898] hover:bg-main-400 mt-5 items-center cursor-pointer hover:shadow-lg"
                 >
                   <div className="flex gap-6 w-[50%] items-center">
                     <h1 className="text-[24px] font-semibold pl-2">
@@ -58,4 +58,4 @@ const Zingchart = () => {
   );
 };
 
-export default Zingchart;
+export default Chart;

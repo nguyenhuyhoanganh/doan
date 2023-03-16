@@ -12,8 +12,8 @@ const SidebarLeft = () => {
   const navigate = useNavigate();
   return (
     <div className="flex flex-col bg-main-100">
-      <div onClick={() => {navigate(path.HOME)}} className="w-full h-[70px] py-[15px] px-[25px] flex justify-start items-center cursor-pointer">
-        {/* <img src={logo} alt="logo" className="w-[120px] h-10" /> */}
+      <div onClick={() => {navigate(path.HOME)}} className="w-full h-full flex justify-start items-center cursor-pointer">
+        <img src={process.env.PUBLIC_URL + "/LOGO_3.png"} alt="logo" className="w-full h-auto object-cover" />
       </div>
       <div className="flex flex-col">
         {sidebarMenu.map((item) => (

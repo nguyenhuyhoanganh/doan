@@ -75,3 +75,51 @@ export const apiGetCommentBySId = (sid) => new Promise(async(resolve, reject) =>
         reject(error)
     }
 })
+
+export const apiGetComposers = () => new Promise(async(resolve, reject) => {
+    try {
+        const response = await axios({
+            url: 'composers?sortBy=id&page=1&limit=50',
+            method: 'GET',
+        })
+        resolve(response)
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetArtists = () => new Promise(async(resolve, reject) => {
+    try {
+        const response = await axios({
+            url: 'artists?sortBy=followCount&page=1&limit=50',
+            method: 'GET',
+        })
+        resolve(response)
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetArtistBySlug = (slug) => new Promise(async(resolve, reject) => {
+    try {
+        const response = await axios({
+            url: `artists?slug=${slug}`,
+            method: 'GET',
+        })
+        resolve(response)
+    } catch (error) {
+        reject(error)
+    }
+})
+
+export const apiGetSongsByArtistId = (id) => new Promise(async(resolve, reject) => {
+    try {
+        const response = await axios({
+            url: `songs?artists.id=${id}`,
+            method: 'GET',
+        })
+        resolve(response)
+    } catch (error) {
+        reject(error)
+    }
+})

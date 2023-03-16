@@ -10,6 +10,9 @@ const path = {
     PLAYLIST__TITLE__PID: "playlist/:title/:pid",
     SONG__SID: "song/:slug",
     SEARCH: "search/:key",
+    TEST: "test",
+    ARTIST: "artist/:slug/:id",
+    COMPOSER: "composer/:slug/:id",
     
 }
 export default path

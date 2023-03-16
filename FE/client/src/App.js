@@ -1,11 +1,13 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Home, Login, Pubic, Personal, Zingchart, Follow, Album, SongInfo, Search } from "./containers/public/";
+import { Home, Login, Pubic, Personal, Chart, Follow, Album, SongInfo, Search } from "./containers/public/";
 import { Routes, Route } from "react-router-dom";
 import path from "./utils/path";
 import { useEffect, useState } from "react";
 import * as actions from './store/actions'
 import {useDispatch} from 'react-redux'
+import TestSlide from "./containers/public/TestSlide";
+import Art_Com from "./containers/public/Art_Com";
 
 
 
@@ -26,12 +28,15 @@ function App() {
             <Route path={path.HOME} element={<Home />}/>
             <Route path={path.LOGIN} element={<Login/>}/>
             <Route path={path.MY_MUSIC} element={<Personal/>}/>
-            <Route path={path.ZING_CHART} element={<Zingchart/>}/>
+            <Route path={path.ZING_CHART} element={<Chart/>}/>
             <Route path={path.FOLLOW} element={<Follow />}/>
             <Route path={path.ALBUM__TITLE__PID} element={<Album />}/>
             <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
             <Route path={path.SONG__SID} element={<SongInfo />}/>
             <Route path={path.SEARCH} element={<Search />}/>
+            <Route path={path.TEST} element={<TestSlide />}/>
+            <Route path={path.ARTIST} element={<Art_Com />}/>
+            <Route path={path.COMPOSER} element={<Art_Com />}/>
             
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

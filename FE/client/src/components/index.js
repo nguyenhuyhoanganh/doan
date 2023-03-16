@@ -12,3 +12,4 @@ export { default as Skeleton } from './Skeleton';
 export { default as SkeletonCard } from './SkeletonCard';
 export { default as SkeletonSlider } from './SkeletonSlider';
 export { default as SkeletonSong } from './SkeletonSong';
+export { default as Paginated } from './Paginated';
