@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import categoryApi from '../../../apis/category.api'
-import Selector from '../../../components/Select'
+import Selector from '../../../components/Selector'
 import useQueryParams from '../../../hoocs/useQueryParams'
 
 const SORT_BY = [
@@ -133,7 +133,7 @@ const FilterSong = ({ active, queryConfig }) => {
           id='title'
           type='text'
           placeholder='Type value...'
-          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none'
+          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-gray-900'
           value={title || ''}
           onChange={(e) => setTitle(e.target.value)}
         ></input>
@@ -146,7 +146,7 @@ const FilterSong = ({ active, queryConfig }) => {
           id='artist_name'
           type='text'
           placeholder='Type value...'
-          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none'
+          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-gray-900'
           value={artistName || ''}
           onChange={(e) => setArtistName(e.target.value)}
         ></input>
@@ -160,7 +160,7 @@ const FilterSong = ({ active, queryConfig }) => {
           id='album_title'
           type='text'
           placeholder='Type value...'
-          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none'
+          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-gray-900'
           value={albumTitle || ''}
           onChange={(e) => setAlbumTitle(e.target.value)}
         ></input>
@@ -173,7 +173,7 @@ const FilterSong = ({ active, queryConfig }) => {
           id='composer_name'
           type='text'
           placeholder='Type value...'
-          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none'
+          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 outline-none focus:border-gray-900'
           value={composerName || ''}
           onChange={(e) => setComposerName(e.target.value)}
         ></input>
@@ -191,7 +191,7 @@ const FilterSong = ({ active, queryConfig }) => {
           onSelected={(category) => {
             setCategorySelectedId(category?.id)
           }}
-          placeHolder='All gender'
+          placeholder='All gender'
         />
       </div>
       <div className='col-span-6 flex items-center justify-between gap-2'>

@@ -46,8 +46,10 @@ const Popover = ({
 
   // custom handle toogle
   const handleCloseIfOpen = () => {
-    isOpen && setIsOpen(false)
-    isOpen && onOpenChange && onOpenChange(false)
+    if (trigger === 'click') {
+      isOpen && setIsOpen(false)
+      isOpen && onOpenChange && onOpenChange(false)
+    }
   }
 
   const click = useClick(context, {

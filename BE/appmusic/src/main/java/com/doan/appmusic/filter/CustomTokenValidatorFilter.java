@@ -35,8 +35,8 @@ public class CustomTokenValidatorFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.FORBIDDEN.value()).build();
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNAUTHORIZED.value()).build();
                     ObjectMapper objectMapper = new ObjectMapper();
                     objectMapper.findAndRegisterModules();
                     objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

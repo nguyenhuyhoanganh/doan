@@ -13,13 +13,18 @@ export const AuthContext = createContext(initialAuthContext)
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(initialAuthContext.isAuthenticated)
   const [profile, setProfile] = useState(initialAuthContext.profile)
+  const reset = () => {
+    setIsAuthenticated(false)
+    setProfile(null)
+  }
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         setIsAuthenticated,
         profile,
-        setProfile
+        setProfile,
+        reset
       }}
     >
       {children}

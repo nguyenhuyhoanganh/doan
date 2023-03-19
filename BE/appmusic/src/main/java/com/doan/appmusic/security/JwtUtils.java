@@ -10,8 +10,10 @@ import com.doan.appmusic.entity.User;
 import com.doan.appmusic.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -24,12 +26,12 @@ import java.util.*;
 public class JwtUtils {
     private UserRepository repository;
 
-    public String getSubject(String token) {
+    public String getSubject(String token) throws AuthenticationException {
         DecodedJWT decodedJWT = decodeToken(token);
         return decodedJWT.getSubject();
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token) throws AuthenticationException{
         DecodedJWT decodedJWT = decodeToken(token);
         String email = decodedJWT.getSubject();
         User user = repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
@@ -37,7 +39,7 @@ public class JwtUtils {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public Map<String, Claim> getClaims(String token) {
+    public Map<String, Claim> getClaims(String token) throws AuthenticationException {
         DecodedJWT decodedJWT = decodeToken(token);
         return decodedJWT.getClaims();
     }
@@ -60,12 +62,12 @@ public class JwtUtils {
         return token != null && token.startsWith(SecurityConstants.TOKEN_PREFIX);
     }
 
-    public boolean isAccessToken(String token) {
+    public boolean isAccessToken(String token) throws AuthenticationException{
         DecodedJWT decodedJWT = decodeToken(token);
         return decodedJWT.getClaim("type") != null && decodedJWT.getClaim("type").asString().equals("access_token");
     }
 
-    public boolean isRefreshToken(String token) {
+    public boolean isRefreshToken(String token) throws AuthenticationException{
         DecodedJWT decodedJWT = decodeToken(token);
         return decodedJWT.getClaim("type") != null && decodedJWT.getClaim("type").asString().equals("refresh_token");
     }
@@ -81,11 +83,15 @@ public class JwtUtils {
         return jwtBuilder;
     }
 
-    private DecodedJWT decodeToken(String token) {
-        token = token.substring(7);
-        Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.SECRET_KEY.getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-        return verifier.verify(token);
+    private DecodedJWT decodeToken(String token) throws AuthenticationException {
+        try {
+            token = token.substring(7);
+            Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.SECRET_KEY.getBytes());
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            return verifier.verify(token);
+        } catch (Exception e) {
+            throw new CredentialsExpiredException("Token is not valid");
+        }
     }
 
     private String populateAuthorities(Collection<? extends GrantedAuthority> collection) {

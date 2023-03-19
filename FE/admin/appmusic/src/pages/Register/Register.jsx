@@ -62,7 +62,7 @@ const Register = () => {
                 name='email'
                 register={register}
                 type='email'
-                className='mt-2'
+                className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:shadow-sm'
                 errorMessage={errors.email?.message}
                 placeholder='Email'
               />
@@ -70,7 +70,7 @@ const Register = () => {
                 name='password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:shadow-sm'
                 errorMessage={errors.password?.message}
                 placeholder='Password'
               />
@@ -78,7 +78,7 @@ const Register = () => {
                 name='confirm_password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:shadow-sm'
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Confirm Password'
               />

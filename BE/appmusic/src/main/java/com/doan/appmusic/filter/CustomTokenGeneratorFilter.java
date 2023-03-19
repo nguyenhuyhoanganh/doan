@@ -51,8 +51,8 @@ public class CustomTokenGeneratorFilter extends UsernamePasswordAuthenticationFi
             return authenticationManager.authenticate(authenticationToken);
         } catch (Exception exception) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            ResponseDTO<?> responseBody = ResponseDTO.builder().message("Email or password is incorrect").code(HttpStatus.FORBIDDEN.value()).build();
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            ResponseDTO<?> responseBody = ResponseDTO.builder().message("Email or password is incorrect").code(HttpStatus.UNAUTHORIZED.value()).build();
             objectMapper.writeValue(response.getOutputStream(), responseBody);
         }
         return null;
