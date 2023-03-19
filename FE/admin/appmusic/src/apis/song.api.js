@@ -9,6 +9,9 @@ const songApi = {
   },
   getSongBySlug(slug) {
     return http.get(`${URL}/${slug}`)
+  },
+  createSong(song) {
+    return http.post(`${URL}/create`, song)
   }
 }
 

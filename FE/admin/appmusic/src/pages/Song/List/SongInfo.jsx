@@ -25,18 +25,20 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
     <div tabIndex='-1' className={`} w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Artist</span>
-        {song.artists &&
-          song.artists.map((artist, index, artists) => (
-            <Fragment key={artist?.id}>
-              <NavLink
-                to={`/dashboard/artist/${artist?.slug}`}
-                className='text-sm font-medium line-clamp-2 hover:text-main-color'
-              >
-                {artist?.fullName}
-              </NavLink>
-              {index === artists.length - 1 ? '' : ', '}
-            </Fragment>
-          ))}
+        <div>
+          {song.artists &&
+            song.artists.map((artist, index, artists) => (
+              <Fragment key={artist?.id}>
+                <NavLink
+                  to={`/dashboard/artist/${artist?.slug}`}
+                  className='!inline text-sm font-medium line-clamp-2 hover:text-main-color'
+                >
+                  {artist?.fullName}
+                </NavLink>
+                <span className='!inline text-sm font-medium'>{index === artists.length - 1 ? '' : ', '}</span>
+              </Fragment>
+            ))}
+        </div>
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Album</span>
@@ -58,18 +60,22 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
       </div>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Gender</span>
-        {song.categories &&
-          song.categories.map((category, index, categories) => (
-            <Fragment key={category?.id}>
-              <NavLink
-                to={`/dashboard/category/${category?.slug}`}
-                className='text-sm font-medium line-clamp-2 hover:text-main-color'
-              >
-                {category?.title}
-              </NavLink>
-              {index === categories.length - 1 ? '' : ', '}
-            </Fragment>
-          ))}
+        <div>
+          {song.categories &&
+            song.categories.map((category, index, categories) => (
+              <Fragment key={category?.id}>
+                <NavLink
+                  to={`/dashboard/category/${category?.slug}`}
+                  className='!inline text-sm font-medium line-clamp-2 hover:text-main-color'
+                >
+                  {category?.title}
+                </NavLink>
+                <span className='!inline text-sm font-medium line-clamp-2'>
+                  {index === categories.length - 1 ? '' : ', '}
+                </span>
+              </Fragment>
+            ))}
+        </div>
       </div>
     </div>
   )

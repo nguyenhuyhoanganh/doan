@@ -122,7 +122,7 @@ const FilterSong = ({ active, queryConfig }) => {
   return (
     <div
       className={`mx-2 my-4 grid grid-cols-12 gap-3 transition-all ${
-        !active ? 'my-0 max-h-0 opacity-0' : 'max-h-screen'
+        !active ? 'pointer-events-none my-0 max-h-0 opacity-0' : 'max-h-screen'
       }`}
     >
       <div className='col-span-6 flex items-center justify-between gap-2'>

@@ -29,11 +29,41 @@ export const songSchema = yup.object({
   artists: yup.array().min(1, 'Artist is required'),
   composer: yup.object().nullable().required('Composer is required'),
   album: yup.object().nullable().required('Album is required'),
-  imageUrl: yup.string(),
-  backgroundImageUrl: yup.string(),
-  lyrics: yup.string(),
+  image: yup
+    .mixed()
+    .required('Image is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
+  backgroundImage: yup
+    .mixed()
+    .required('Background image is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
   description: yup.string(),
-  sourceUrls: yup.string()
+  audio: yup
+    .mixed()
+    .required('Audio is required')
+    .test('fileSize', 'File must not exceed 20MB', (value) => {
+      if (!value) return true
+      return value.size <= 20000000
+    })
+    .test('fileType', 'File must be in audio format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('audio')
+    })
+  // lyrics: yup.string(),
 })
 
 // export const getRules = (getValues = undefined) => ({

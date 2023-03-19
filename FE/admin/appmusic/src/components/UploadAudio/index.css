@@ -1,0 +1,4 @@
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-panel {
+  @apply bg-white;
+}

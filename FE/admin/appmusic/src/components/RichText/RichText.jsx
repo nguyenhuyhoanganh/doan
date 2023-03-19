@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css'
 import './index.css'
 const RichText = ({ value, onChange, showPreview }) => {
   return (
-    <div>
+    <div className='mb-8'>
       <ReactQuill value={value} onChange={onChange} placeholder='Write something...' />
       {showPreview && <div className='' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />}
     </div>

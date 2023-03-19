@@ -220,7 +220,7 @@ const SongList = () => {
               .map((_, index) => <LoadingItem key={index} />)
           )}
         </div>
-        {data && data.data.data.result !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
+        {data && data.data.results !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
       </div>
     </>
   )
