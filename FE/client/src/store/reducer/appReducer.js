@@ -1,19 +1,37 @@
 // luu State gia tri lien quan den app
-import actionTypes from "../actions/actionTypes"
+import actionTypes from "../actions/actionTypes";
 const initState = {
-    banner: [],
-
-}
+  banner: [],
+  // new songs
+  friday: [],
+  top10: []
+};
 
 const appReducer = (state = initState, action) => {
-    switch (action.type) {
-        case actionTypes.GET_HOME: 
-            return {
-                ...state,
-                banner: action.homeData?.find(item => item.sectionType === 'banner')?.items || null
-            }   
-        default:
-            return state
+  switch (action.type) {
+    case actionTypes.GET_HOME: {
+      return {
+        ...state, 
+        banner:
+          action.homeData || null,
+      };
     }
-}
-export default appReducer
+    case actionTypes.GET_NEW_RELEASE: {
+      return {
+        ...state, 
+        friday:
+          action.newReleaseData || null,
+      };
+    }
+    case actionTypes.GET_TOP_10: {
+      return {
+        ...state, 
+        top10:
+          action.top10 || null,
+      };
+    }
+    default:
+      return state;
+  }
+};
+export default appReducer;
