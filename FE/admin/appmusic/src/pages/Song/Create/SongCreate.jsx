@@ -1,5 +1,6 @@
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
 import PATH from '../../../constants/paths'
+import Form from './Form'
 
 const SongCreate = () => {
   return (
@@ -21,6 +22,7 @@ const SongCreate = () => {
           }
         ]}
       />
+      <Form />
     </>
   )
 }

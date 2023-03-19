@@ -1,15 +1,15 @@
 import http from '../utils/http'
 
-const URL = 'songs'
-const songApi = {
-  getSongs(params) {
+const URL = 'composers'
+const composerApi = {
+  getComposers(params) {
     return http.get(URL, {
       params
     })
   },
-  getSongBySlug(slug) {
+  getComposerBySlug(slug) {
     return http.get(`${URL}/${slug}`)
   }
 }
 
-export default songApi
+export default composerApi

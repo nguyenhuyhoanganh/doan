@@ -7,8 +7,8 @@ const categoryApi = {
       params
     })
   },
-  getCategoryById(id) {
-    return http.get(`${URL}/S{id}`)
+  getCategoryBySlug(slug) {
+    return http.get(`${URL}/${slug}`)
   }
 }
 

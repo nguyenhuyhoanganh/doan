@@ -32,16 +32,16 @@ const ImageUpload = () => {
             className='relative m-2 h-32 w-32 bg-cover bg-center'
             style={{ backgroundImage: `url(${URL.createObjectURL(file)})` }}
           >
-            <button className='absolute top-0 right-0 m-2' onClick={() => handleDelete(index)}>
+            <button className='absolute top-0 right-0 m-2' type='button' onClick={() => handleDelete(index)}>
               <svg
                 width='24'
                 height='24'
                 viewBox='0 0 24 24'
                 fill='none'
                 stroke='currentColor'
-                stroke-width='2'
-                stroke-linecap='round'
-                stroke-linejoin='round'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
               >
                 <line x1='18' y1='6' x2='6' y2='18'></line>
                 <line x1='6' y1='6' x2='18' y2='18'></line>

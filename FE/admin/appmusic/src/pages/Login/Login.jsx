@@ -67,7 +67,7 @@ const Login = () => {
                 name='email'
                 register={register}
                 type='email'
-                className='mt-2'
+                className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:shadow-sm'
                 errorMessage={errors.email?.message}
                 placeholder='Email'
               />
@@ -75,7 +75,7 @@ const Login = () => {
                 name='password'
                 register={register}
                 type='password'
-                className='mt-2'
+                className='w-full rounded-sm border border-gray-300 p-3 outline-none focus:shadow-sm'
                 errorMessage={errors.password?.message}
                 placeholder='Password'
               />

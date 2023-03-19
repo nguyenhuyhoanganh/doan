@@ -1,0 +1,48 @@
+.ql-container {
+  @apply min-h-[205px] rounded-b-lg border border-gray-300;
+}
+
+.ql-editor.ql-blank::before {
+  @apply left-3 font-Poppins text-base font-normal not-italic text-[#9CA3AF];
+}
+
+.ql-toolbar {
+  @apply rounded-t-lg border-b border-gray-300 bg-gray-50;
+}
+
+.ql-editor {
+  @apply rounded-b-lg bg-white p-3 pt-4;
+}
+
+.ql-editor h1 {
+  @apply text-2xl font-semibold;
+}
+
+.ql-editor h2 {
+  @apply text-xl font-semibold;
+}
+
+.ql-editor h3 {
+  @apply text-lg font-medium;
+}
+
+.ql-editor p {
+  @apply text-base font-normal;
+}
+
+.ql-editor ul,
+.ql-editor ol {
+  @apply ml-4 list-inside list-disc;
+}
+
+.ql-editor blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic;
+}
+
+.ql-editor code {
+  @apply rounded-sm bg-gray-100 px-1 py-0.5;
+}
+
+.ql-editor pre {
+  @apply rounded bg-gray-100 p-2;
+}

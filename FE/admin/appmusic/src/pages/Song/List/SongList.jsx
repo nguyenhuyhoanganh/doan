@@ -10,7 +10,7 @@ import useQueryParams from '../../../hoocs/useQueryParams'
 import SearchInput from '../../../components/SearchInput'
 import SongItem from './SongItem'
 import { BiFilterAlt } from 'react-icons/bi'
-import FilterSong from './FilterSong'
+import SongFilter from './SongFilter'
 import { useContext } from 'react'
 import { AudioContext } from '../../../contexts/audio.context'
 
@@ -55,10 +55,9 @@ const SongList = () => {
     keepPreviousData: true
   })
 
-  // // check page and limit if data.length === 0 return to page 1, limit 10
+  // check page and limit if data.length === 0 return to page 1, limit 10
   // useEffect(() => {
-  //   console.log('trigger')
-  //   if (data && data.data.data.length === 0) {
+  //   if (data && data.data.data.length === 0 && data.data.results > 0) {
   //     const search = createSearchParams({ ...queryConfig, page: 1, limit: 10 })
   //     navigate({
   //       pathname: pathname,
@@ -66,7 +65,7 @@ const SongList = () => {
   //     })
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [queryParams])
+  // }, [data])
 
   // check change search, fetch data
   useEffect(() => {
@@ -197,7 +196,7 @@ const SongList = () => {
           Reset
         </button>
       </div>
-      <FilterSong active={isActiveFilter} queryConfig={queryConfig} />
+      <SongFilter active={isActiveFilter} queryConfig={queryConfig} />
       <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
           {data ? (
@@ -221,7 +220,7 @@ const SongList = () => {
               .map((_, index) => <LoadingItem key={index} />)
           )}
         </div>
-        {data && data.data.data.length !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
+        {data && data.data.data.result !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
       </div>
     </>
   )

@@ -73,7 +73,8 @@ public class AuthController {
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
             return ResponseEntity.created(location).body(responseBody);
         } catch (Exception exception) {
-            ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.FORBIDDEN.value()).build();
+            ResponseDTO<?> responseBody =
+                    ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNAUTHORIZED.value()).build();
             return ResponseEntity.badRequest().body(responseBody);
         }
     }

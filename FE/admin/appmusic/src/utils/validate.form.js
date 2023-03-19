@@ -22,6 +22,20 @@ export const registerSchema = yup.object({
 
 export const loginSchema = registerSchema.omit(['confirm_password'])
 
+export const songSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  status: yup.string().required('Status is required').oneOf(['PUBLIC', 'PRIVATE', 'DRAFT'], 'Status is not valid'),
+  categories: yup.array().min(1, 'Category is required'),
+  artists: yup.array().min(1, 'Artist is required'),
+  composer: yup.object().nullable().required('Composer is required'),
+  album: yup.object().nullable().required('Album is required'),
+  imageUrl: yup.string(),
+  backgroundImageUrl: yup.string(),
+  lyrics: yup.string(),
+  description: yup.string(),
+  sourceUrls: yup.string()
+})
+
 // export const getRules = (getValues = undefined) => ({
 //   email: {
 //     required: {

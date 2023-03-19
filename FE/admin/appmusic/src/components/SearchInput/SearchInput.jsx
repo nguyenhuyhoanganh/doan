@@ -20,7 +20,7 @@ const SearchInput = ({ value, onChange, onActive }) => {
         type='text'
         value={value || ''}
         onChange={(event) => onChange(event.target.value)}
-        className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 outline-none`}
+        className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 outline-none focus:border-gray-900`}
         placeholder='Search Songs, Artists, Albums...'
       />
     </div>
