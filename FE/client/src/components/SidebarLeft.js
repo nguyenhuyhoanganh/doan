@@ -11,8 +11,8 @@ const activeStyle = "py-2 px-[25px] text-[#0F7070] text-[13px] flex gap-3 items-
 const SidebarLeft = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col bg-main-100">
-      <div onClick={() => {navigate(path.HOME)}} className="w-full h-full flex justify-start items-center cursor-pointer">
+    <div className="flex flex-col h-screen bg-main-100">
+      <div onClick={() => {navigate(path.HOME)}} className="w-full h-auto flex justify-start items-center cursor-pointer">
         <img src={process.env.PUBLIC_URL + "/LOGO_3.png"} alt="logo" className="w-full h-auto object-cover" />
       </div>
       <div className="flex flex-col">

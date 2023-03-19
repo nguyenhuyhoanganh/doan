@@ -11,7 +11,7 @@ const Public = () => {
   return (
     <div className="w-full h-screen relative flex flex-col bg-main-200 overflow-hidden scroll-smooth">
       <div className="w-full h-full flex flex-auto ">
-        <div className="w-[240px] h-full flex-none border border-blue-500">
+        <div className="w-[240px] h-full flex-none">
           <SidebarLeft />
         </div>
         <div className="flex-auto">
@@ -21,7 +21,7 @@ const Public = () => {
           <Outlet></Outlet>
           {/*  sinh ra các element nằm trong route con */}
         </div>
-        <div className="w-[329px] h-screen hidden 1500:flex flex-none animate-slide-left border-[5px] border-l-red-500">
+        <div className="w-[329px] h-screen hidden 1500:flex flex-none animate-slide-left">
           <SidebarRight />
         </div>
       </div>

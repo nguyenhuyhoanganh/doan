@@ -28,7 +28,7 @@ const Player = () => {
   const navigate = useNavigate();
   let songSuf = null;
   const dispatch = useDispatch();
-  const { curSongId, isPlaying, atAlbum, songs } = useSelector(
+  const { curSongId, isPlaying, atAlbum, songs, skip } = useSelector(
     (state) => state.music
   );
   const [songInfo, setSongInfo] = useState(null);
@@ -47,9 +47,9 @@ const Player = () => {
       setSkeleton(true);
       const res = await api.apiGetDetailSong(curSongId);
       if (res?.data.code === 200) {
-        audio.pause()
+        audio.pause();
         setSongInfo(res?.data?.data[0]);
-        setAudio(new Audio(res?.data?.data[0]?.sourceUrls[0]))
+        setAudio(new Audio(res?.data?.data[0]?.sourceUrls[0]));
         setSkeleton(false);
         setIsVipSong(false);
       } else {
@@ -121,7 +121,9 @@ const Player = () => {
       if (!songs || songs[songs.length - 1].id === curSongId) {
         console.log("là bài cuối");
       } else {
-        handleNextSong();
+        if (skip) {
+          handleNextSong();
+        }
       }
     }
     audio.removeEventListener("ended", handleEnd);
@@ -178,7 +180,7 @@ const Player = () => {
     setCurrentSec(Math.round((percent * songInfo.duration) / 100));
   };
   const handleNextSong = () => {
-    console.log(songs)
+    console.log(songs);
     if (songSuf != null) {
       // phát theo list này
       console.log("phát theo suffle");
@@ -194,7 +196,7 @@ const Player = () => {
         });
 
         // dispatch(actions.setCurSongId(songs[curSongId + 1]?.encodeId));
-        if (curSongIndex < songs.length-1) {
+        if (curSongIndex < songs.length - 1) {
           dispatch(actions.setCurSongId(songs[curSongIndex + 1]?.id));
           dispatch(actions.play(true));
         } else {

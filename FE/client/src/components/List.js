@@ -25,6 +25,7 @@ const List = ({ songs}) => {
             dispatch(actions.play(true))
             dispatch(actions.playAlbum(true))
             dispatch(actions.setPlaylistData(songs))
+            
           }}
           key={item.id} className="flex relative gap-6 cursor-pointer hover:shadow-2xl hover:bg-main-400 bg-main-200 border border-main-400F w-[100%] h-auto rounded-lg justify-between items-center pr-[10px]">
             
