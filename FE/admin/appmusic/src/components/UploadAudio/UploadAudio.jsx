@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './index.css'
 
 const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
-  const [hasAudio, setHasAudio] = useState(false)
+  const [hasAudio, setHasAudio] = useState(value !== undefined ? true : false)
   const ref = useRef(null)
   const handleChange = (event) => {
     event.target.files.length !== 0 && onChange(event.target.files[0])
@@ -10,9 +10,13 @@ const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
   const handleDelete = () => {
     onChange(undefined)
   }
+  useEffect(() => {
+    value !== undefined && setHasAudio(true)
+  }, [value])
 
   return (
     <div className='w-full'>
+      {console.log(value, hasAudio)}
       <div
         className={`flex w-full items-center transition-all duration-1000 ${value !== undefined && 'justify-between'}`}
       >

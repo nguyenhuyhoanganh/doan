@@ -18,12 +18,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public interface FileService {
     FileDTO saveFile(MultipartFile file, StorageOption storageOption) throws Exception;
 
     FileDTO getFile(String fileId) throws Exception;
+
+    void deleteFile(String id);
 }
 
 @Service
@@ -94,4 +97,25 @@ class FileServiceImpl implements FileService {
         }
         throw new CommonException("Invalid file saved");
     }
+
+    @Override
+    public void deleteFile(String id) {
+        Optional<File> fileOptional = repository.findById(Long.parseLong(id));
+        if(fileOptional.isPresent()) {
+            File file = fileOptional.get();
+            StorageOption storageOption = file.getStorageOption();
+            if(storageOption.equals(StorageOption.LOCAL)) {
+                String folderPath = ".\\src\\main\\resources\\";
+                if (file.getType().startsWith("audio")) folderPath = folderPath + "audio\\";
+                if (file.getType().startsWith("image")) folderPath = folderPath + "image\\";
+                if (file.getType().startsWith("video")) folderPath = folderPath + "video\\";
+                java.io.File fileLocal = new java.io.File(folderPath + java.io.File.separator + file.getName());
+                if (fileLocal.exists()) {
+                    fileLocal.delete();
+                }
+            }
+            repository.delete(file);
+        }
+    }
+
 }

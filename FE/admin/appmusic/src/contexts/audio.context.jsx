@@ -57,7 +57,6 @@ export const AudioProvider = ({ children }) => {
 
   useEffect(() => {
     if (songSelected !== null) {
-      console.log(songSelected)
       setAudio(new Audio(songSelected.sourceUrls[0]))
       setIsPlaying(true)
     }

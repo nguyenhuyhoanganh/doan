@@ -98,7 +98,7 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
         <div className='ml-2 flex w-40 flex-col justify-center'>
           <button
             className='w-full truncate text-left text-sm font-medium leading-[1.3] hover:text-main-color'
-            onClick={() => navigate(`/dashboard/song/${song.slug}`)}
+            onClick={() => navigate(`/dashboard/song/modify/${song.slug}/${song.id}`)}
           >
             {song.title}
           </button>

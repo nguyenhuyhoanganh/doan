@@ -30,7 +30,8 @@ public class GenericSpecificationBuilder {
         Specification result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
-            result = params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i)) : Specification.where(result).and(specs.get(i));
+            result = params.get(i - 1).isOrPredicate() ? Specification.where(result).or(specs.get(i)) :
+                    Specification.where(result).and(specs.get(i));
         }
         return result;
     }
@@ -41,6 +42,7 @@ public class GenericSpecificationBuilder {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 Predicate predicate = genericCriteria(criteria, root, criteriaBuilder);
+                criteriaQuery.distinct(true);
                 return predicate;
             }
         };

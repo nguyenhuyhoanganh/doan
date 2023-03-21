@@ -32,7 +32,7 @@ const PATH = {
     song: {
       root: ROOT_SONG,
       create: path(ROOT_SONG, '/create'),
-      edit: path(ROOT_SONG, '/edit'),
+      edit: path(ROOT_SONG, 'modify/:slug/:id'),
       details: path(ROOT_SONG, '/:slug')
     },
     user: {
@@ -44,7 +44,7 @@ const PATH = {
     composer: {
       root: ROOT_COMPOSER,
       create: path(ROOT_COMPOSER, '/create'),
-      edit: path(ROOT_COMPOSER, '/edit'),
+      edit: path(ROOT_COMPOSER, '/edit/:slug/:id'),
       details: path(ROOT_COMPOSER, '/:slug')
     },
     album: {

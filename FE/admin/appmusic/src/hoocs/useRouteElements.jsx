@@ -19,6 +19,7 @@ import Analytics from '../pages/Analytics'
 import ArtistList from '../pages/Artist/List'
 import ArtistCreate from '../pages/Artist/Create'
 import { AudioProvider } from '../contexts/audio.context'
+import SongEdit from '../pages/Song/Edit'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -96,7 +97,8 @@ const useRouteElements = () => {
                     </AudioProvider>
                   )
                 },
-                { path: 'create', element: <SongCreate /> }
+                { path: 'create', element: <SongCreate /> },
+                { path: 'modify/:slug/:id', element: <SongEdit /> }
               ]
             },
             {

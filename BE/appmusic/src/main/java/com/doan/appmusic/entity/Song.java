@@ -21,7 +21,6 @@ public class Song extends UpdateAuditable {
     @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(unique = true, nullable = false)
     private String slug;
 
     @Enumerated(EnumType.STRING)

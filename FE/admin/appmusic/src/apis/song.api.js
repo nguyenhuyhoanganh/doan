@@ -7,11 +7,14 @@ const songApi = {
       params
     })
   },
-  getSongBySlug(slug) {
-    return http.get(`${URL}/${slug}`)
+  getSongById(id) {
+    return http.get(`${URL}/${id}`)
   },
   createSong(song) {
     return http.post(`${URL}/create`, song)
+  },
+  modifySong(id, song) {
+    return http.put(`${URL}/modify/${id}`, song)
   }
 }
 

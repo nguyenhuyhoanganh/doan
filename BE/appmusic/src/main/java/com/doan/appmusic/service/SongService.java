@@ -57,6 +57,8 @@ class SongServiceImpl implements SongService {
     private SongRepository repository;
     @Autowired
     private SongLikeRepository likeRepository;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public List<SongDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query) {
@@ -99,8 +101,6 @@ class SongServiceImpl implements SongService {
 
     @Override
     public SongDTO create(SongDTO songDTO) {
-        if (repository.findBySlug(songDTO.getSlug()).isPresent())
-            throw new CustomSQLException("Error", Map.of("slug", "Slug already exists"));
         if (repository.findByTitle(songDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
         Song song = convertToEntity(songDTO);
@@ -118,6 +118,20 @@ class SongServiceImpl implements SongService {
         if (!song.getTitle().equals(songDTO.getTitle()) && repository.findByTitle(songDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
 
+        String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
+        if (!song.getImageUrl().equals(songDTO.getImageUrl())) {
+            if (song.getImageUrl().startsWith(prefixDownloadUrl))
+                fileService.deleteFile(song.getImageUrl().substring(prefixDownloadUrl.length()));
+        }
+        if (!song.getBackgroundImageUrl().equals(songDTO.getBackgroundImageUrl())) {
+            if (song.getBackgroundImageUrl().startsWith(prefixDownloadUrl))
+                fileService.deleteFile(song.getBackgroundImageUrl().substring(prefixDownloadUrl.length()));
+        }
+        if (!song.getSourceUrls().get(0).equals(songDTO.getSourceUrls().get(0))) {
+            if (song.getSourceUrls().get(0).startsWith(prefixDownloadUrl))
+                fileService.deleteFile(song.getSourceUrls().get(0).substring(prefixDownloadUrl.length()));
+        }
+
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(SongDTO.class, Song.class).setProvider(provider -> song).addMappings(mapping -> mapping.skip(Song::setId)).addMappings(mapping -> mapping.skip(Song::setCreatedBy)).addMappings(mapping -> mapping.skip(Song::setUpdatedBy));
@@ -128,6 +142,13 @@ class SongServiceImpl implements SongService {
     @Override
     public void delete(long id) {
         Song song = repository.findById(id).orElseThrow(() -> new CommonException("Song cannot be found"));
+        String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
+        if (song.getImageUrl().startsWith(prefixDownloadUrl))
+            fileService.deleteFile(song.getImageUrl().substring(prefixDownloadUrl.length()));
+        if (song.getBackgroundImageUrl().startsWith(prefixDownloadUrl))
+            fileService.deleteFile(song.getBackgroundImageUrl().substring(prefixDownloadUrl.length()));
+        if (song.getSourceUrls().get(0).startsWith(prefixDownloadUrl))
+            fileService.deleteFile(song.getSourceUrls().get(0).substring(prefixDownloadUrl.length()));
         repository.delete(song);
     }
 

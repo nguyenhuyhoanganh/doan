@@ -29,7 +29,7 @@ const STATUS = [
   { value: 'PUBLIC', title: 'PUBLIC' },
   { value: 'PRIVATE', title: 'PRIVATE' }
 ]
-const Form = () => {
+const Form = ({ song }) => {
   const navigate = useNavigate()
   // react-hook-form
   const {
@@ -56,6 +56,34 @@ const Form = () => {
   const [image, setImage] = useState()
   const [background, setBackground] = useState()
   const [audio, setAudio] = useState()
+
+  useEffect(() => {
+    const downloadFile = async (url, type) => {
+      const data = await (await fetch(url)).blob()
+      return new File([data], 'fileUpload', { type: type })
+    }
+    const initialState = async (song) => {
+      setValue('title', song.title)
+      setValue('status', song.status)
+      setStatusSelected(song.status)
+      setCategoriesSelected(song.categories)
+      setDescription(song.description)
+      setArtistsSelected(song.artists)
+      setComposerSelected(song.composer)
+      setAlbumSelected(song.album)
+      const filesDownload = await Promise.all([
+        downloadFile(song.imageUrl, 'image/jpeg'),
+        downloadFile(song.backgroundImageUrl, 'image/jpeg'),
+        downloadFile(song?.sourceUrls[0], 'audio/mp3')
+      ])
+      setImage(filesDownload[0])
+      setBackground(filesDownload[1])
+      setAudio(filesDownload[2])
+    }
+    if (song !== undefined) {
+      initialState(song)
+    }
+  }, [song, setValue])
 
   // fetch all categories
   const { data: categoriesData } = useQuery({
@@ -158,22 +186,25 @@ const Form = () => {
   // mutation
   const uploadFilesMutation = useMutation({
     mutationFn: async (files) => {
-      const fileUploadPromises = files.map((file) => fileApi.uploadFile(file))
+      const fileUploadPromises = files.map((file) => {
+        return file.name !== 'fileUpload' ? fileApi.uploadFile(file) : undefined
+      })
       const results = await Promise.all(fileUploadPromises)
       return results
     }
   })
-  const createSongMutation = useMutation({
-    mutationFn: (song) => songApi.createSong(song)
+  const modifySongMutation = useMutation({
+    mutationFn: (data) => songApi.modifySong(data.id, data.song)
   })
 
   // submit form
   const onSubmit = handleSubmit(async (data) => {
     const { image, backgroundImage, audio } = data
     const uploadResponse = await uploadFilesMutation.mutateAsync([image, backgroundImage, audio])
-    const imageUrl = uploadResponse[0].data.data.download_url
-    const backgroundImageUrl = uploadResponse[1].data.data.download_url
-    const { download_url: sourceUrl, duration } = uploadResponse[2].data.data
+    const imageUrl = uploadResponse[0] !== undefined ? uploadResponse[0].data.data.download_url : undefined
+    const backgroundImageUrl = uploadResponse[1] !== undefined ? uploadResponse[1].data.data.download_url : undefined
+    const { download_url: sourceUrl, duration } =
+      uploadResponse[2] !== undefined ? uploadResponse[2].data.data : { download_url: undefined, duration: undefined }
     const random = Math.random()
       .toString(36)
       .replace(/[^a-z]+/g, '')
@@ -182,11 +213,11 @@ const Form = () => {
       title: data.title,
       slug: slugify(data.title) + random,
       status: data.status,
-      duration,
-      imageUrl,
-      backgroundImageUrl,
+      duration: duration !== undefined ? duration : song.duration,
+      imageUrl: imageUrl !== undefined ? imageUrl : song.imageUrl,
+      backgroundImageUrl: backgroundImageUrl !== undefined ? backgroundImageUrl : song.backgroundImageUrl,
       description,
-      sourceUrls: [sourceUrl],
+      sourceUrls: sourceUrl !== undefined ? [sourceUrl] : song.sourceUrls,
       categories: categoriesSelected.map((category) => {
         return {
           id: category.id
@@ -200,23 +231,27 @@ const Form = () => {
       composer: { id: composerSelected.id },
       album: { id: albumSelected.id }
     }
-    createSongMutation.mutate(body, {
-      onSuccess: (data) => {
-        navigate(PATH.dashboard.song.root)
-      },
-      onError: (error) => {
-        if (isAxiosUnprocessableEntityError(error)) {
-          const formError = error.response?.data?.error
-          if (formError) {
-            Object.keys(formError).forEach((key) =>
-              setError(key, {
-                message: formError[key]
-              })
-            )
-          } else toast(error.response?.message)
+
+    modifySongMutation.mutate(
+      { id: song.id, song: body },
+      {
+        onSuccess: () => {
+          navigate(PATH.dashboard.song.root)
+        },
+        onError: (error) => {
+          if (isAxiosUnprocessableEntityError(error)) {
+            const formError = error.response?.data?.error
+            if (formError) {
+              Object.keys(formError).forEach((key) =>
+                setError(key, {
+                  message: formError[key]
+                })
+              )
+            } else toast(error.response?.message)
+          }
         }
       }
-    })
+    )
   })
 
   return (
@@ -251,6 +286,7 @@ const Form = () => {
               onChange={setImage}
               hasError={errors.image?.message !== undefined}
               errorMessage={errors.image?.message}
+              // url={song?.imageUrl}
             />
             <UploadImage
               className='w-[39rem] rounded-lg'
@@ -259,6 +295,7 @@ const Form = () => {
               onChange={setBackground}
               hasError={errors.backgroundImage?.message !== undefined}
               errorMessage={errors.backgroundImage?.message}
+              // url={song?.backgroundImageUrl}
             />
           </div>
         </div>
@@ -341,11 +378,11 @@ const Form = () => {
         <div className='mt-5 flex justify-center'>
           <button
             onClick={() => setIsSubmitted(true)}
-            disabled={createSongMutation.isLoading}
+            disabled={modifySongMutation.isLoading}
             type='submit'
             className='ml-2 flex min-w-[5.5rem] items-center gap-1 rounded-lg bg-green-500/80 py-2.5 px-4 text-sm font-medium text-white shadow hover:bg-green-500 hover:drop-shadow-lg'
           >
-            {createSongMutation.isLoading ? (
+            {modifySongMutation?.isLoading ? (
               <svg
                 aria-hidden='true'
                 className='h-5 w-5 animate-spin'
@@ -374,7 +411,7 @@ const Form = () => {
                 <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z' />
               </svg>
             )}
-            Create
+            Modify
           </button>
         </div>
       </div>

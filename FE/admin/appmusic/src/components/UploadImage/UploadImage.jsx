@@ -18,7 +18,7 @@ const UploadImage = ({ className = 'w-36 rounded-lg', title, value, onChange, ha
       >
         {value !== undefined && (
           <div
-            className={`absolute top-1/2 left-1/2 z-30 h-36 -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center  ${className}`}
+            className={`absolute top-1/2 left-1/2 z-30 h-36 -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center ${className}`}
             style={{ backgroundImage: `url(${URL.createObjectURL(value)})` }}
           >
             <button
