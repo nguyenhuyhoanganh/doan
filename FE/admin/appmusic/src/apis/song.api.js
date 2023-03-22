@@ -15,6 +15,9 @@ const songApi = {
   },
   modifySong(id, song) {
     return http.put(`${URL}/modify/${id}`, song)
+  },
+  deleteSong(id) {
+    return http.delete(`${URL}/delete/${id}`)
   }
 }
 

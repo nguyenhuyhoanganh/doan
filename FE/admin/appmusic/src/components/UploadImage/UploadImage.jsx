@@ -16,7 +16,7 @@ const UploadImage = ({ className = 'w-36 rounded-lg', title, value, onChange, ha
       ${hasError === true ? 'bg-red-100/50 outline-red-600/80' : 'bg-gray-100 outline-gray-400/80'}`}
         onClick={() => ref.current.click()}
       >
-        {value !== undefined && (
+        {value instanceof File && (
           <div
             className={`absolute top-1/2 left-1/2 z-30 h-36 -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center ${className}`}
             style={{ backgroundImage: `url(${URL.createObjectURL(value)})` }}

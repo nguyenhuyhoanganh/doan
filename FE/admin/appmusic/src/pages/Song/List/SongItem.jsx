@@ -5,16 +5,29 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import SongInfo from './SongInfo'
 import Tooltip from '../../../components/Tooltip'
 import { AudioContext } from '../../../contexts/audio.context'
+import Modal from '../../../components/Modal/Modal'
+import { MdOutlineClose } from 'react-icons/md'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import songApi from '../../../apis/song.api'
 
-const SongItem = ({ song }) => {
+const SongItem = ({ song, queryConfig }) => {
   const { songSelected, isLoading, isPlaying, handlePlayAudio: onPlayAudio } = useContext(AudioContext)
   const [isOpenInfo, setIsOpenInfo] = useState(false)
+  const [isShowDeleteModal, setIsShowDeleteModal] = useState(false)
+
+  const queryClient = useQueryClient()
+
   const navigate = useNavigate()
   const covertTime = (sec) => {
     let min = Math.floor(sec / 60)
     let second = sec - Math.floor(sec / 60) * 60
     return second < 10 ? '0' + min + ':0' + second : '0' + min + ':' + second
   }
+
+  // mutation
+  const deleteSongMutation = useMutation({
+    mutationFn: (id) => songApi.deleteSong(id)
+  })
 
   const handleUpdateOpenInfo = (state) => setIsOpenInfo(state)
 
@@ -95,7 +108,10 @@ const SongItem = ({ song }) => {
                 </button>
               </Tooltip>
               <Tooltip content='Delete'>
-                <div className='flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200'>
+                <button
+                  className='flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200'
+                  onClick={() => setIsShowDeleteModal(true)}
+                >
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-5 w-5'>
                     <path
                       fillRule='evenodd'
@@ -103,7 +119,7 @@ const SongItem = ({ song }) => {
                       clipRule='evenodd'
                     />
                   </svg>
-                </div>
+                </button>
               </Tooltip>
               <SongInfo song={song} onChangeOpen={handleUpdateOpenInfo} isOpen={isOpenInfo}>
                 <div className='flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200'>
@@ -130,6 +146,48 @@ const SongItem = ({ song }) => {
           </span>
         </div>
       </div>
+      {isShowDeleteModal && (
+        <Modal onClose={() => setIsShowDeleteModal(false)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`relative flex h-60 w-[27rem] flex-col rounded-lg bg-white px-4 pt-10 pb-8`}
+          >
+            <span
+              onClick={() => setIsShowDeleteModal(false)}
+              className='absolute right-3 top-3 inline-flex cursor-pointer items-center justify-center font-[30px] text-red-400'
+            >
+              <MdOutlineClose size={32} />
+            </span>
+            <div className='flex h-full items-center justify-center'>
+              <h3 className='text-center text-xl font-medium'>{`Are you sure to delete the song "${song.title}"?`}</h3>
+            </div>
+            <div className='flex items-center justify-center gap-10'>
+              <button
+                onClick={async () => {
+                  await deleteSongMutation.mutateAsync(song.id, {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries(['songs', { ...queryConfig }])
+                    }
+                  })
+                  setIsShowDeleteModal(false)
+                }}
+                type='button'
+                disabled={deleteSongMutation.isLoading}
+                className='mr-2 mb-2 block rounded-lg bg-green-400 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-500'
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setIsShowDeleteModal(false)}
+                type='button'
+                className='mr-2 mb-2 block rounded-lg bg-red-400 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-500'
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   )
 }

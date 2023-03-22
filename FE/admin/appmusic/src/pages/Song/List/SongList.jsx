@@ -202,7 +202,7 @@ const SongList = () => {
           {data ? (
             data.data.data.length !== 0 ? (
               data.data.data?.map((song) => {
-                return <SongItem key={song.id} song={song} />
+                return <SongItem key={song.id} song={song} queryConfig={queryConfig} />
               })
             ) : (
               <div className='mt-10 flex flex-col items-center justify-center gap-2'>

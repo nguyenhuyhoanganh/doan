@@ -1,22 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import './index.css'
 
 const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
-  const [hasAudio, setHasAudio] = useState(value !== undefined ? true : false)
   const ref = useRef(null)
   const handleChange = (event) => {
     event.target.files.length !== 0 && onChange(event.target.files[0])
   }
-  const handleDelete = () => {
-    onChange(undefined)
-  }
-  useEffect(() => {
-    value !== undefined && setHasAudio(true)
-  }, [value])
 
   return (
     <div className='w-full'>
-      {console.log(value, hasAudio)}
       <div
         className={`flex w-full items-center transition-all duration-1000 ${value !== undefined && 'justify-between'}`}
       >
@@ -35,9 +27,9 @@ const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
             ${value !== undefined ? 'border-red-400 text-red-400 ' : 'border-main-color text-green-400 '} 
             ${hasError === true && 'border-red-600 !text-red-600 '}`}
             onClick={() => {
-              hasAudio === false && ref.current.click()
-              hasAudio === true && handleDelete()
-              setHasAudio((prev) => !prev)
+              if (value !== undefined) {
+                onChange(undefined)
+              } else ref.current.click()
             }}
           >
             <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='h-7 w-7'>
