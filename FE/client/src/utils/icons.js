@@ -2,9 +2,10 @@ import {
   MdOutlineLibraryMusic,
   MdOutlineContactPage,
   MdInfoOutline,
-  MdPlaylistPlay
+  MdPlaylistPlay,
+  MdPlaylistAdd
 } from "react-icons/md";
-import { BiDisc, BiLogOutCircle, BiInfoCircle, BiLogInCircle } from "react-icons/bi";
+import { BiDisc, BiLogOutCircle, BiInfoCircle, BiLogInCircle, BiUserPlus } from "react-icons/bi";
 import {
   AiOutlineBarChart,
   AiOutlineArrowLeft,
@@ -53,6 +54,8 @@ const icons = {
   BiLogInCircle,
   TbPlayerTrackPrev,
   GrNext,
-  GrPrevious
+  GrPrevious,
+  BiUserPlus,
+  MdPlaylistAdd
 };
 export default icons;

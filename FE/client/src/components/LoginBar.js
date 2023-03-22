@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import icons from "../utils/icons";
 import { NavLink } from "react-router-dom";
 
-const { RiVipFill, BiInfoCircle, BiLogOutCircle, BiLogInCircle } = icons;
+const { BiUserPlus, BiInfoCircle, BiLogOutCircle, BiLogInCircle } = icons;
 const LoginBar = () => {
   const [show, setShow] = useState(false);
   const ref = useRef(null);
@@ -86,7 +86,7 @@ const LoginBar = () => {
             <div
               ref={ref}
               id="userInfo"
-              className="bg-main-100 h-[80px] w-[180px] shadow-sm absolute top-[40px] right-0 z-40 flex-col gap-2 justify-center items-center p-2"
+              className="bg-main-100 h-[100px] w-[180px] shadow-sm absolute top-[40px] right-0 z-40 flex-col gap-2 justify-center items-center p-2"
             >
               <NavLink
                 className="hover:bg-main-400 hover:text-[#fff] flex items-center"
@@ -110,6 +110,18 @@ const LoginBar = () => {
                 </span>
                 <span className="hover:bg-main-400 text-[20px] px-5">
                   Đăng nhập
+                </span>
+              </NavLink>
+              <NavLink
+                className="hover:bg-main-400 hover:text-[#fff] flex items-center"
+                to="/register"
+                end=""
+              >
+                <span>
+                  <BiUserPlus size={24} />
+                </span>
+                <span className="hover:bg-main-400 text-[20px] px-5">
+                  Đăng Kí
                 </span>
               </NavLink>
             </div>

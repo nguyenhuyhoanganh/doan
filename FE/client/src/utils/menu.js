@@ -1,6 +1,6 @@
 import icons from "./icons"
 
-const { MdOutlineLibraryMusic, BiDisc, AiOutlineBarChart, MdOutlineContactPage } = icons
+const { MdOutlineLibraryMusic, BiDisc, AiOutlineBarChart, MdOutlineContactPage, BsMicFill, MdPlaylistAdd } = icons
 export const sidebarMenu = [
     {
         path: 'mymusic',
@@ -22,5 +22,15 @@ export const sidebarMenu = [
         path: 'follow',
         text: 'Theo dõi',
         icons: <MdOutlineContactPage size={24}/>
+    },
+    {
+        path: 'searchbyvoice',
+        text: 'Tìm kiếm nhạc',
+        icons: <BsMicFill size={24}/>
+    },
+    {
+        path: 'createplaylist',
+        text: 'Tạo playlist',
+        icons: <MdPlaylistAdd size={24}/>
     },
 ]

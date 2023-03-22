@@ -1,6 +1,6 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Home, Login, Pubic, Personal, Chart, Follow, Album, SongInfo, Search } from "./containers/public/";
+import { Home, Login, Pubic, Personal, Chart, Follow, Album, SongInfo, Search, Register } from "./containers/public/";
 import { Routes, Route } from "react-router-dom";
 import path from "./utils/path";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import * as actions from './store/actions'
 import {useDispatch} from 'react-redux'
 import TestSlide from "./containers/public/TestSlide";
 import Art_Com from "./containers/public/Art_Com";
+import SearchByVoice from "./containers/public/SearchByVoice";
 
 
 
@@ -37,6 +38,8 @@ function App() {
             <Route path={path.TEST} element={<TestSlide />}/>
             <Route path={path.ARTIST} element={<Art_Com />}/>
             <Route path={path.COMPOSER} element={<Art_Com />}/>
+            <Route path={path.REGISTER} element={<Register />}/>
+            <Route path={path.SEARCHBYVOICE} element={<SearchByVoice />}/>
             
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

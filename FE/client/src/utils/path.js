@@ -13,6 +13,8 @@ const path = {
     TEST: "test",
     ARTIST: "artist/:slug/:id",
     COMPOSER: "composer/:slug/:id",
+    REGISTER: "register",
+    SEARCHBYVOICE: "searchbyvoice",
     
 }
 export default path
