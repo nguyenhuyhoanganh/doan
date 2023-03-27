@@ -1,11 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import icons from "../utils/icons";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/auth.context";
+import * as apis from "../apis";
+
 
 const { BiUserPlus, BiInfoCircle, BiLogOutCircle, BiLogInCircle } = icons;
 const LoginBar = () => {
+  const { profile, setIsAuthenticated, setProfile } = useContext(AuthContext);
   const [show, setShow] = useState(false);
   const ref = useRef(null);
+  const navigate = useNavigate();
   const handleClick = () => {
     setShow((pre) => !pre);
   };
@@ -30,15 +36,24 @@ const LoginBar = () => {
   //   name: "Hô hô",
   //   img: "https://avatar.talk.zdn.vn/default.jpg",
   // };
-  const user = null;
+  const handleLogOut = async () => {
+    const res = await apis.logout();
+    if (res?.status === 200) {
+      setIsAuthenticated(false);
+      setProfile(null);
+    }
+    console.log("logout");
+    navigate("/");
+  };
+
   return (
     <div className="h-10 border flex rounded-md hover:shadow-md hover:bg-main-300 cursor-pointer">
-      {user ? (
-        <div id="loginImg" className="relative" title={user.name}>
+      {profile ? (
+        <div id="loginImg" className="relative" title={profile?.firstName}>
           <img
             onClick={handleClick}
             className="object-contain w-10 hover:flex"
-            src={user.img}
+            src={profile?.avatarUrl === undefined ? 'https://avatar.talk.zdn.vn/default.jpg' : profile?.avatarUrl}
             alt=""
           />
           {show && (
@@ -59,10 +74,9 @@ const LoginBar = () => {
                   Thông tin
                 </span>
               </NavLink>
-              <NavLink
+              <button
+                onClick={handleLogOut}
                 className="hover:bg-main-400 hover:text-[#fff] flex items-center"
-                to="/"
-                end=""
               >
                 <span>
                   <BiLogOutCircle size={24} />
@@ -70,7 +84,7 @@ const LoginBar = () => {
                 <span className="hover:bg-main-400 text-[20px] px-5">
                   Đăng xuất
                 </span>
-              </NavLink>
+              </button>
             </div>
           )}
         </div>

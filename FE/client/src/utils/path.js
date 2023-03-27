@@ -15,6 +15,7 @@ const path = {
     COMPOSER: "composer/:slug/:id",
     REGISTER: "register",
     SEARCHBYVOICE: "searchbyvoice",
+    LOGOUT: "logout",
     
 }
 export default path

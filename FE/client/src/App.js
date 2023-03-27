@@ -10,7 +10,16 @@ import TestSlide from "./containers/public/TestSlide";
 import Art_Com from "./containers/public/Art_Com";
 import SearchByVoice from "./containers/public/SearchByVoice";
 
+// function ProtectedRoute() {
+//   const { isAuthenticated } = useContext(AuthContext)
+//   return isAuthenticated ? <Outlet /> : <Navigate to={path.login} />
+// }
 
+// // prevent authenticated user from returning to the login page
+// function RejectedRoute() {
+//   const { isAuthenticated } = useContext(AuthContext)
+//   return !isAuthenticated ? <Outlet /> : <Navigate to={path.root} />
+// }
 
 function App() {
   const dispatch = useDispatch() // redux
@@ -40,6 +49,7 @@ function App() {
             <Route path={path.COMPOSER} element={<Art_Com />}/>
             <Route path={path.REGISTER} element={<Register />}/>
             <Route path={path.SEARCHBYVOICE} element={<SearchByVoice />}/>
+            <Route path={path.LOGOUT} element={<Home />}/>
             
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

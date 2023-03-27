@@ -20,17 +20,24 @@ const Search = () => {
   };
   const handleSearchButton = () => {
     const inputElement = document.getElementById("input_value");
-    const mic = document.getElementById('mic')
+    const mic = document.getElementById("mic");
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = "vi-VN";
-    recognition.start();
-    mic.classList?.add('animate-pulse', 'text-[30px]')
-    recognition.onresult = function (event) {
-      const text = event.results[0][0].transcript;
-      ref.current.value = text;
-      mic.classList?.remove('animate-pulse')
-      navigate("search/" + ref.current.value)
-    };
+    if (mic.classList?.contains("animate-pulse")) {
+      // đang bật mic thì tắt đi
+      recognition.stop();
+      console.log("stop");
+      mic.classList?.remove("animate-pulse");
+    } else {
+      recognition.lang = "vi-VN";
+      recognition.start();
+      mic.classList?.add("animate-pulse", "text-[30px]");
+      recognition.onresult = function (event) {
+        const text = event.results[0][0].transcript;
+        ref.current.value = text.replace(/\./g, "");
+        mic.classList?.remove("animate-pulse");
+        navigate("search/" + ref.current.value);
+      };
+    }
   };
   return (
     <div className="w-full flex items-center">

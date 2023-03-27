@@ -29,8 +29,6 @@ const SidebarRight = () => {
           setSongList(songs.slice(index));
         }
       });
-    console.log(preSongs);
-    console.log(preSong);
   }, [curSongId]);
 
   useEffect(() => {
