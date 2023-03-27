@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 import { songSchema } from '../../../../utils/validate.form'
@@ -14,7 +14,7 @@ import Selector from '../../../../components/Selector'
 import SelectorSearch from '../../../../components/SelectorSearch/SelectorSearch'
 import Radio from '../../../../components/Radio'
 import UploadImage from '../../../../components/UploadImage/UploadImage'
-import UploadAudio from '../../../../components/UploadAudio'
+import UploadAudio from '../UploadAudio/UploadAudio'
 
 const STATUS = [
   { value: 'DRAFT', title: 'DRAFT' },
@@ -24,6 +24,7 @@ const STATUS = [
 const Form = ({ song, onSubmit, isLoading }) => {
   // react-hook-form
   const {
+    reset,
     control,
     register,
     handleSubmit,
@@ -39,36 +40,38 @@ const Form = ({ song, onSubmit, isLoading }) => {
   const [searchAlbum, setSearchAlbum] = useState('')
 
   // update state, form value
-  useEffect(() => {
+  useLayoutEffect(() => {
     const downloadFile = async (url, type) => {
       const data = await (await fetch(url)).blob()
       return new File([data], 'fileUpload', { type: type })
     }
-    const initialState = async (song) => {
-      setValue('title', song.title)
-      setValue('status', song.status)
-      setValue('status', song.status)
-      setValue('categories', song.categories)
-      setValue('description', song.description)
-      setValue('artists', song.artists)
-      setValue('composer', song.composer)
-      setValue('album', song.album)
-      const filesDownload = await Promise.all([
-        downloadFile(song.imageUrl, 'image/jpeg'),
-        downloadFile(song.backgroundImageUrl, 'image/jpeg'),
-        downloadFile(song?.sourceUrls[0], 'audio/mp3')
-      ])
-      setValue('image', filesDownload[0])
-      setValue('backgroundImage', filesDownload[1])
-      setValue('audio', filesDownload[2])
+    const initialFormValue = async (song) => {
+      if (song !== undefined) {
+        const filesDownload = await Promise.all([
+          downloadFile(song.imageUrl, 'image/jpeg'),
+          downloadFile(song.backgroundImageUrl, 'image/jpeg'),
+          downloadFile(song?.sourceUrls[0], 'audio/mp3')
+        ])
+        const songInitial = {
+          title: song.title,
+          status: song.status,
+          categories: song.categories,
+          description: song.description,
+          artists: song.artists,
+          composer: song.composer,
+          album: song.album,
+          image: filesDownload[0],
+          backgroundImage: filesDownload[1],
+          audio: filesDownload[2]
+        }
+        reset(songInitial)
+      } else {
+        setValue('artists', [])
+        setValue('categories', [])
+      }
     }
-    if (song !== undefined) {
-      initialState(song)
-    } else {
-      setValue('artists', [])
-      setValue('categories', [])
-    }
-  }, [song, setValue])
+    initialFormValue(song)
+  }, [song, setValue, reset])
 
   // fetch all categories
   const { data: categoriesData } = useQuery({
@@ -113,8 +116,12 @@ const Form = ({ song, onSubmit, isLoading }) => {
   })
 
   return (
-    <form className='mt-2 grid grid-cols-12 gap-2 rounded-md py-10' onSubmit={handleSubmitForm} noValidate>
-      <div className='col-span-8 rounded-lg p-5 shadow-md'>
+    <form
+      className='grid grid-cols-12 gap-2 border border-x-transparent border-t-gray-300 border-b-transparent py-10 '
+      onSubmit={handleSubmitForm}
+      noValidate
+    >
+      <div className='col-span-8 rounded-lg border border-t-slate-200/80 p-5 shadow-md'>
         <Input
           label='Title:'
           name='title'
@@ -160,7 +167,7 @@ const Form = ({ song, onSubmit, isLoading }) => {
               name='backgroundImage'
               render={({ field }) => (
                 <UploadImage
-                  className='w-[39rem] rounded-lg'
+                  className='w-full rounded-lg'
                   title='Upload background image'
                   value={field.value}
                   onChange={field.onChange}
@@ -173,7 +180,7 @@ const Form = ({ song, onSubmit, isLoading }) => {
         </div>
       </div>
 
-      <div className='col-span-4 rounded-lg p-5 shadow-md'>
+      <div className='col-span-4 rounded-lg border border-t-slate-200/80 p-5 shadow-md'>
         <div className='mb-2'>
           <div className={`ml-1 mb-1 ${errors.audio?.message !== undefined && 'text-red-600'}`}>
             <label>Audio:</label>

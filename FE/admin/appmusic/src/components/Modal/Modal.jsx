@@ -10,7 +10,7 @@ if (!modalRoot) {
   modalRoot = modalRootDiv
 }
 
-const Modal = ({ onClose, children, size = '' }) => {
+const Modal = ({ onClose, children }) => {
   useEffect(() => {
     const handleKeydown = (e) => {
       if (e.code === 'Escape') {

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import './index.css'
 
 const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
@@ -7,6 +7,10 @@ const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
     event.target.files.length !== 0 && onChange(event.target.files[0])
   }
 
+  const previewUrl = useMemo(() => {
+    return value ? URL.createObjectURL(value) : null
+  }, [value])
+
   return (
     <div className='w-full'>
       <div
@@ -14,13 +18,13 @@ const UploadAudio = ({ value, onChange, hasError, errorMessage }) => {
       >
         <input type='file' onChange={handleChange} className='hidden' ref={ref} />
         <div
-          className={`flex justify-center rounded-3xl border border-gray-300 transition-all ${
-            value !== undefined ? 'w-[340px]' : 'w-0 opacity-0'
+          className={`flex w-full justify-center rounded-3xl border border-gray-300 transition-all ${
+            value !== undefined ? 'w-full' : 'w-0 opacity-0'
           }`}
         >
-          {value !== undefined && <audio className='h-11 w-[300px]' src={URL.createObjectURL(value)} controls />}
+          {value !== undefined && <audio className='h-11 w-[300px]' src={previewUrl} controls />}
         </div>
-        <div className='flex items-center justify-start'>
+        <div className={`${value !== undefined ? 'ml-8' : 'ml-0'} flex items-center justify-start transition-all`}>
           <div
             className={`flex h-11 w-11 items-center justify-center rounded-full border border-dashed bg-white transition-all 
             ${value !== undefined && 'rotate-45 transform '} 
