@@ -2,6 +2,10 @@ import http from "../axios";
 
 export const apiGetSong = (sid) => http.get(`/song`, sid)
 
+export const apiGetComment = (params, sid) => http.get(`/songs/${sid}/comments`, {params})
+
+
+
 export const apiGetDetailSong = (sid) =>
   new Promise(async (resolve, reject) => {
     try {

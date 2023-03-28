@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-import * as icons from "../../utils/icons";
+import icons from "../../utils/icons";
 import * as apis from "../../apis";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import MicRecorder from "mic-recorder-to-mp3";
 
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const SearchByVoice = () => {
+  const [isRecording, setIsRecording] = useState(false);
+  const { BsMicFill } = icons;
   const navigate = useNavigate();
   const defaultOptions = {
     host: "identify-ap-southeast-1.acrcloud.com",
@@ -81,6 +85,33 @@ const SearchByVoice = () => {
       });
   };
 
+  const startRecording = () => {
+    const mic = document.getElementById("mic_search");
+    console.log(mic);
+    Mp3Recorder.start()
+      .then(() => {
+        setIsRecording(true);
+        mic.classList?.add("animate-pulse");
+      })
+      .catch((e) => console.error(e));
+    const timeOut = setTimeout(() => {
+      stopRecording();
+      mic.classList?.remove("animate-pulse");
+      clearTimeout(timeOut);
+    }, 10000);
+  };
+
+  const stopRecording = () => {
+    Mp3Recorder.stop()
+      .getMp3()
+      .then(([buffer, blob]) => {
+        // Lưu file .mp3 vào state hoặc gửi lên server
+        identify_song(blob);
+        setIsRecording(false);
+      })
+      .catch((e) => console.log(e));
+  };
+
   const identify_song = (file) => {
     indentify(file, defaultOptions, function (err, httpResponse, body) {
       if (err) console.log(err);
@@ -97,8 +128,18 @@ const SearchByVoice = () => {
   };
   return (
     <div className="flex flex-col gap-5 m-auto items-center py-[100px] text-center">
-      <div>Icon</div>
+      <div
+        onClick={startRecording}
+        className="cursor-pointer hover:shadow-md rounded-full"
+      >
+        <span>
+          <BsMicFill id="mic_search" className="" size={70}></BsMicFill>
+        </span>
+      </div>
+      {isRecording ? <span>Đang nghe .....</span> : ""}
+      <span>Tìm kiếm trực tiếp</span>
       <div className="flex flex-col gap-2">
+        <span className="text-[20px] text-[#568fdb]">Hoặc</span>
         <span>Chọn file nhạc cần biết tên:</span>
         <input
           type="file"

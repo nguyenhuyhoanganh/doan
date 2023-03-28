@@ -43,6 +43,7 @@ function App() {
             <Route path={path.ALBUM__TITLE__PID} element={<Album />}/>
             <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
             <Route path={path.SONG__SID} element={<SongInfo />}/>
+            <Route path={path.SONGINFO__SID} element={<SongInfo />}/>
             <Route path={path.SEARCH} element={<Search />}/>
             <Route path={path.TEST} element={<TestSlide />}/>
             <Route path={path.ARTIST} element={<Art_Com />}/>

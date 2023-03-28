@@ -15,7 +15,7 @@ import {
   AiOutlinePlayCircle,
   AiOutlinePauseCircle,
 } from "react-icons/ai";
-import { BsMicFill, BsShuffle, BsVolumeUp, BsToggleOff, BsToggleOn } from "react-icons/bs";
+import { BsMicFill, BsShuffle, BsVolumeUp, BsToggleOff, BsToggleOn, BsThreeDots } from "react-icons/bs";
 import { RiVipFill } from "react-icons/ri";
 import { IoMdSkipBackward, IoMdSkipForward} from "react-icons/io"
 import { RxLoop} from "react-icons/rx"
@@ -56,6 +56,7 @@ const icons = {
   GrNext,
   GrPrevious,
   BiUserPlus,
-  MdPlaylistAdd
+  MdPlaylistAdd,
+  BsThreeDots
 };
 export default icons;
