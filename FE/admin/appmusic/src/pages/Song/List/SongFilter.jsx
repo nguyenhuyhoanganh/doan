@@ -7,7 +7,7 @@ import Selector from '../../../components/Selector'
 import useQueryParams from '../../../hoocs/useQueryParams'
 
 const SORT_BY = [
-  { value: '', title: 'Lastest' },
+  { value: 'createdAt', title: 'Lastest' },
   { value: 'view', title: 'Popularity' },
   { value: 'likeCount', title: 'Favorite' }
 ]

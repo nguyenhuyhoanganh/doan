@@ -54,7 +54,7 @@ class CommentServiceImpl implements CommentService {
             // user
             User createdBy = context.getSource().getCreatedBy();
             if (createdBy != null)
-                context.getDestination().setCreatedBy(UserDTO.builder().id(createdBy.getId()).email(createdBy.getEmail()).firstName(createdBy.getFirstName()).lastName(createdBy.getLastName()).build());
+                context.getDestination().setCreatedBy(UserDTO.builder().id(createdBy.getId()).email(createdBy.getEmail()).firstName(createdBy.getFirstName()).lastName(createdBy.getLastName()).avatarUrl(createdBy.getAvatarUrl()).build());
 
             // song
             Song song = context.getSource().getSong();

@@ -3,6 +3,7 @@ import { AiOutlineHeart } from 'react-icons/ai'
 import { HiOutlineLink } from 'react-icons/hi'
 import { FaRegComment } from 'react-icons/fa'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { MdOutlineClose } from 'react-icons/md'
 import Popover from '../../../components/Popover'
 import { Fragment, useState } from 'react'
 import Tooltip from '../../../components/Tooltip'
@@ -166,22 +167,24 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
         </Popover>
       </Tooltip>
       {isShowComments && (
-        <Modal onClose={handleClose} size='medium'>
-          <div className='rounded-lg bg-white p-5'>
-            <h3 className='mb-[10px]text-sm font-bold capitalize text-gray-900'>Lyrics "{song.title}"</h3>
-            <div className='mã-h-[340px] bor overflow-y-auto rounded-md bg-gray-900 py-3 px-[14px] text-[14px] text-white'>
-              {/* {song.lyric.map((lyric, id) => (
-                <p key={id} className={cx('line')}>
-                  {lyric.text}
-                </p>
-              ))} */}
-            </div>
-            <button
+        <Modal onClose={handleClose}>
+          <div onClick={(e) => e.stopPropagation()} className={`relative h-72 w-96`}>
+            <span
               onClick={handleClose}
-              className='mt-[20px] flex cursor-pointer items-center justify-center rounded-full py-2 px-6 font-normal uppercase'
+              className='absolute right-3 top-3 inline-flex cursor-pointer items-center justify-center font-[30px] text-red-400'
             >
-              Close
-            </button>
+              <MdOutlineClose size={20} />
+            </span>
+            <div className='rounded-lg bg-white p-5'>
+              <h3 className='mb-[10px]text-sm font-bold capitalize text-gray-900'>Lyrics "{song.title}"</h3>
+              <div className='mã-h-[340px] bor overflow-y-auto rounded-md bg-gray-900 py-3 px-[14px] text-[14px] text-white'></div>
+              <button
+                onClick={handleClose}
+                className='mt-[20px] flex cursor-pointer items-center justify-center rounded-full py-2 px-6 font-normal uppercase'
+              >
+                Close
+              </button>
+            </div>
           </div>
         </Modal>
       )}

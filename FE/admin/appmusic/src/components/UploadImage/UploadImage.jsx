@@ -1,25 +1,29 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 const UploadImage = ({ className = 'w-36 rounded-lg', title, value, onChange, hasError, errorMessage }) => {
   const ref = useRef(null)
-
   const handelChange = (event) => {
     event.target.files.length !== 0 && onChange(event.target.files[0])
   }
   const handelDelete = () => {
     onChange(undefined)
   }
+  const previewUrl = useMemo(() => {
+    return value ? URL.createObjectURL(value) : null
+  }, [value])
+
   return (
     <div className={`m-3 mt-0 flex h-48 flex-col items-center justify-between ${className}`}>
+      {console.log(value)}
       <div
         className={`group relative m-3 h-36 outline-dashed outline-1 outline-offset-[12px]  ${className} 
       ${hasError === true ? 'bg-red-100/50 outline-red-600/80' : 'bg-gray-100 outline-gray-400/80'}`}
         onClick={() => ref.current.click()}
       >
-        {value !== undefined && (
+        {value instanceof File && (
           <div
             className={`absolute top-1/2 left-1/2 z-30 h-36 -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center ${className}`}
-            style={{ backgroundImage: `url(${URL.createObjectURL(value)})` }}
+            style={{ backgroundImage: `url(${previewUrl})` }}
           >
             <button
               className='absolute top-0 right-0 m-2 text-red-600'
