@@ -7,8 +7,8 @@ const composerApi = {
       params
     })
   },
-  getComposerBySlug(slug) {
-    return http.get(`${URL}/${slug}`)
+  getComposerById(id) {
+    return http.get(`${URL}/${id}`)
   }
 }
 
