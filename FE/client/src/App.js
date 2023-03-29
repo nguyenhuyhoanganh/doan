@@ -1,6 +1,6 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Home, Login, Pubic, Personal, Chart, Follow, Album, SongInfo, Search, Register } from "./containers/public/";
+import { Home, Login, Pubic, Personal, Chart, Follow, Album, SongInfo, Search, Register, UserInfo } from "./containers/public/";
 import { Routes, Route } from "react-router-dom";
 import path from "./utils/path";
 import { useEffect, useState } from "react";
@@ -51,6 +51,7 @@ function App() {
             <Route path={path.REGISTER} element={<Register />}/>
             <Route path={path.SEARCHBYVOICE} element={<SearchByVoice />}/>
             <Route path={path.LOGOUT} element={<Home />}/>
+            <Route path={path.USERINFO} element={<UserInfo />}/>
             
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

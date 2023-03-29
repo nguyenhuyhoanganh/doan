@@ -2,6 +2,7 @@ import { BsDownload, BsCardText, BsHeadphones } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
 import { HiOutlineLink } from "react-icons/hi";
 import { FaRegComment } from "react-icons/fa";
+import { IoMdAdd} from "react-icons/io"
 import { NavLink, useNavigate } from "react-router-dom";
 import Popover from "../../components/Popover";
 import { Fragment, useState } from "react";
@@ -45,7 +46,7 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
           Album
         </span>
         <NavLink
-          to={`/dashboard/album/${song.album?.slug}`}
+          to={`/album/${song.album?.slug}/${song.album?.id}`}
           className="text-sm font-medium line-clamp-2 hover:text-main-color "
         >
           {song.album?.title}
@@ -160,9 +161,9 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
       </button>
       <button
         className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100"
-        onClick={() => handleCopy(`http://localhost:3000/song/${song.slug}`)}
+        onClick={() => {}}
       >
-        <HiOutlineLink size={16} />
+        <IoMdAdd size={16} />
         Thêm vào playlist
       </button>
     </div>

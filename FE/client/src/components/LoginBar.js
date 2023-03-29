@@ -64,7 +64,7 @@ const LoginBar = () => {
             >
               <NavLink
                 className="hover:bg-main-400 hover:text-[#fff] flex items-center"
-                to="/"
+                to="/userinfo"
                 end=""
               >
                 <span>
@@ -100,11 +100,11 @@ const LoginBar = () => {
             <div
               ref={ref}
               id="userInfo"
-              className="bg-main-100 h-[100px] w-[180px] shadow-sm absolute top-[40px] right-0 z-40 flex-col gap-2 justify-center items-center p-2"
+              className="bg-main-100 h-[80px] w-[180px] shadow-sm absolute top-[40px] right-0 z-40 flex-col gap-2 justify-center items-center p-2"
             >
-              <NavLink
+              {/* <NavLink
                 className="hover:bg-main-400 hover:text-[#fff] flex items-center"
-                to="/"
+                to="/userinfo"
                 end=""
               >
                 <span>
@@ -113,7 +113,7 @@ const LoginBar = () => {
                 <span className="hover:bg-main-400 text-[20px] px-5">
                   Thông tin
                 </span>
-              </NavLink>
+              </NavLink> */}
               <NavLink
                 className="hover:bg-main-400 hover:text-[#fff] flex items-center"
                 to="/login"

@@ -17,6 +17,7 @@ const path = {
     REGISTER: "register",
     SEARCHBYVOICE: "searchbyvoice",
     LOGOUT: "logout",
+    USERINFO: "userinfo",
     
 }
 export default path

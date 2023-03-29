@@ -130,7 +130,7 @@ const Follow = () => {
         <h1 className="font-extrabold text-[30px] text-[#0D7373]">NHẠC SĨ</h1>
         <div className="relative">
           <div id="slider2" className="flex gap-5 items-center overflow-x-hidden">
-            {artists?.map((el, index) => {
+            {artists?.reverse().map((el, index) => {
               return (
                 <img
                   key={index}

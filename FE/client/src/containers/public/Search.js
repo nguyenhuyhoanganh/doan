@@ -73,6 +73,34 @@ const Search = () => {
       }
     }, 20);
   };
+  const handlePrev2 = () => {
+    setTimeOutId && clearInterval(setTimeOutId);
+    const slider = document.getElementById("slider2");
+    let scrollDistance = 940; // khoảng cách sẽ trượt (px)
+    let speed = 940 / 50;
+    let count = 0;
+    setTimeOutId = setInterval(() => {
+      count += 940 / 50;
+      slider.scrollLeft -= speed;
+      if (Math.ceil(count) === scrollDistance) {
+        setTimeOutId && clearInterval(setTimeOutId);
+      }
+    }, 20);
+  };
+  const handleNext2 = () => {
+    setTimeOutId && clearInterval(setTimeOutId);
+    const slider = document.getElementById("slider2");
+    let scrollDistance = 940; // khoảng cách sẽ trượt (px)
+    let speed = 940 / 50;
+    let count = 0;
+    setTimeOutId = setInterval(() => {
+      count += 940 / 50;
+      slider.scrollLeft += speed;
+      if (Math.ceil(count) === scrollDistance) {
+        setTimeOutId && clearInterval(setTimeOutId);
+      }
+    }, 20);
+  };
   return (
     <Scrollbars className="pl-5" style={{ width: "100%", height: 610 }}>
       <div className="flex flex-col gap-5 m-4">
@@ -124,7 +152,7 @@ const Search = () => {
           <h1 className="font-extrabold text-[30px] text-[#0D7373]">ALBUM</h1>
           <div className="relative">
             <div
-              id="slider"
+              id="slider2"
               className="flex justify-center items-center gap-2 relative p-2 overflow-x-hidden transition-all cursor-pointer"
             >
               {albums?.length === 0? '<không tìm thấy kêt quả>' :albums?.map((el, index) => {
@@ -143,13 +171,13 @@ const Search = () => {
               })}
             </div>
             <div
-              onClick={handlePrev}
+              onClick={handlePrev2}
               className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
             >
               <GrPrevious size={30}></GrPrevious>
             </div>
             <div
-              onClick={handleNext}
+              onClick={handleNext2}
               className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
             >
               <GrNext size={30}></GrNext>
