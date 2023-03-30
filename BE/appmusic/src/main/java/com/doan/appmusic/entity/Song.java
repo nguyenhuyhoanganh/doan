@@ -77,6 +77,10 @@ public class Song extends UpdateAuditable {
         this.likeCount++;
     }
 
+    public void incrementView() {
+        this.view++;
+    }
+
     public void decrementLikeCount() {
         this.likeCount--;
     }

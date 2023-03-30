@@ -7,8 +7,8 @@ const artistApi = {
       params
     })
   },
-  getArtistBySlug(slug) {
-    return http.get(`${URL}/${slug}`)
+  getArtistById(id) {
+    return http.get(`${URL}/${id}`)
   }
 }
 

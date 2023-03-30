@@ -86,4 +86,7 @@ public class SongDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDTO updatedBy;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private boolean isLiked = false;
 }
