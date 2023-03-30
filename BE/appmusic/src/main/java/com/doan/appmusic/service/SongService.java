@@ -6,8 +6,10 @@ import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.*;
 import com.doan.appmusic.repository.SongLikeRepository;
 import com.doan.appmusic.repository.SongRepository;
+import com.doan.appmusic.repository.UserRepository;
 import com.doan.appmusic.repository.specification.GenericSpecificationBuilder;
 import com.doan.appmusic.repository.specification.SearchCriteria;
+import com.doan.appmusic.security.CustomUserDetails;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -15,18 +17,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public interface SongService {
     List<SongDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query);
+
+    List<SongDTO> getFavoritesList(int page, int limit, String[] sortBy, String[] orderBy);
+
+    long countFavoritesList();
 
     SongDTO getById(long id);
 
@@ -44,9 +56,11 @@ public interface SongService {
 
     void unlike(long songId, long userId);
 
-    void comment(long songId, long userId);
+    boolean isLiked(long songId, long userId);
 
     void deleteComment(long songId, long userId);
+
+    void incrementView(long songId);
 }
 
 @Service
@@ -59,6 +73,8 @@ class SongServiceImpl implements SongService {
     private SongLikeRepository likeRepository;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<SongDTO> getAll(int page, int limit, String[] sortBy, String[] orderBy, Map<String, String[]> query) {
@@ -85,6 +101,47 @@ class SongServiceImpl implements SongService {
 
         // convert to dto
         return songs.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SongDTO> getFavoritesList(int page, int limit, String[] sortBy, String[] orderBy) {
+
+        // sort
+        List<Sort.Order> sortList = new ArrayList<>();
+        for (int i = 0; i < sortBy.length; i++) {
+            if (i < orderBy.length) {
+                if (orderBy[i].equals("desc")) {
+                    sortList.add(new Sort.Order(Sort.Direction.DESC, sortBy[i]));
+                    continue;
+                }
+            }
+            sortList.add(new Sort.Order(Sort.Direction.ASC, sortBy[i]));
+        }
+
+        // page request
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(sortList));
+
+        // find
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+            List<Song> songs = repository.getListSongLiked(user.getId(), pageRequest);
+            // convert to dto
+            return songs.stream().map(this::convertToDTO).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new CommonException("You need to login first");
+        }
+    }
+
+    @Override
+    public long countFavoritesList() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+            return repository.countListSongLiked(user.getId());
+        } catch (Exception e) {
+            throw new CommonException("You need to login first");
+        }
     }
 
     @Override
@@ -160,22 +217,42 @@ class SongServiceImpl implements SongService {
 
     @Override
     public void like(long songId, long userId) {
-
+        if (likeRepository.findByUserAndSong(userId, songId).isPresent()) throw new CommonException("You liked this" +
+                " song");
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
+        Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be find"));
+        likeRepository.save(SongLike.builder().song(song).user(user).build());
+        song.incrementLikeCount();
+        repository.save(song);
     }
 
     @Override
     public void unlike(long songId, long userId) {
-
+        Optional<SongLike> songLikeOptional = likeRepository.findByUserAndSong(userId, songId);
+        if (songLikeOptional.isEmpty()) throw new CommonException("You don't like this song");
+        likeRepository.delete(songLikeOptional.get());
+        Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be find"));
+        song.decrementCommentCount();
+        repository.save(song);
     }
 
     @Override
-    public void comment(long songId, long userId) {
-
+    public boolean isLiked(long songId, long userId) {
+        Optional<SongLike> songLikeOptional = likeRepository.findByUserAndSong(userId, songId);
+        return songLikeOptional.isPresent();
     }
+
 
     @Override
     public void deleteComment(long songId, long userId) {
 
+    }
+
+    @Override
+    public void incrementView(long songId) {
+        Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be found"));
+        song.incrementView();
+        repository.save(song);
     }
 
     private Specification<Song> buildSpecification(Map<String, String[]> query) {
@@ -227,6 +304,16 @@ class SongServiceImpl implements SongService {
             User updatedBy = context.getSource().getUpdatedBy();
             context.getDestination().setCreatedBy(UserDTO.builder().id(createdBy.getId()).email(createdBy.getEmail()).build());
             context.getDestination().setUpdatedBy(UserDTO.builder().id(updatedBy.getId()).email(updatedBy.getEmail()).build());
+
+            //like
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+                User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+                if (user != null) {
+                    Optional<SongLike> songLikeOptional = likeRepository.findByUserAndSong(user.getId(), context.getSource().getId());
+                    if (songLikeOptional.isPresent()) context.getDestination().setLiked(true);
+                }
+            }
 
             // album
             Album album = context.getSource().getAlbum();

@@ -20,6 +20,7 @@ import ArtistList from '../pages/Artist/List'
 import ArtistCreate from '../pages/Artist/Create'
 import { AudioProvider } from '../contexts/audio.context'
 import SongEdit from '../pages/Song/Edit'
+import AlbumList from '../pages/Album/List/AlbumList'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -107,6 +108,13 @@ const useRouteElements = () => {
                 { element: <Navigate to={PATH.dashboard.artist.root} replace /> },
                 { path: '', element: <ArtistList /> },
                 { path: 'create', element: <ArtistCreate /> }
+              ]
+            },
+            {
+              path: 'album',
+              children: [
+                { element: <Navigate to={PATH.dashboard.album.root} replace /> },
+                { path: '', element: <AlbumList /> }
               ]
             }
           ]

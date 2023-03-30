@@ -7,8 +7,8 @@ const albumApi = {
       params
     })
   },
-  getAlbumBySlug(slug) {
-    return http.get(`${URL}/${slug}`)
+  getAlbumById(id) {
+    return http.get(`${URL}/${id}`)
   }
 }
 

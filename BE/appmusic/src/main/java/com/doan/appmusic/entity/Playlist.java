@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-// uniqueConstraints ràng buộc cặp created_by và slug là duy nhất
 @Table(name = "playlists", uniqueConstraints = {@UniqueConstraint(columnNames = {"created_by", "slug"}),
         @UniqueConstraint(columnNames = {"created_by", "title"}), @UniqueConstraint(columnNames = {"title", "slug"})})
 public class Playlist extends CreateAuditable {

@@ -1,15 +1,34 @@
 import { useQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
 import { useEffect, useState } from 'react'
-import { createSearchParams, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import artistApi from '../../../apis/artist.api'
+import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
+import albumApi from '../../../apis/album.api'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
 import Pagination from '../../../components/Pagination/Pagination'
 import SearchInput from '../../../components/SearchInput'
+import Table from '../../../components/Table/Table'
 import PATH from '../../../constants/paths'
 import useQueryParams from '../../../hoocs/useQueryParams'
 
-const ArtistList = () => {
+const TABLE_HEAD = [
+  {
+    property: 'backgroundImageUrl',
+    title: 'Image',
+    type: 'image'
+  },
+  {
+    property: 'title',
+    title: 'Tỉtle',
+    type: 'string'
+  },
+  {
+    property: 'description',
+    title: 'Description',
+    type: 'string'
+  }
+]
+
+const AlbumList = () => {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
   const queryParams = useQueryParams()
@@ -29,9 +48,9 @@ const ArtistList = () => {
 
   // fetch artists
   const { data } = useQuery({
-    queryKey: ['artists', { ...queryConfig }],
+    queryKey: ['albums', { ...queryConfig }],
     queryFn: () => {
-      return artistApi.getArtists({ ...queryConfig })
+      return albumApi.getAlbums({ ...queryConfig })
     },
     keepPreviousData: true
   })
@@ -58,7 +77,7 @@ const ArtistList = () => {
   }, [search])
 
   const handleClickCreateBtn = () => {
-    navigate(PATH.dashboard.artist.create)
+    // navigate(PATH.dashboard.album.create)
   }
   return (
     <>
@@ -71,12 +90,12 @@ const ArtistList = () => {
               to: PATH.dashboard.root
             },
             {
-              title: 'Artist',
-              to: PATH.dashboard.artist.root
+              title: 'Album',
+              to: PATH.dashboard.album.root
             },
             {
               title: 'List',
-              to: PATH.dashboard.artist.root
+              to: PATH.dashboard.album.root
             }
           ]}
         />
@@ -98,11 +117,11 @@ const ArtistList = () => {
           New Artist
         </button>
       </div>
-      <div className='mt-4 flex items-center transition-all'>
+      <div className='mt-4 flex items-center gap-3 transition-all'>
         <SearchInput value={searchValue} onChange={setSearchValue} />
         <button
-          className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 pl-3 text-red-500 transition-all hover:bg-red-50 ${
-            (searchValue === null || searchValue === '') && 'w-0 px-0 pl-0 opacity-0'
+          className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 text-red-500 transition-all hover:bg-red-50 ${
+            (searchValue === null || searchValue === '') && 'w-0 px-0 opacity-0'
           }`}
           onClick={() => {
             // clear searhValue, remove query of search value
@@ -129,42 +148,7 @@ const ArtistList = () => {
       </div>
       <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
-          <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
-            {data &&
-              data?.data?.data.map((artist) => (
-                <div key={artist.id} className='col-span-4 h-72 w-full rounded-3xl bg-white shadow'>
-                  <div className='w-ful relative flex h-52 items-center justify-center'>
-                    <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth={1.5}
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
-                        />
-                      </svg>
-                    </button>
-                    <img
-                      src={artist.avatarUrl}
-                      className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full object-cover'
-                      alt={artist.fullName}
-                    />
-                  </div>
-                  <div className='text-center'>
-                    <span className='text-lg font-semibold text-gray-600'>{artist.fullName}</span>
-                  </div>
-                  <div className='text-center'>
-                    <span className='text-base font-medium text-gray-400'>{`${artist.followCount} followers`}</span>
-                  </div>
-                </div>
-              ))}
-          </div>
+          <Table tableHead={TABLE_HEAD} data={data} />
         </div>
         {data && data.data.results !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
       </div>
@@ -172,4 +156,4 @@ const ArtistList = () => {
   )
 }
 
-export default ArtistList
+export default AlbumList
