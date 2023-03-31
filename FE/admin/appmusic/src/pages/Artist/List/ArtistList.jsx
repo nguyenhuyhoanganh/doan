@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
 import { useEffect, useState } from 'react'
-import { createSearchParams, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import artistApi from '../../../apis/artist.api'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
-import Pagination from '../../../components/Pagination/Pagination'
 import SearchInput from '../../../components/SearchInput'
 import PATH from '../../../constants/paths'
 import useQueryParams from '../../../hoocs/useQueryParams'
@@ -14,34 +14,32 @@ const ArtistList = () => {
   const { pathname, search } = useLocation()
   const queryParams = useQueryParams()
   // search value
-  const [searchValue, setSearchValue] = useState(queryParams.search === undefined ? null : queryParams.search)
+  const [fullName, setFullName] = useState(queryParams.fullName === undefined ? null : queryParams.fullName)
 
-  const queryConfig = omitBy(
-    {
-      page: queryParams.page || 1,
-      limit: queryParams.limit || 10,
-      sortBy: queryParams.sortBy,
-      orderBy: queryParams.orderBy,
-      search: queryParams.search
-    },
-    isUndefined
-  )
+  const fetchArtists = async ({ pageParam = 1 }) => {
+    const response = await artistApi.getArtists(
+      omitBy({ page: pageParam, limit: 9, fullName: queryParams.fullName }, isUndefined)
+    )
+    return response.data
+  }
 
-  // fetch artists
-  const { data } = useQuery({
-    queryKey: ['artists', { ...queryConfig }],
-    queryFn: () => {
-      return artistApi.getArtists({ ...queryConfig })
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['artists', { ...queryParams.fullName }],
+    queryFn: fetchArtists,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * lastPage.limit < lastPage.results) return lastPage.page + 1
     },
     keepPreviousData: true
   })
 
+  const items = data && data.pages ? data.pages.flatMap((page) => page.data) : []
+
   // check change search, fetch data
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      if (searchValue !== null) {
-        const search = createSearchParams({ ...queryConfig, search: searchValue })
-        searchValue === '' && search.delete('search')
+      if (fullName !== null) {
+        const search = createSearchParams({ fullName: fullName })
+        fullName === '' && search.delete('fullName')
         navigate({
           pathname: pathname,
           search: search.toString()
@@ -50,7 +48,7 @@ const ArtistList = () => {
     }, 300)
     return () => clearTimeout(timeOut)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue])
+  }, [fullName])
 
   // scroll to top, pause audio when change query (search of useLocation)
   useEffect(() => {
@@ -60,6 +58,13 @@ const ArtistList = () => {
   const handleClickCreateBtn = () => {
     navigate(PATH.dashboard.artist.create)
   }
+
+  const handleLoadMore = () => {
+    if (!isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }
+
   return (
     <>
       <div className='flex items-center justify-between border-b border-gray-300'>
@@ -99,14 +104,14 @@ const ArtistList = () => {
         </button>
       </div>
       <div className='mt-4 flex items-center transition-all'>
-        <SearchInput value={searchValue} onChange={setSearchValue} />
+        <SearchInput value={fullName} onChange={setFullName} />
         <button
           className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 pl-3 text-red-500 transition-all hover:bg-red-50 ${
-            (searchValue === null || searchValue === '') && 'w-0 px-0 pl-0 opacity-0'
+            (fullName === null || fullName === '') && 'w-0 px-0 pl-0 opacity-0'
           }`}
           onClick={() => {
             // clear searhValue, remove query of search value
-            setSearchValue(null)
+            setFullName(null)
             navigate(pathname)
           }}
         >
@@ -129,47 +134,86 @@ const ArtistList = () => {
       </div>
       <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
-          <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
-            {data &&
-              data?.data?.data.map((artist) => (
-                <div key={artist.id} className='col-span-4 h-72 w-full rounded-3xl bg-white shadow'>
-                  <div className='w-ful relative flex h-52 items-center justify-center'>
-                    <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth={1.5}
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
-                        />
-                      </svg>
-                    </button>
-                    <img
-                      src={artist.avatarUrl}
-                      className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full object-cover'
-                      alt={artist.fullName}
-                    />
+          <InfiniteScroll dataLength={items.length} next={handleLoadMore} hasMore={hasNextPage} loader={<Loading />}>
+            <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
+              {items.length >= 0 &&
+                items.map((artist) => (
+                  <div key={artist.id} className='col-span-4 h-72 w-full rounded-3xl bg-white shadow'>
+                    <div className='w-ful relative flex h-52 items-center justify-center'>
+                      <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='h-6 w-6'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
+                          />
+                        </svg>
+                      </button>
+                      <img
+                        src={artist.avatarUrl}
+                        className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full object-cover'
+                        alt={artist.fullName}
+                      />
+                    </div>
+                    <div className='text-center'>
+                      <span className='text-lg font-semibold text-gray-600'>{artist.fullName}</span>
+                    </div>
+                    <div className='text-center'>
+                      <span className='text-base font-medium text-gray-400'>{`${artist.followCount} followers`}</span>
+                    </div>
                   </div>
-                  <div className='text-center'>
-                    <span className='text-lg font-semibold text-gray-600'>{artist.fullName}</span>
-                  </div>
-                  <div className='text-center'>
-                    <span className='text-base font-medium text-gray-400'>{`${artist.followCount} followers`}</span>
-                  </div>
-                </div>
-              ))}
-          </div>
+                ))}
+            </div>
+          </InfiniteScroll>
         </div>
-        {data && data.data.results !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
       </div>
     </>
   )
 }
 
 export default ArtistList
+
+const Loading = () => {
+  return (
+    <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
+      {Array(6)
+        .fill(0)
+        .map((_, index) => (
+          <div key={index} className='col-span-4 h-72 w-full animate-pulse rounded-3xl bg-white shadow'>
+            <div className='w-ful relative flex h-52 items-center justify-center'>
+              <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className='h-6 w-6'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
+                  />
+                </svg>
+              </button>
+              <div className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full bg-slate-600'></div>
+            </div>
+            <div className='mb-1 flex items-center justify-center'>
+              <div className='h-5 w-16 rounded-2xl bg-gray-600'></div>
+            </div>
+            <div className='flex items-center justify-center'>
+              <div className='h-4 w-24 rounded-2xl bg-gray-400'></div>
+            </div>
+          </div>
+        ))}
+    </div>
+  )
+}
