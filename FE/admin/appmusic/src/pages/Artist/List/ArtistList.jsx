@@ -8,6 +8,7 @@ import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBread
 import SearchInput from '../../../components/SearchInput'
 import PATH from '../../../constants/paths'
 import useQueryParams from '../../../hoocs/useQueryParams'
+import ArtistItem from './ArtistItem'
 
 const ArtistList = () => {
   const navigate = useNavigate()
@@ -135,41 +136,9 @@ const ArtistList = () => {
       <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
           <InfiniteScroll dataLength={items.length} next={handleLoadMore} hasMore={hasNextPage} loader={<Loading />}>
+            {items.length === 0 && <Loading />}
             <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
-              {items.length >= 0 &&
-                items.map((artist) => (
-                  <div key={artist.id} className='col-span-4 h-72 w-full rounded-3xl bg-white shadow'>
-                    <div className='w-ful relative flex h-52 items-center justify-center'>
-                      <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          className='h-6 w-6'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
-                          />
-                        </svg>
-                      </button>
-                      <img
-                        src={artist.avatarUrl}
-                        className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full object-cover'
-                        alt={artist.fullName}
-                      />
-                    </div>
-                    <div className='text-center'>
-                      <span className='text-lg font-semibold text-gray-600'>{artist.fullName}</span>
-                    </div>
-                    <div className='text-center'>
-                      <span className='text-base font-medium text-gray-400'>{`${artist.followCount} followers`}</span>
-                    </div>
-                  </div>
-                ))}
+              {items.length >= 0 && items.map((artist) => <ArtistItem key={artist.id} artist={artist} />)}
             </div>
           </InfiniteScroll>
         </div>

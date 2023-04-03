@@ -1,32 +1,32 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
 import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
-import albumApi from '../../../apis/album.api'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
 import SearchInput from '../../../components/SearchInput'
 import PATH from '../../../constants/paths'
 import useQueryParams from '../../../hoocs/useQueryParams'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import AlbumItem from './AlbumItem'
+import composerApi from '../../../apis/composer.api'
+import ComposerItem from './ComposerItem'
 
-const AlbumList = () => {
+const ComposerList = () => {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
   const queryParams = useQueryParams()
   // search value
-  const [title, setTitle] = useState(queryParams.title === undefined ? null : queryParams.title)
+  const [fullName, setFullName] = useState(queryParams.fullName === undefined ? null : queryParams.fullName)
 
-  const fetchAlbums = async ({ pageParam = 1 }) => {
-    const response = await albumApi.getAlbums(
-      omitBy({ page: pageParam, limit: 9, title: queryParams.title }, isUndefined)
+  const fetchComposers = async ({ pageParam = 1 }) => {
+    const response = await composerApi.getComposers(
+      omitBy({ page: pageParam, limit: 9, fullName: queryParams.fullName }, isUndefined)
     )
     return response.data
   }
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['albums', { ...queryParams.title }],
-    queryFn: fetchAlbums,
+    queryKey: ['composers', { ...queryParams.fullName }],
+    queryFn: fetchComposers,
     getNextPageParam: (lastPage) => {
       if (lastPage.page * lastPage.limit < lastPage.results) return lastPage.page + 1
     },
@@ -38,9 +38,9 @@ const AlbumList = () => {
   // check change search, fetch data
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      if (title !== null) {
-        const search = createSearchParams({ title: title })
-        title === '' && search.delete('title')
+      if (fullName !== null) {
+        const search = createSearchParams({ fullName: fullName })
+        fullName === '' && search.delete('fullName')
         navigate({
           pathname: pathname,
           search: search.toString()
@@ -49,7 +49,7 @@ const AlbumList = () => {
     }, 300)
     return () => clearTimeout(timeOut)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title])
+  }, [fullName])
 
   // scroll to top, pause audio when change query (search of useLocation)
   useEffect(() => {
@@ -57,7 +57,7 @@ const AlbumList = () => {
   }, [search])
 
   const handleClickCreateBtn = () => {
-    navigate(PATH.dashboard.album.create)
+    navigate(PATH.dashboard.artist.create)
   }
 
   const handleLoadMore = () => {
@@ -70,19 +70,19 @@ const AlbumList = () => {
     <>
       <div className='flex items-center justify-between border-b border-gray-300'>
         <HeaderBreadcrumbs
-          title='Album List'
+          title='Artist List'
           links={[
             {
               title: 'Dashboard',
               to: PATH.dashboard.root
             },
             {
-              title: 'Album',
-              to: PATH.dashboard.album.root
+              title: 'Composer',
+              to: PATH.dashboard.composer.root
             },
             {
               title: 'List',
-              to: PATH.dashboard.album.root
+              to: PATH.dashboard.composer.root
             }
           ]}
         />
@@ -101,18 +101,18 @@ const AlbumList = () => {
           >
             <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z' />
           </svg>
-          New Album
+          New Composer
         </button>
       </div>
       <div className='mt-4 flex items-center transition-all'>
-        <SearchInput value={title} onChange={setTitle} />
+        <SearchInput value={fullName} onChange={setFullName} />
         <button
           className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 pl-3 text-red-500 transition-all hover:bg-red-50 ${
-            (title === null || title === '') && 'w-0 px-0 pl-0 opacity-0'
+            (fullName === null || fullName === '') && 'w-0 px-0 pl-0 opacity-0'
           }`}
           onClick={() => {
             // clear searhValue, remove query of search value
-            setTitle(null)
+            setFullName(null)
             navigate(pathname)
           }}
         >
@@ -133,12 +133,12 @@ const AlbumList = () => {
           Reset
         </button>
       </div>
-      <div className='mt-4 flex min-h-screen flex-auto flex-col justify-between gap-5 rounded-md'>
+      <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
           <InfiniteScroll dataLength={items.length} next={handleLoadMore} hasMore={hasNextPage} loader={<Loading />}>
             {items.length === 0 && <Loading />}
             <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
-              {items.length >= 0 && items.map((album) => <AlbumItem key={album.id} album={album} />)}
+              {items.length >= 0 && items.map((composer) => <ComposerItem key={composer.id} composer={composer} />)}
             </div>
           </InfiniteScroll>
         </div>
@@ -147,26 +147,41 @@ const AlbumList = () => {
   )
 }
 
-export default AlbumList
+export default ComposerList
 
 const Loading = () => {
   return (
     <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
-      {Array(8)
+      {Array(6)
         .fill(0)
         .map((_, index) => (
-          <>
-            <div className='col-span-3 w-64 animate-pulse cursor-pointer '>
-              <div className='h-64 w-64 overflow-hidden rounded-md bg-gray-500'></div>
-              <div className='mt-1'>
-                <div className='m-[5px] h-[18px] animate-pulse rounded-lg bg-gray-800'></div>
-                <div className='h-14'>
-                  <div className='m-[4px] h-4 animate-pulse rounded-lg bg-gray-600'></div>
-                  <div className='m-[4px] h-4 animate-pulse rounded-lg bg-gray-600'></div>
-                </div>
-              </div>
+          <div key={index} className='col-span-4 h-72 w-full animate-pulse rounded-3xl bg-white shadow'>
+            <div className='w-ful relative flex h-52 items-center justify-center'>
+              <button className='absolute inset-y-0 right-0 m-4 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-200'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className='h-6 w-6'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z'
+                  />
+                </svg>
+              </button>
+              <div className='h-[10rem] w-[10rem] min-w-[3.5rem] rounded-full bg-slate-600'></div>
             </div>
-          </>
+            <div className='mb-1 flex items-center justify-center'>
+              <div className='h-5 w-16 rounded-2xl bg-gray-600'></div>
+            </div>
+            <div className='flex items-center justify-center'>
+              <div className='h-4 w-24 rounded-2xl bg-gray-400'></div>
+            </div>
+          </div>
         ))}
     </div>
   )

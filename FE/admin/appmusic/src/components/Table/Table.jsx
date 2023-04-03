@@ -1,5 +1,22 @@
 import { NavLink } from 'react-router-dom'
 
+// const TABLE_HEAD = [
+//   {
+//     property: 'backgroundImageUrl',
+//     title: 'Image',
+//     type: 'image'
+//   },
+//   {
+//     property: 'title',
+//     title: 'Tỉtle',
+//     type: 'string'
+//   },
+//   {
+//     property: 'description',
+//     title: 'Description',
+//     type: 'string'
+//   }
+// ]
 const Table = ({ tableHead, data }) => {
   return (
     <div className='relative mt-5 overflow-x-auto shadow-md sm:rounded-lg'>

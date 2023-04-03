@@ -68,12 +68,12 @@ const Tooltip = ({
               initial={{ opacity: 0, transform: 'scale(0)' }}
               animate={{ opacity: 1, transform: 'scale(1)' }}
               exit={{ opacity: 0, transform: 'scale(0)' }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.1 }}
             >
-              <span className='rounded-lg bg-gray-700 px-3 py-1 text-white shadow-lg'>{content}</span>
+              <span className='rounded-lg bg-black/60 px-3 py-1 text-white shadow-lg'>{content}</span>
               <span
                 ref={arrowRef}
-                className={`absolute bottom-[-32px] translate-y-[-95%] border-[0.5rem] border-x-transparent border-b-transparent border-t-gray-700`}
+                className={`absolute bottom-[-27.5px] translate-y-[-95%] border-[7px] border-x-transparent border-b-transparent border-t-black/50`}
                 style={{
                   left: middlewareData.arrow?.x
                 }}
