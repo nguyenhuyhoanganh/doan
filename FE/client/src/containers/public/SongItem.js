@@ -42,7 +42,7 @@ const SongItem = ({ item, songs }) => {
               : `${item.title.slice(0, 40)}...`}
           </span>
           <span className="text-sm text-[#171e1e]">
-            {item.artists[0].fullName}
+            {item?.artists !== undefined? item?.artists[0]?.fullName : ""}
           </span>
         </div>
       </div>

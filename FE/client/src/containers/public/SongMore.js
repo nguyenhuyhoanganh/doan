@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Popover from "../../components/Popover";
 import { Fragment, useState } from "react";
 import Tooltip from "../../components/Tooltip";
+import * as apis from "../../apis"
 
 const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
   const navigate = useNavigate();
@@ -14,6 +15,11 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
   };
+  const handleAddToPlaylist = (sid) => {
+    const addPL = async(sid) => {
+      // const res = await apis.apiAddSongToPlaylist(sid, pid)
+    }
+  }
 
   const renderMoreDetails = (
     <div
@@ -60,7 +66,7 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
           to={`/dashboard/composer/${song.composer?.slug}`}
           className="text-sm font-medium line-clamp-2 hover:text-main-color"
         >
-          {song.composer.fullName}
+          {song?.composer?.fullName}
         </NavLink>
       </div>
       <div className="flex flex-col justify-around">
@@ -161,7 +167,7 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
       </button>
       <button
         className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100"
-        onClick={() => {}}
+        onClick={handleAddToPlaylist(song.id)}
       >
         <IoMdAdd size={16} />
         Thêm vào playlist

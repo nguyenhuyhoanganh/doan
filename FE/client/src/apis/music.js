@@ -4,6 +4,14 @@ export const apiGetSong = (sid) => http.get(`/song`, sid)
 
 export const apiGetComment = (params, sid) => http.get(`/songs/${sid}/comments`, {params})
 
+export const apiGetPlaylist = (params) => http.get('/playlists', {params})
+export const apiGetPlaylistById = (pid) => http.get(`/playlists/${pid}`)
+
+export const apiAddSongToPlaylist = (sid, pid) => http.post(`/playlists/${pid}/add/${sid}`)
+export const apiLikeSong = (sid) => http.post(`songs/${sid}/like`)
+export const apiUnLikeSong = (sid) => http.post(`/songs/${sid}/unlike`)
+export const apiIncresingView = (sid) => http.post(`/songs/${sid}/increment_view`)
+
 
 
 export const apiGetDetailSong = (sid) =>

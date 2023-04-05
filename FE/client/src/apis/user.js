@@ -6,3 +6,4 @@ export const login = (body) => {
 
 export const logout = () => http.post(`/logout`)
 export const register = (body) => http.post(`/register`, body)
+

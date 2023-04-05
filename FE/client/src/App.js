@@ -9,6 +9,7 @@ import {useDispatch} from 'react-redux'
 import TestSlide from "./containers/public/TestSlide";
 import Art_Com from "./containers/public/Art_Com";
 import SearchByVoice from "./containers/public/SearchByVoice";
+import Playlist from "./containers/public/Playlist";
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AuthContext)
@@ -41,7 +42,7 @@ function App() {
             <Route path={path.ZING_CHART} element={<Chart/>}/>
             <Route path={path.FOLLOW} element={<Follow />}/>
             <Route path={path.ALBUM__TITLE__PID} element={<Album />}/>
-            <Route path={path.PLAYLIST__TITLE__PID} element={<Album />}/>
+            <Route path={path.PLAYLIST__TITLE__PID} element={<Playlist />}/>
             <Route path={path.SONG__SID} element={<SongInfo />}/>
             <Route path={path.SONGINFO__SID} element={<SongInfo />}/>
             <Route path={path.SEARCH} element={<Search />}/>
