@@ -24,7 +24,6 @@ const SongItem = ({ item, songs }) => {
           dispatch(actions.play(true));
           dispatch(actions.playAlbum(true));
           dispatch(actions.setPlaylistData(songs));
-          console.log("play");
         }}
         className="absolute pt-3 pl-[30px] top-0 left-0 hover:opacity-100 opacity-0"
       >

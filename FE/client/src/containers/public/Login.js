@@ -26,7 +26,6 @@ const Login = () => {
           email: data.email,
           password: data.password,
         });
-        console.log(res)
         if (res?.status === 200) {
           // nghĩa là đã được xác thức
           // trc đấy là null

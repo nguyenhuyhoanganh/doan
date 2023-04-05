@@ -12,6 +12,8 @@ export const apiLikeSong = (sid) => http.post(`songs/${sid}/like`)
 export const apiUnLikeSong = (sid) => http.post(`/songs/${sid}/unlike`)
 export const apiIncresingView = (sid) => http.post(`/songs/${sid}/increment_view`)
 
+export const apiGetFavoritePlaylist = (params) => http.get('/songs/favorites_list', {params})
+
 
 
 export const apiGetDetailSong = (sid) =>

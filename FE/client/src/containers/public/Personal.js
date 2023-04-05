@@ -7,18 +7,22 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth.context";
 import Scrollbars from "react-custom-scrollbars-2";
 import { useNavigate } from "react-router-dom";
+import { List } from "../../components";
+import * as actions from "../../store/actions"
 
 const Personal = () => {
   let setTimeOutId;
-  const navigate = useNavigate()
-  const { GrNext, GrPrevious, IoMdAdd } = icons;
+  const navigate = useNavigate();
+  const { GrNext, GrPrevious, IoMdAdd, AiOutlinePlayCircle } = icons;
   const [showBox, setShowBox] = useState(false);
 
   const [playList, setPlayList] = useState(null);
+  const [favoristList, setFavoristList] = useState(null);
   const { isAuthenticated } = useContext(AuthContext);
   const { banner } = useSelector((state) => {
     return state.app;
   });
+  const dispatch = useDispatch()
   // console.log(banner);
   const handlePrev2 = () => {
     setTimeOutId && clearInterval(setTimeOutId);
@@ -86,11 +90,23 @@ const Personal = () => {
           limit: 40,
           orderBy: "createdAt",
         });
+        const res2 = await apis.apiGetFavoritePlaylist({
+          limit: 999,
+          orderBy: "createdAt",
+        });
+        // console.log(res2)
+        setFavoristList(res2?.data?.data);
         setPlayList(res?.data?.data);
       }
     };
     fetchPL();
   }, []);
+  const handlePlayFaList = () => {
+    dispatch(actions.setCurSongId(favoristList[0]?.id));
+    dispatch(actions.play(true));
+    dispatch(actions.playAlbum(true));
+    dispatch(actions.setPlaylistData(favoristList));
+  };
   return (
     <Scrollbars style={{ width: "100%", height: 560 }}>
       <div className="flex flex-col h-[500px] m-5 p-5 gap-8">
@@ -180,9 +196,11 @@ const Personal = () => {
                 >
                   {playList?.map((el, index) => {
                     return (
-                      <div key={index} className="flex flex-col text-center gap-2 cursor-pointer ">
+                      <div
+                        key={index}
+                        className="flex flex-col text-center gap-2 cursor-pointer "
+                      >
                         <img
-                          
                           title={el?.title}
                           src={el?.songs[0]?.imageUrl}
                           onClick={() => {
@@ -214,6 +232,25 @@ const Personal = () => {
                 <span>Chưa có playlist nào</span>
               </div>
             )}
+          </div>
+        </div>
+        <div className="flex flex-col gap-5">
+          {/* list các playlist */}
+          <div className="flex gap-5 items-center">
+            <h1 className="font-extrabold text-[30px] text-[#0D7373]">
+              PLAYLIST YÊU THÍCH
+            </h1>
+            <span
+              title="Phát playlist yêu thích"
+              onClick={handlePlayFaList}
+              className="border border-[#0D7373] rounded-full cursor-pointer text-[#0D7373] p-1 hover:bg-main-400 hover:text-[#fff]"
+            >
+              <AiOutlinePlayCircle size={30} />
+            </span>
+          </div>
+          <div className="flex flex-col justify-between">
+            {/* playlist */}
+            <List songs={favoristList}></List>
           </div>
         </div>
       </div>

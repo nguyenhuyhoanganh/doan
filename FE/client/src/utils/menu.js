@@ -30,7 +30,7 @@ export const sidebarMenu = [
     },
     {
         path: 'createplaylist',
-        text: 'Tạo playlist',
+        text: 'Tạo playlist theo sở thích',
         icons: <MdPlaylistAdd size={24}/>
     },
 ]
