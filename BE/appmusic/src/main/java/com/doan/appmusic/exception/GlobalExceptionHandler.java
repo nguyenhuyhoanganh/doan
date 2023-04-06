@@ -17,49 +17,49 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Object> handleValidFormException(MethodArgumentNotValidException exception, WebRequest request) {
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage()).code(HttpStatus.UNPROCESSABLE_ENTITY.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-
-    @ExceptionHandler(CommonException.class)
-    public ResponseEntity<Object> handleCommonException(CommonException exception, WebRequest request) {
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.NOT_FOUND.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception, WebRequest request) {
-        ResponseDTO<?> responseBody =
-                ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNAUTHORIZED.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(CustomSQLException.class)
-    public ResponseEntity<Object> handleCustomSQLException(CustomSQLException exception, WebRequest request) {
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNPROCESSABLE_ENTITY.value()).error(exception.getError()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception, WebRequest request) {
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.BAD_REQUEST.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception, WebRequest request) {
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.NOT_FOUND.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleException(RuntimeException exception, WebRequest request) {
-        log.error("Error:" + exception.getMessage());
-        ResponseDTO<?> responseBody = ResponseDTO.builder().message("Server error, please try again later").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
-        return new ResponseEntity<Object>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    protected ResponseEntity<Object> handleValidFormException(MethodArgumentNotValidException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage()).code(HttpStatus.UNPROCESSABLE_ENTITY.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+//    }
+//
+//
+//    @ExceptionHandler(CommonException.class)
+//    public ResponseEntity<Object> handleCommonException(CommonException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.NOT_FOUND.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler(AuthenticationException.class)
+//    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody =
+//                ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNAUTHORIZED.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.UNAUTHORIZED);
+//    }
+//
+//    @ExceptionHandler(CustomSQLException.class)
+//    public ResponseEntity<Object> handleCustomSQLException(CustomSQLException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.UNPROCESSABLE_ENTITY.value()).error(exception.getError()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.UNPROCESSABLE_ENTITY);
+//    }
+//
+//    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+//    public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.BAD_REQUEST.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.BAD_REQUEST);
+//    }
+//
+//    @ExceptionHandler(UsernameNotFoundException.class)
+//    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException exception, WebRequest request) {
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message(exception.getMessage()).code(HttpStatus.NOT_FOUND.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<Object> handleException(RuntimeException exception, WebRequest request) {
+//        log.error("Error:" + exception.getMessage());
+//        ResponseDTO<?> responseBody = ResponseDTO.builder().message("Server error, please try again later").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
+//        return new ResponseEntity<Object>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 }

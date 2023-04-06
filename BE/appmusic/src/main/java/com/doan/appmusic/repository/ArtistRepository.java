@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ArtistRepository extends JpaRepository<Artist, Long>, JpaSpecificationExecutor<Artist> {
     Optional<Artist> findBySlug(String slug);
 
-    @Query("SELECT artist FROM Artist artist JOIN artist.albums album " +
+    @Query("SELECT DISTINCT artist FROM Artist artist JOIN artist.songs song JOIN song.album album " +
             "WHERE album.id = :albumId")
     List<Artist> findByAlbumId(@Param("albumId") long id);
 }

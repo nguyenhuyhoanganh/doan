@@ -41,9 +41,9 @@ public class ComposerController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<?> getById(@PathVariable String slug) {
-        ComposerDTO composerDTO = service.getBySlug(slug);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id) {
+        ComposerDTO composerDTO = service.getById(id);
         ResponseDTO<?> response = ResponseDTO.builder().data(composerDTO).build();
         return ResponseEntity.ok(response);
     }

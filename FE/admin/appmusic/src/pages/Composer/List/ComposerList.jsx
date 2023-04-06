@@ -29,8 +29,7 @@ const ComposerList = () => {
     queryFn: fetchComposers,
     getNextPageParam: (lastPage) => {
       if (lastPage.page * lastPage.limit < lastPage.results) return lastPage.page + 1
-    },
-    keepPreviousData: true
+    }
   })
 
   const items = data && data.pages ? data.pages.flatMap((page) => page.data) : []
@@ -57,7 +56,7 @@ const ComposerList = () => {
   }, [search])
 
   const handleClickCreateBtn = () => {
-    navigate(PATH.dashboard.artist.create)
+    navigate(PATH.dashboard.composer.create)
   }
 
   const handleLoadMore = () => {
@@ -70,7 +69,7 @@ const ComposerList = () => {
     <>
       <div className='flex items-center justify-between border-b border-gray-300'>
         <HeaderBreadcrumbs
-          title='Artist List'
+          title='Composer List'
           links={[
             {
               title: 'Dashboard',

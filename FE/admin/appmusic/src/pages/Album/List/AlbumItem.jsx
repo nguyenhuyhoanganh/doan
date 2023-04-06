@@ -16,6 +16,13 @@ const AlbumItem = ({ album }) => {
   const deleteAlbumMutation = useMutation({
     mutationFn: (id) => albumApi.deleteAlbum(id)
   })
+
+  const artists = album.songs
+    .flatMap((song) => song.artists)
+    .reduce((unique, artist) => {
+      return unique.some((item) => item.id === artist.id) ? unique : [...unique, artist]
+    }, [])
+
   return (
     <>
       <div className='col-span-3 w-64 cursor-pointer'>
@@ -81,7 +88,7 @@ const AlbumItem = ({ album }) => {
         <div className='mt-1'>
           <span className='block truncate text-lg font-bold text-gray-800 hover:text-main-color'>{album.title}</span>
           <div className='h-14'>
-            {album.artists.map((artist, index) => {
+            {artists.map((artist, index) => {
               if (index < 3)
                 return index < 2 ? (
                   <Fragment key={index}>

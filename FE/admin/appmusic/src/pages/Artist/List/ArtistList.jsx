@@ -29,8 +29,7 @@ const ArtistList = () => {
     queryFn: fetchArtists,
     getNextPageParam: (lastPage) => {
       if (lastPage.page * lastPage.limit < lastPage.results) return lastPage.page + 1
-    },
-    keepPreviousData: true
+    }
   })
 
   const items = data && data.pages ? data.pages.flatMap((page) => page.data) : []

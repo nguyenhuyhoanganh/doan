@@ -4,12 +4,12 @@ import PATH from '../../../constants/paths'
 import Form from '../components/Form'
 import { useMutation } from '@tanstack/react-query'
 import fileApi from '../../../apis/file.api'
-import artistApi from '../../../apis/artist.api'
+import composerApi from '../../../apis/composer.api'
 import slugify from 'slugify'
 import { isAxiosUnprocessableEntityError } from '../../../utils/utils'
 import { toast } from 'react-toastify'
 
-const ArtistCreate = () => {
+const ComposerCreate = () => {
   const navigate = useNavigate()
 
   // mutation
@@ -20,8 +20,8 @@ const ArtistCreate = () => {
       return results
     }
   })
-  const createArtistMutation = useMutation({
-    mutationFn: (artist) => artistApi.createArtist(artist)
+  const createComposerMutation = useMutation({
+    mutationFn: (composer) => composerApi.createComposer(composer)
   })
 
   const handleSubmit = async (_, data, setError) => {
@@ -38,9 +38,9 @@ const ArtistCreate = () => {
       backgroundImageUrl,
       description
     }
-    createArtistMutation.mutate(body, {
+    createComposerMutation.mutate(body, {
       onSuccess: (data) => {
-        navigate(PATH.dashboard.artist.root)
+        navigate(PATH.dashboard.composer.root)
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError(error)) {
@@ -59,25 +59,25 @@ const ArtistCreate = () => {
   return (
     <>
       <HeaderBreadcrumbs
-        title='Create a new artist'
+        title='Create a new composer'
         links={[
           {
             title: 'Dashboard',
             to: PATH.dashboard.root
           },
           {
-            title: 'Artist',
-            to: PATH.dashboard.artist.root
+            title: 'Composer',
+            to: PATH.dashboard.composer.root
           },
           {
             title: 'Create',
-            to: PATH.dashboard.artist.create
+            to: PATH.dashboard.composer.create
           }
         ]}
       />
-      <Form onSubmit={handleSubmit} isLoading={createArtistMutation.isLoading} />
+      <Form onSubmit={handleSubmit} isLoading={createComposerMutation.isLoading} />
     </>
   )
 }
 
-export default ArtistCreate
+export default ComposerCreate

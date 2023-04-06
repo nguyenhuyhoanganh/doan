@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import albumApi from '../../../apis/album.api'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
@@ -155,8 +155,8 @@ const Loading = () => {
       {Array(8)
         .fill(0)
         .map((_, index) => (
-          <>
-            <div className='col-span-3 w-64 animate-pulse cursor-pointer '>
+          <Fragment key={index}>
+            <div className='col-span-3 w-64 animate-pulse cursor-pointer'>
               <div className='h-64 w-64 overflow-hidden rounded-md bg-gray-500'></div>
               <div className='mt-1'>
                 <div className='m-[5px] h-[18px] animate-pulse rounded-lg bg-gray-800'></div>
@@ -166,7 +166,7 @@ const Loading = () => {
                 </div>
               </div>
             </div>
-          </>
+          </Fragment>
         ))}
     </div>
   )

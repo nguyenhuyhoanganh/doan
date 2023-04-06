@@ -5,10 +5,11 @@ import { useState } from 'react'
 import Modal from '../../../components/Modal/Modal'
 import { MdOutlineClose } from 'react-icons/md'
 import useQueryParams from '../../../hoocs/useQueryParams'
+import { useNavigate } from 'react-router-dom'
 
 const ArtistItem = ({ artist }) => {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false)
-
+  const navigate = useNavigate()
   const queryParams = useQueryParams()
   const queryClient = useQueryClient()
   // mutation
@@ -40,7 +41,10 @@ const ArtistItem = ({ artist }) => {
         </div>
         Delete
       </div>
-      <div className='flex h-8 items-center justify-start rounded-lg text-center font-medium text-gray-700 hover:bg-gray-50'>
+      <div
+        className='flex h-8 items-center justify-start rounded-lg text-center font-medium text-gray-700 hover:bg-gray-50'
+        onClick={() => navigate(`/dashboard/artist/modify/${artist.slug}/${artist.id}`)}
+      >
         <div className='flex min-w-[3rem] items-center justify-center'>
           <svg
             xmlns='http://www.w3.org/2000/svg'

@@ -23,6 +23,9 @@ import SongEdit from '../pages/Song/Edit'
 import AlbumList from '../pages/Album/List/AlbumList'
 import ComposerList from '../pages/Composer/List/ComposerList'
 import CategoryList from '../pages/Category/List/CategoryList'
+import ArtistEdit from '../pages/Artist/Edit'
+import ComposerCreate from '../pages/Composer/Create'
+import ComposerEdit from '../pages/Composer/Edit/ComposerEdit'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -109,7 +112,8 @@ const useRouteElements = () => {
               children: [
                 { element: <Navigate to={PATH.dashboard.artist.root} replace /> },
                 { path: '', element: <ArtistList /> },
-                { path: 'create', element: <ArtistCreate /> }
+                { path: 'create', element: <ArtistCreate /> },
+                { path: 'modify/:slug/:id', element: <ArtistEdit /> }
               ]
             },
             {
@@ -123,7 +127,9 @@ const useRouteElements = () => {
               path: 'composer',
               children: [
                 { element: <Navigate to={PATH.dashboard.composer.root} replace /> },
-                { path: '', element: <ComposerList /> }
+                { path: '', element: <ComposerList /> },
+                { path: 'create', element: <ComposerCreate /> },
+                { path: 'modify/:slug/:id', element: <ComposerEdit /> }
               ]
             },
             {

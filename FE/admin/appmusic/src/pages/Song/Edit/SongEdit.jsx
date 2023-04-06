@@ -95,7 +95,7 @@ const SongEdit = () => {
   return (
     <>
       <HeaderBreadcrumbs
-        title={`Edit song:`}
+        title={`Edit song: ${song && song.title}`}
         links={[
           {
             title: 'Dashboard',

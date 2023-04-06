@@ -25,6 +25,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/songs")
 public class SongController {
+    /*
+    create => add artists_albums if not exists
+    update:
+    - change album => update artists_albums with newAlbumId and oldAlbumId
+    - not change album, change artists
+        => add artists_albums if not exists
+        => remove artists_albums if there are no more songs from the album containing it
+     */
+
     @Autowired
     private SongService service;
     @Autowired

@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -161,6 +160,7 @@ class SongServiceImpl implements SongService {
         if (repository.findByTitle(songDTO.getTitle()).isPresent())
             throw new CustomSQLException("Error", Map.of("title", "Title already exists"));
         Song song = convertToEntity(songDTO);
+        // save song
         song.setCommentCount(0l);
         song.setLikeCount(0l);
         return convertToDTO(repository.save(song));
@@ -193,7 +193,8 @@ class SongServiceImpl implements SongService {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
         mapper.createTypeMap(SongDTO.class, Song.class).setProvider(provider -> song).addMappings(mapping -> mapping.skip(Song::setId)).addMappings(mapping -> mapping.skip(Song::setCreatedBy)).addMappings(mapping -> mapping.skip(Song::setUpdatedBy));
 
-        return convertToDTO(repository.save(mapper.map(songDTO, Song.class)));
+        Song songUpdated = mapper.map(songDTO, Song.class);
+        return convertToDTO(repository.save(songUpdated));
     }
 
     @Override

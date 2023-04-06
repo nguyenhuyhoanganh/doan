@@ -168,7 +168,7 @@ class AlbumServiceImpl implements AlbumService {
             // songs
             List<Song> songs = context.getSource().getSongs();
             if (songs != null) {
-                context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).build()).collect(Collectors.toList()));
+                context.getDestination().setSongs(songs.stream().map(song -> SongDTO.builder().id(song.getId()).title(song.getTitle()).slug(song.getSlug()).imageUrl(song.getImageUrl()).artists(song.getArtists().stream().map(artist -> ArtistDTO.builder().id(artist.getId()).fullName(artist.getFullName()).avatarUrl(artist.getAvatarUrl()).build()).collect(Collectors.toList())).build()).collect(Collectors.toList()));
             }
 
             // artists
