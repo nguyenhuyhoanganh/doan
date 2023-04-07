@@ -26,6 +26,8 @@ import CategoryList from '../pages/Category/List/CategoryList'
 import ArtistEdit from '../pages/Artist/Edit'
 import ComposerCreate from '../pages/Composer/Create'
 import ComposerEdit from '../pages/Composer/Edit/ComposerEdit'
+import AlbumCreate from '../pages/Album/Create'
+import AlbumEdit from '../pages/Album/Edit'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -120,7 +122,9 @@ const useRouteElements = () => {
               path: 'album',
               children: [
                 { element: <Navigate to={PATH.dashboard.album.root} replace /> },
-                { path: '', element: <AlbumList /> }
+                { path: '', element: <AlbumList /> },
+                { path: 'create', element: <AlbumCreate /> },
+                { path: 'modify/:slug/:id', element: <AlbumEdit /> }
               ]
             },
             {

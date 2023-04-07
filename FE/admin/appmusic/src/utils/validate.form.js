@@ -96,3 +96,24 @@ export const artistsSchema = yup.object({
 })
 
 export const composerSchema = artistsSchema
+
+export const albumSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  backgroundImage: yup
+    .mixed()
+    .required('Background image is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
+  description: yup.string()
+})
+
+export const categorySchema = yup.object({
+  title: yup.string().required('Title is required'),
+  description: yup.string()
+})

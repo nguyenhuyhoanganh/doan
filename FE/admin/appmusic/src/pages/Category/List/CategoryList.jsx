@@ -7,6 +7,10 @@ import categoryApi from '../../../apis/category.api'
 import PATH from '../../../constants/paths'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
 import Pagination from '../../../components/Pagination/Pagination'
+import CategoryItem from './CategoryItem'
+import { MdOutlineClose } from 'react-icons/md'
+import Modal from '../../../components/Modal/Modal'
+import CategoryCreate from '../Create'
 
 const CategoryList = () => {
   // rrv6
@@ -14,6 +18,7 @@ const CategoryList = () => {
   const { pathname, search } = useLocation()
   const queryParams = useQueryParams()
   const [title, setTitle] = useState('')
+  const [isShowCreateModal, setIsShowCreateModal] = useState(false)
 
   const queryConfig = omitBy(
     {
@@ -29,8 +34,7 @@ const CategoryList = () => {
     queryKey: ['categories', { ...queryConfig }],
     queryFn: () => {
       return categoryApi.getCategories({ ...queryConfig })
-    },
-    keepPreviousData: true
+    }
   })
 
   useEffect(() => {
@@ -55,7 +59,7 @@ const CategoryList = () => {
   }, [search])
 
   const handleClickCreateBtn = () => {
-    navigate(PATH.dashboard.category.create)
+    setIsShowCreateModal(true)
   }
 
   return (
@@ -123,24 +127,33 @@ const CategoryList = () => {
               <th scope='col' className='px-6 py-3'>
                 <div className={`flex items-center justify-start`}>Description</div>
               </th>
+              <th scope='col' className='px-6 py-3'>
+                <div className={`flex items-center justify-start`}>Action</div>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {data &&
-              data.data.data.map((category) => (
-                <tr className='max-h-14 bg-white' key={category.id}>
-                  <td className={`block w-40 items-center px-6 py-3 text-left font-medium`}>
-                    <span className={`m-0 min-h-[1.5rem] line-clamp-2`}>{category.title}</span>
-                  </td>
-                  <td className={`w-full items-center px-6 py-3 text-left font-medium`}>
-                    <span className={`m-0 min-h-[1.5rem] line-clamp-2`}>{category.description}</span>
-                  </td>
-                </tr>
-              ))}
+            {data && data.data.data.map((category) => <CategoryItem category={category} key={category.id} />)}
           </tbody>
         </table>
       </div>
       {data && data.data.results !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
+      {isShowCreateModal && (
+        <Modal onClose={() => setIsShowCreateModal(false)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`relative flex h-[35rem] w-[60rem] flex-col rounded-lg bg-white px-4 pt-10 pb-8`}
+          >
+            <span
+              onClick={() => setIsShowCreateModal(false)}
+              className='absolute right-3 top-3 inline-flex cursor-pointer items-center justify-center font-[30px] text-red-400'
+            >
+              <MdOutlineClose size={32} />
+            </span>
+            <CategoryCreate onClose={() => setIsShowCreateModal(false)} />
+          </div>
+        </Modal>
+      )}
     </>
   )
 }

@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react'
 
 const UploadImage = ({
   className = 'w-36 rounded-lg',
-  classContent = '',
+  size = 'medium',
   title,
   value,
   onChange,
@@ -21,15 +21,20 @@ const UploadImage = ({
   }, [value])
 
   return (
-    <div className={`m-3 mt-0 flex h-48 flex-col items-center justify-between ${className}`}>
+    <div
+      className={`m-3 mt-0 flex flex-col items-center justify-between ${className} 
+      ${size === 'medium' && 'h-48'} ${size === 'large' && 'h-72'}`}
+    >
       <div
-        className={`group relative m-3 h-36 outline-dashed outline-1 outline-offset-[12px]  ${className} 
-      ${hasError === true ? 'bg-red-100/50 outline-red-600/80' : 'bg-gray-100 outline-gray-400/80'}`}
+        className={`group relative m-3 outline-dashed outline-1 outline-offset-[12px]  ${className} 
+      ${hasError === true ? 'bg-red-100/50 outline-red-600/80' : 'bg-gray-100 outline-gray-400/80 '}
+      ${size === 'medium' && 'h-36'} ${size === 'large' && 'h-60'}`}
         onClick={() => ref.current.click()}
       >
         {value instanceof File && (
           <div
-            className={`absolute top-1/2 left-1/2 z-30 h-36 -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center ${className}`}
+            className={`absolute top-1/2 left-1/2 z-30  -translate-x-1/2 -translate-y-1/2 transform bg-cover bg-center 
+            ${size === 'medium' && 'h-36'} ${size === 'large' && 'h-60'} ${className}`}
             style={{ backgroundImage: `url(${previewUrl})` }}
           >
             <button
@@ -59,7 +64,8 @@ const UploadImage = ({
 
         <input type='file' ref={ref} className='hidden' onChange={handelChange} />
         <div
-          className={`absolute top-1/2 left-1/2 z-20 flex h-36 -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center  ${className}`}
+          className={`absolute top-1/2 left-1/2 z-20 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center 
+          ${size === 'medium' && 'h-36'} ${size === 'large' && 'h-60'} ${className}`}
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'

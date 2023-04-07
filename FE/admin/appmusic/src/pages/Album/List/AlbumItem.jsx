@@ -6,10 +6,11 @@ import useQueryParams from '../../../hoocs/useQueryParams'
 import albumApi from '../../../apis/album.api'
 import { CiPlay1 } from 'react-icons/ci'
 import Tooltip from '../../../components/Tooltip'
+import { useNavigate } from 'react-router-dom'
 
 const AlbumItem = ({ album }) => {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false)
-
+  const navigate = useNavigate()
   const queryParams = useQueryParams()
   const queryClient = useQueryClient()
   // mutation
@@ -32,7 +33,7 @@ const AlbumItem = ({ album }) => {
               <Tooltip content='Edit'>
                 <span
                   className='flex h-8 w-8 items-center justify-center rounded-full text-white opacity-0 hover:bg-white/30 hover:opacity-80 group-hover:opacity-100'
-                  onClick={() => console.log('edit')}
+                  onClick={() => navigate(`/dashboard/album/modify/${album.slug}/${album.id}`)}
                 >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -88,24 +89,22 @@ const AlbumItem = ({ album }) => {
         <div className='mt-1'>
           <span className='block truncate text-lg font-bold text-gray-800 hover:text-main-color'>{album.title}</span>
           <div className='h-14'>
-            {artists.map((artist, index) => {
-              if (index < 3)
-                return index < 2 ? (
+            {artists.map((artist, index, artists) => {
+              return (
+                index < 3 && (
                   <Fragment key={index}>
                     <span className='text-base font-medium text-gray-800 hover:text-main-color hover:underline'>
                       {artist.fullName}
                     </span>
-                    <span className='text-base font-medium text-gray-800'>{`, `}</span>
+                    {index !== artists.length - 1 && (
+                      <>
+                        <span className='text-base font-medium text-gray-800'>{`,`}</span>
+                        {index !== 2 && <span className='text-base font-medium text-gray-800'>{` `}</span>}
+                      </>
+                    )}
                   </Fragment>
-                ) : (
-                  <span
-                    key={index}
-                    className='text-base font-medium text-gray-600 hover:text-main-color hover:underline'
-                  >
-                    {artist.fullName}
-                  </span>
                 )
-              return null
+              )
             })}
             {album.artists.length > 3 && <span className='text-base font-medium text-gray-800'>{`...`}</span>}
           </div>
