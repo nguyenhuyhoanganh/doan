@@ -1,66 +1,46 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import albumApi from '../../../apis/album.api'
 import HeaderBreadcrumbs from '../../../components/HeaderBreadcrumbs/HeaderBreadcrumbs'
-import Pagination from '../../../components/Pagination/Pagination'
 import SearchInput from '../../../components/SearchInput'
-import Table from '../../../components/Table/Table'
 import PATH from '../../../constants/paths'
 import useQueryParams from '../../../hoocs/useQueryParams'
-
-const TABLE_HEAD = [
-  {
-    property: 'backgroundImageUrl',
-    title: 'Image',
-    type: 'image'
-  },
-  {
-    property: 'title',
-    title: 'Tỉtle',
-    type: 'string'
-  },
-  {
-    property: 'description',
-    title: 'Description',
-    type: 'string'
-  }
-]
+import InfiniteScroll from 'react-infinite-scroll-component'
+import AlbumItem from './AlbumItem'
 
 const AlbumList = () => {
   const navigate = useNavigate()
   const { pathname, search } = useLocation()
   const queryParams = useQueryParams()
   // search value
-  const [searchValue, setSearchValue] = useState(queryParams.search === undefined ? null : queryParams.search)
+  const [title, setTitle] = useState(queryParams.title === undefined ? null : queryParams.title)
 
-  const queryConfig = omitBy(
-    {
-      page: queryParams.page || 1,
-      limit: queryParams.limit || 10,
-      sortBy: queryParams.sortBy,
-      orderBy: queryParams.orderBy,
-      search: queryParams.search
-    },
-    isUndefined
-  )
+  const fetchAlbums = async ({ pageParam = 1 }) => {
+    const response = await albumApi.getAlbums(
+      omitBy({ page: pageParam, limit: 9, title: queryParams.title }, isUndefined)
+    )
+    return response.data
+  }
 
-  // fetch artists
-  const { data } = useQuery({
-    queryKey: ['albums', { ...queryConfig }],
-    queryFn: () => {
-      return albumApi.getAlbums({ ...queryConfig })
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['albums', { ...queryParams.title }],
+    queryFn: fetchAlbums,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * lastPage.limit < lastPage.results) return lastPage.page + 1
     },
     keepPreviousData: true
   })
 
+  const items = data && data.pages ? data.pages.flatMap((page) => page.data) : []
+
   // check change search, fetch data
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      if (searchValue !== null) {
-        const search = createSearchParams({ ...queryConfig, search: searchValue })
-        searchValue === '' && search.delete('search')
+      if (title !== null) {
+        const search = createSearchParams({ title: title })
+        title === '' && search.delete('title')
         navigate({
           pathname: pathname,
           search: search.toString()
@@ -69,7 +49,7 @@ const AlbumList = () => {
     }, 300)
     return () => clearTimeout(timeOut)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue])
+  }, [title])
 
   // scroll to top, pause audio when change query (search of useLocation)
   useEffect(() => {
@@ -77,13 +57,20 @@ const AlbumList = () => {
   }, [search])
 
   const handleClickCreateBtn = () => {
-    // navigate(PATH.dashboard.album.create)
+    navigate(PATH.dashboard.album.create)
   }
+
+  const handleLoadMore = () => {
+    if (!isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }
+
   return (
     <>
       <div className='flex items-center justify-between border-b border-gray-300'>
         <HeaderBreadcrumbs
-          title='Artist List'
+          title='Album List'
           links={[
             {
               title: 'Dashboard',
@@ -114,18 +101,18 @@ const AlbumList = () => {
           >
             <path strokeLinecap='round' strokeLinejoin='round' d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z' />
           </svg>
-          New Artist
+          New Album
         </button>
       </div>
-      <div className='mt-4 flex items-center gap-3 transition-all'>
-        <SearchInput value={searchValue} onChange={setSearchValue} />
+      <div className='mt-4 flex items-center transition-all'>
+        <SearchInput value={title} onChange={setTitle} />
         <button
-          className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 text-red-500 transition-all hover:bg-red-50 ${
-            (searchValue === null || searchValue === '') && 'w-0 px-0 opacity-0'
+          className={`flex h-[40px] items-center justify-center gap-1 rounded-lg px-4 py-2.5 pl-3 text-red-500 transition-all hover:bg-red-50 ${
+            (title === null || title === '') && 'w-0 px-0 pl-0 opacity-0'
           }`}
           onClick={() => {
             // clear searhValue, remove query of search value
-            setSearchValue(null)
+            setTitle(null)
             navigate(pathname)
           }}
         >
@@ -146,14 +133,41 @@ const AlbumList = () => {
           Reset
         </button>
       </div>
-      <div className='mt-4 flex min-h-[100px] flex-auto flex-col justify-between gap-5 rounded-md'>
+      <div className='mt-4 flex min-h-screen flex-auto flex-col justify-between gap-5 rounded-md'>
         <div>
-          <Table tableHead={TABLE_HEAD} data={data} />
+          <InfiniteScroll dataLength={items.length} next={handleLoadMore} hasMore={hasNextPage} loader={<Loading />}>
+            {items.length === 0 && <Loading />}
+            <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
+              {items.length >= 0 && items.map((album) => <AlbumItem key={album.id} album={album} />)}
+            </div>
+          </InfiniteScroll>
         </div>
-        {data && data.data.results !== 0 && <Pagination queryConfig={queryConfig} results={data.data.results} />}
       </div>
     </>
   )
 }
 
 export default AlbumList
+
+const Loading = () => {
+  return (
+    <div className='grid grid-cols-12 items-center justify-items-center gap-10'>
+      {Array(8)
+        .fill(0)
+        .map((_, index) => (
+          <Fragment key={index}>
+            <div className='col-span-3 w-64 animate-pulse cursor-pointer'>
+              <div className='h-64 w-64 overflow-hidden rounded-md bg-gray-500'></div>
+              <div className='mt-1'>
+                <div className='m-[5px] h-[18px] animate-pulse rounded-lg bg-gray-800'></div>
+                <div className='h-14'>
+                  <div className='m-[4px] h-4 animate-pulse rounded-lg bg-gray-600'></div>
+                  <div className='m-[4px] h-4 animate-pulse rounded-lg bg-gray-600'></div>
+                </div>
+              </div>
+            </div>
+          </Fragment>
+        ))}
+    </div>
+  )
+}

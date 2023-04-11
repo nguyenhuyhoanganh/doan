@@ -21,6 +21,13 @@ import ArtistCreate from '../pages/Artist/Create'
 import { AudioProvider } from '../contexts/audio.context'
 import SongEdit from '../pages/Song/Edit'
 import AlbumList from '../pages/Album/List/AlbumList'
+import ComposerList from '../pages/Composer/List/ComposerList'
+import CategoryList from '../pages/Category/List/CategoryList'
+import ArtistEdit from '../pages/Artist/Edit'
+import ComposerCreate from '../pages/Composer/Create'
+import ComposerEdit from '../pages/Composer/Edit/ComposerEdit'
+import AlbumCreate from '../pages/Album/Create'
+import AlbumEdit from '../pages/Album/Edit'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -42,7 +49,7 @@ const useRouteElements = () => {
       path: '/404',
       element: (
         <RegisterLayout>
-          <div>KhongCoGi</div>
+          <div>404 Not Found</div>
         </RegisterLayout>
       )
     },
@@ -107,14 +114,33 @@ const useRouteElements = () => {
               children: [
                 { element: <Navigate to={PATH.dashboard.artist.root} replace /> },
                 { path: '', element: <ArtistList /> },
-                { path: 'create', element: <ArtistCreate /> }
+                { path: 'create', element: <ArtistCreate /> },
+                { path: 'modify/:slug/:id', element: <ArtistEdit /> }
               ]
             },
             {
               path: 'album',
               children: [
                 { element: <Navigate to={PATH.dashboard.album.root} replace /> },
-                { path: '', element: <AlbumList /> }
+                { path: '', element: <AlbumList /> },
+                { path: 'create', element: <AlbumCreate /> },
+                { path: 'modify/:slug/:id', element: <AlbumEdit /> }
+              ]
+            },
+            {
+              path: 'composer',
+              children: [
+                { element: <Navigate to={PATH.dashboard.composer.root} replace /> },
+                { path: '', element: <ComposerList /> },
+                { path: 'create', element: <ComposerCreate /> },
+                { path: 'modify/:slug/:id', element: <ComposerEdit /> }
+              ]
+            },
+            {
+              path: 'category',
+              children: [
+                { element: <Navigate to={PATH.dashboard.category.root} replace /> },
+                { path: '', element: <CategoryList /> }
               ]
             }
           ]

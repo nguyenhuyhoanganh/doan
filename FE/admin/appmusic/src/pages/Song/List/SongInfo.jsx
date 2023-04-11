@@ -23,7 +23,7 @@ const SongInfo = ({ children, song, onChangeOpen, isOpen }) => {
   }
 
   const renderMoreDetails = (
-    <div tabIndex='-1' className={`} w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}>
+    <div tabIndex='-1' className={`w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}>
       <div className='flex flex-col justify-around'>
         <span className='text-sm font-semibold uppercase text-gray-400'>Artist</span>
         <div>

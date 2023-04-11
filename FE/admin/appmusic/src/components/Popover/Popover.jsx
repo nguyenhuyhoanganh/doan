@@ -14,22 +14,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useId, useRef, useState } from 'react'
 
 const Popover = ({
-  children,
-  renderPopover,
-  clasaName,
-  as: Element = 'div',
-  initialOpen,
-  placement = 'bottom-end',
-  zindex = 50,
-  offsetValue = 10,
-  hasArrow = false,
-  shrinkedPopoverPosition = '',
-  trigger = 'hover',
+  children, // đoạn JSX tương tác sẽ hiển thị popover
+  renderPopover, // đoạn JSX để hiển thị popover
+  clasaName, // css cho component bao bọc lấy children
+  as: Element = 'div', // loại component sẽ bao bọc lấy children, mặc đinh là div
+  initialOpen, // ban đầu mở hay đóng
+  placement = 'bottom-end', // vị trí của popover: bottom, top, left, right, start, end. mặc định 'bottom-end'
+  zindex = 50, // z-index
+  offsetValue = 10, // khoảng cách popover với children
+  hasArrow = false, // có arrow hay không
+  shrinkedPopoverPosition = '', // vị trí animation hiển thị popover mở lên thu lại, mặc định là vị trí trên cùng của arrow
+  trigger = 'hover', // sự kiện mở lên popover: click hoặc hover
   delayHover = {
     open: 100,
     close: 500
-  },
-  onOpenChange
+  }, // thời gian mở lên, thu lại popover
+  onOpenChange // nếu muốn theo dõi sự kiện open và close của popover ở component cha, cung cấp function để chnage state open ngoài component cha
 }) => {
   const id = useId()
   const [isOpen, setIsOpen] = useState(initialOpen || false)

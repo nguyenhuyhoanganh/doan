@@ -37,7 +37,7 @@ public class Artist extends UpdateAuditable {
     @ManyToMany(mappedBy = "artists")
     private List<Song> songs;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"), inverseJoinColumns = @JoinColumn(name = "album_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"artist_id", "album_id"}))
     private List<Album> albums;
 

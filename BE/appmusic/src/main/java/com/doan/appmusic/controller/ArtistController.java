@@ -41,9 +41,9 @@ public class ArtistController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<?> getById(@PathVariable String slug) {
-        ArtistDTO artistDTO = service.getBySlug(slug);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id) {
+        ArtistDTO artistDTO = service.getById(id);
         ResponseDTO<?> response = ResponseDTO.builder().data(artistDTO).build();
         return ResponseEntity.ok(response);
     }

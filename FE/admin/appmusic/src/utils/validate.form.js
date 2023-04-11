@@ -66,54 +66,54 @@ export const songSchema = yup.object({
   // lyrics: yup.string(),
 })
 
-// export const getRules = (getValues = undefined) => ({
-//   email: {
-//     required: {
-//       value: true,
-//       message: 'Email is required'
-//     },
-//     pattern: {
-//       value: /^\S+@\S+\.\S+$/,
-//       message: 'Email is not valid'
-//     },
-//     maxLength: {
-//       value: 160,
-//       message: 'Email length from 5 - 160 characters'
-//     },
-//     minLength: {
-//       value: 5,
-//       message: 'Email length from 5 - 160 characters'
-//     }
-//   },
-//   password: {
-//     required: {
-//       value: true,
-//       message: 'Password is required'
-//     },
-//     maxLength: {
-//       value: 160,
-//       message: 'Password length from 6 - 160 characters'
-//     },
-//     minLength: {
-//       value: 6,
-//       message: 'Password length from 6 - 160 characters'
-//     }
-//   },
-//   confirm_password: {
-//     required: {
-//       value: true,
-//       message: 'Confirm password is required'
-//     },
-//     maxLength: {
-//       value: 160,
-//       message: 'Confirm password length from 6 - 160 characters'
-//     },
-//     minLength: {
-//       value: 6,
-//       message: 'Confirm password length from 6 - 160 characters'
-//     },
-//     validate: getValues
-//       ? (value) => value === getValues('password') || "Confirm password doesn't match password"
-//       : undefined
-//   }
-// })
+export const artistsSchema = yup.object({
+  fullName: yup.string().required('Full Name is required'),
+  age: yup.number().required('Age is required'),
+  gender: yup.string().required('Gender is required').oneOf(['MALE', 'FEMALE', 'UNKNOWN'], 'Gender is not valid'),
+  avatar: yup
+    .mixed()
+    .required('Avatar is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
+  backgroundImage: yup
+    .mixed()
+    .required('Background image is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
+  description: yup.string()
+})
+
+export const composerSchema = artistsSchema
+
+export const albumSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  backgroundImage: yup
+    .mixed()
+    .required('Background image is required')
+    .test('fileSize', 'File must not exceed 5MB', (value) => {
+      if (!value) return true
+      return value.size <= 5000000
+    })
+    .test('fileType', 'File must be in image format', (value) => {
+      if (!value) return true
+      return value.type.startsWith('image')
+    }),
+  description: yup.string()
+})
+
+export const categorySchema = yup.object({
+  title: yup.string().required('Title is required'),
+  description: yup.string()
+})

@@ -26,4 +26,7 @@ public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificat
     @Query("SELECT COUNT(DISTINCT song) FROM Song song JOIN song.likes lk JOIN lk.user user " +
             "WHERE user.id = :userId")
     long countListSongLiked(@Param("userId") long userId);
+
+    @Query("SELECT song.id FROM Song song")
+    List<Long> findAllIdSong();
 }

@@ -9,6 +9,15 @@ const composerApi = {
   },
   getComposerById(id) {
     return http.get(`${URL}/${id}`)
+  },
+  createComposer(composer) {
+    return http.post(`${URL}/create`, composer)
+  },
+  modifyComposer(id, composer) {
+    return http.put(`${URL}/modify/${id}`, composer)
+  },
+  deleteComposer(id) {
+    return http.delete(`${URL}/delete/${id}`)
   }
 }
 
