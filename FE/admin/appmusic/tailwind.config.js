@@ -12,7 +12,8 @@ module.exports = {
         'main-color': '#1ed760'
       },
       backgroundImage: {
-        'banner-image': "url('/src/imgs/banner.jpg')"
+        'banner-image': "url('/src/imgs/banner.jpg')",
+        'chart-image': "url('/src/imgs/chart.jpg')"
       },
       fontFamily: {
         Poppins: 'Poppins'

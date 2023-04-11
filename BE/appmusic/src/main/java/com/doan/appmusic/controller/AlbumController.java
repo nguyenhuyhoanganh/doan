@@ -41,9 +41,9 @@ public class AlbumController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<?> getById(@PathVariable String slug) {
-        AlbumDTO albumDTO = service.getBySlug(slug);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable long id) {
+        AlbumDTO albumDTO = service.getById(id);
         ResponseDTO<AlbumDTO> response = ResponseDTO.<AlbumDTO>builder().data(albumDTO).build();
         return ResponseEntity.ok(response);
     }

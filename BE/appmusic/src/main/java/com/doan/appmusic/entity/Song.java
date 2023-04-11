@@ -64,6 +64,9 @@ public class Song extends UpdateAuditable {
     private Composer composer;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", orphanRemoval = true)
+    private List<Play> plays;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", orphanRemoval = true)
     private List<Comment> comments;
 
     private Long commentCount;
