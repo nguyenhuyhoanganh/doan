@@ -4,6 +4,7 @@ import com.doan.appmusic.entity.*;
 import com.doan.appmusic.exception.CommonException;
 import com.doan.appmusic.exception.CustomSQLException;
 import com.doan.appmusic.model.*;
+import com.doan.appmusic.repository.PlayRepository;
 import com.doan.appmusic.repository.SongLikeRepository;
 import com.doan.appmusic.repository.SongRepository;
 import com.doan.appmusic.repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +26,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,6 +60,10 @@ public interface SongService {
     void deleteComment(long songId, long userId);
 
     void incrementView(long songId);
+
+    Map<String, Object> chart();
+
+    void updatePlaySongEveryHour();
 }
 
 @Service
@@ -70,6 +74,8 @@ class SongServiceImpl implements SongService {
     private SongRepository repository;
     @Autowired
     private SongLikeRepository likeRepository;
+    @Autowired
+    private PlayRepository playRepository;
     @Autowired
     private FileService fileService;
     @Autowired
@@ -163,7 +169,12 @@ class SongServiceImpl implements SongService {
         // save song
         song.setCommentCount(0l);
         song.setLikeCount(0l);
-        return convertToDTO(repository.save(song));
+        Song songUpdated = repository.save(song);
+        // add 24 play for song
+        for (int i = 0; i < 24; i++) {
+            playRepository.save(Play.builder().count(0).song(songUpdated).label(String.valueOf(i)).build());
+        }
+        return convertToDTO(songUpdated);
     }
 
     @Override
@@ -218,8 +229,8 @@ class SongServiceImpl implements SongService {
 
     @Override
     public void like(long songId, long userId) {
-        if (likeRepository.findByUserAndSong(userId, songId).isPresent()) throw new CommonException("You liked this" +
-                " song");
+        if (likeRepository.findByUserAndSong(userId, songId).isPresent())
+            throw new CommonException("You liked this" + " song");
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
         Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be find"));
         likeRepository.save(SongLike.builder().song(song).user(user).build());
@@ -253,7 +264,60 @@ class SongServiceImpl implements SongService {
     public void incrementView(long songId) {
         Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be found"));
         song.incrementView();
+        LocalDateTime now = LocalDateTime.now();
+        String hour = String.valueOf(now.getHour());
+        Optional<Play> playOptional = playRepository.findBySongIdAndLabel(song.getId(), hour);
+        if(playOptional.isPresent()) {
+            Play play = playOptional.get();
+            play.incrementCount();
+            playRepository.save(play);
+        }
         repository.save(song);
+    }
+
+    @Override
+    public Map<String, Object> chart() {
+        LocalDateTime now = LocalDateTime.now();
+        String label = String.valueOf(now.getHour());
+        List<Play> plays = playRepository.findTopPlayCount(label, PageRequest.of(0, 10));
+        List<Song> songs = plays.stream().map(Play::getSong).collect(Collectors.toList());
+        // datasets
+        List<Object> datasets = new ArrayList<>();
+        for (Song song : songs) {
+            List<Long> counts = song.getPlays().stream()
+                    .sorted(Comparator.comparing(play -> Integer.parseInt(play.getLabel())))
+                    .map(Play::getCount).collect(Collectors.toList());
+            datasets.add(Map.of("data", counts));
+        }
+        // labels
+        String[] labels = new String[24];
+        for (int i = 0; i < 24; i++) {
+            labels[i] = String.valueOf((now.getHour() + i + 1) % 24);
+        }
+        // top_song
+        List<SongDTO> topSongs = songs.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return Map.of("datasets", datasets, "labels", labels, "top_songs", topSongs);
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 * * * *")
+    public void updatePlaySongEveryHour() {
+//        List<Long> listIdSong = repository.findAllIdSong();
+//        LocalDateTime now = LocalDateTime.now();
+//        String hour = String.valueOf(now.getHour());
+//        for (long idSong : listIdSong) {
+//            Optional<Play> playOptional = playRepository.findBySongIdAndLabel(idSong, hour);
+//            Play play;
+//            if (playOptional.isEmpty()) {
+//                play = Play.builder().count(0).song(Song.builder().id(idSong).build()).label(hour).build();
+//            } else {
+//                play = playOptional.get();
+//                play.setCount(0);
+//            }
+//            playRepository.save(play);
+//        }
+
     }
 
     private Specification<Song> buildSpecification(Map<String, String[]> query) {

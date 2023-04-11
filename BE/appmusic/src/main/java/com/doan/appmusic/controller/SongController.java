@@ -66,6 +66,13 @@ public class SongController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/chart")
+    public ResponseEntity<?> chart() {
+        Map<String, Object> data = service.chart();
+        ResponseDTO<?> response = ResponseDTO.builder().data(data).build();
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SongDTO songDTO) {
         SongDTO songCreated = service.create(songDTO);

@@ -1,5 +1,7 @@
+import ChartSection from './components/ChartSection'
+
 const Analytics = () => {
-  return <div>Analytics</div>
+  return <ChartSection />
 }
 
 export default Analytics
