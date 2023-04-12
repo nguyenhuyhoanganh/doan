@@ -9,10 +9,15 @@ const path = {
     ALBUM__TITLE__PID: "album/:title/:aid",
     PLAYLIST__TITLE__PID: "playlist/:title/:pid",
     SONG__SID: "song/:slug",
+    SONGINFO__SID: "song/:slug/:sid",
     SEARCH: "search/:key",
     TEST: "test",
     ARTIST: "artist/:slug/:id",
     COMPOSER: "composer/:slug/:id",
+    REGISTER: "register",
+    SEARCHBYVOICE: "searchbyvoice",
+    LOGOUT: "logout",
+    USERINFO: "userinfo",
     
 }
 export default path

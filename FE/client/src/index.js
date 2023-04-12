@@ -6,16 +6,30 @@ import { Provider } from "react-redux";
 import reduxConfig from "./redux";
 import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
+import { AuthProvider } from "./contexts/auth.context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const {store, persistor} = reduxConfig();
+const { store, persistor } = reduxConfig();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 0,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
     </PersistGate>
   </Provider>
 );

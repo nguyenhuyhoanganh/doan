@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import * as api from "../apis";
@@ -8,6 +8,7 @@ import { useRef } from "react";
 import { toast } from "react-toastify";
 import SkeletonComment from "./SkeletonComment";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/auth.context";
 
 var intervalId;
 const Player = () => {
@@ -40,6 +41,8 @@ const Player = () => {
   const [isVipSong, setIsVipSong] = useState(false);
   const [skeleton, setSkeleton] = useState(true);
   const [loopBtn, setLoopBtn] = useState(false);
+  const [like, setLike] = useState(false);
+  const { isAuthenticated } = useContext(AuthContext);
   var tempSource;
   const [audio, setAudio] = useState(new Audio());
   useEffect(() => {
@@ -48,10 +51,12 @@ const Player = () => {
       const res = await api.apiGetDetailSong(curSongId);
       if (res?.data.code === 200) {
         audio.pause();
+        console.log(res?.data?.data[0]);
         setSongInfo(res?.data?.data[0]);
         setAudio(new Audio(res?.data?.data[0]?.sourceUrls[0]));
         setSkeleton(false);
         setIsVipSong(false);
+        setLike(res?.data?.data[0]?.liked);
       } else {
         // ERROR occurred when call VIP songs
         console.log(res?.data.code);
@@ -87,14 +92,9 @@ const Player = () => {
         // console.log(audio.currentTime);
         let percent =
           Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
-        // console.log(percent);
+        console.log(percent);
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
-        // console.log(audio.currentTime, songInfo.duration)
-        // if (audio.currentTime == songInfo.duration) {
-        //   console.log("Next bài");
-        //   // handleNextSong();
-        // }
       }, 100);
     }
   }, [audio]);
@@ -297,6 +297,27 @@ const Player = () => {
     console.log("repeat loop");
     setLoopBtn((pre) => !pre);
   };
+  const handleLikeSong = () => {
+    const actionLikeSong = async () => {
+      if (isAuthenticated) {
+        if (like) {
+          // nếu like = true là đã like
+          const res = await api.apiUnLikeSong(curSongId)
+          setLike(false)
+          toast.info('Bỏ lượt thích :((')
+        } else {
+          // like = false là chưa like
+          const res = await api.apiLikeSong(curSongId);
+          setLike(true)
+          toast.info('Cảm ơn đã thích bài hát <3')
+        }
+        
+      } else {
+        toast.warning("Bạn cần đăng nhập để like bài hát");
+      }
+    };
+    actionLikeSong();
+  };
   return (
     <div className="px-5 h-full flex justify-center bg-main-300">
       {/* thông tin bài hát */}
@@ -318,10 +339,16 @@ const Player = () => {
           </div>
           <div className="flex gap-3 ml-8 cursor-pointer">
             {/* icons */}
-            <AiOutlineHeart size={24} className="hover:text-red-500" />
+            <AiOutlineHeart
+              onClick={() => handleLikeSong()}
+              size={24}
+              className={
+                like? "text-red-500" : "hover:text-red-500"
+              }
+            />
             <MdInfoOutline
               onClick={() => {
-                navigate("/song/" + songInfo?.slug);
+                navigate(`/song/${songInfo?.slug}/${songInfo?.id}`);
               }}
               size={24}
               className="hover:text-[#fff]"

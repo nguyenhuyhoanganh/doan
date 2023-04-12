@@ -6,6 +6,7 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import List from "../../components/List";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions"
+import formatDate from "../../utils/formatDay"
 
 const Album = () => {
   const [songs, setSongs] = useState(null);
@@ -39,7 +40,7 @@ const Album = () => {
         <h3 className="text-[20px] text-center font-semibold">{album?.title}</h3>
         <span>{album?.description}</span>
         <span>
-          <span>Cập nhật: {album?.createdAt}</span>
+          <span>Cập nhật: {formatDate(album?.createdAt)}</span>
           <span></span>
         </span>
       </div>
