@@ -91,7 +91,11 @@ const useRouteElements = () => {
             },
             {
               path: 'analytics',
-              element: <Analytics />
+              element: (
+                <AudioProvider>
+                  <Analytics />
+                </AudioProvider>
+              )
             },
             {
               path: 'song',

@@ -279,15 +279,25 @@ class SongServiceImpl implements SongService {
     public Map<String, Object> chart() {
         LocalDateTime now = LocalDateTime.now();
         String label = String.valueOf(now.getHour());
-        List<Play> plays = playRepository.findTopPlayCount(label, PageRequest.of(0, 10));
+        List<Play> plays = playRepository.findTopPlayCount(label, PageRequest.of(0, 100));
+        List<Play> oldPlays = playRepository.findTopPlayCount(String.valueOf(now.getHour() - 1),
+                PageRequest.of(0, 100));
         List<Song> songs = plays.stream().map(Play::getSong).collect(Collectors.toList());
+        List<Song> oldSongs = oldPlays.stream().map(Play::getSong).collect(Collectors.toList());
+        long minCount = 0, maxCount = 0;
         // datasets
         List<Object> datasets = new ArrayList<>();
         for (Song song : songs) {
             List<Long> counts = song.getPlays().stream()
                     .sorted(Comparator.comparing(play -> Integer.parseInt(play.getLabel())))
                     .map(Play::getCount).collect(Collectors.toList());
-            datasets.add(Map.of("data", counts));
+            long maxCountOfList = counts.stream().max(Long::compare).get();
+            long minCountOfList = counts.stream().min(Long::compare).get();
+            maxCount = maxCountOfList > maxCount ? maxCountOfList : maxCount;
+            minCount = minCountOfList < minCount ? minCountOfList : minCount;
+            List<Long> countsSorted = counts.subList(now.getHour() + 1, counts.size());
+            countsSorted.addAll(counts.subList(0, now.getHour() + 1));
+            datasets.add(Map.of("data", countsSorted));
         }
         // labels
         String[] labels = new String[24];
@@ -295,9 +305,17 @@ class SongServiceImpl implements SongService {
             labels[i] = String.valueOf((now.getHour() + i + 1) % 24);
         }
         // top_song
-        List<SongDTO> topSongs = songs.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<SongDTO> topSongs =
+                songs.stream().map(song -> {
+                    System.out.println("old index: " + oldSongs.indexOf(song) + " new index: " + songs.indexOf(song));
+                    int rankChange = oldSongs.indexOf(song) - songs.indexOf(song);
+                    SongDTO songDTO = convertToDTO(song);
+                    songDTO.setRankChange(rankChange);
+                    return songDTO;
+                }).collect(Collectors.toList());
 
-        return Map.of("datasets", datasets, "labels", labels, "top_songs", topSongs);
+        return Map.of("datasets", datasets, "labels", labels, "top_songs", topSongs,
+                "maxCount", maxCount, "minCount", minCount);
     }
 
     @Override
