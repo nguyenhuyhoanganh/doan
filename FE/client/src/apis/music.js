@@ -14,6 +14,8 @@ export const apiIncresingView = (sid) => http.post(`/songs/${sid}/increment_view
 
 export const apiGetFavoritePlaylist = (params) => http.get('/songs/favorites_list', {params})
 
+export const apiCreatePlaylist = (body) => http.post('/playlists/create', body)
+
 
 
 export const apiGetDetailSong = (sid) =>

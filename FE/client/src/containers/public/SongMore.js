@@ -2,24 +2,71 @@ import { BsDownload, BsCardText, BsHeadphones } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
 import { HiOutlineLink } from "react-icons/hi";
 import { FaRegComment } from "react-icons/fa";
-import { IoMdAdd} from "react-icons/io"
+import { IoMdAdd } from "react-icons/io";
 import { NavLink, useNavigate } from "react-router-dom";
 import Popover from "../../components/Popover";
 import { Fragment, useState } from "react";
 import Tooltip from "../../components/Tooltip";
-import * as apis from "../../apis"
+import * as apis from "../../apis";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth.context";
+import { toast } from "react-toastify";
 
 const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [playlist, setPlaylist] = useState([]);
+  useEffect(() => {
+    const fetchPL = async () => {
+      if (isAuthenticated) {
+        const res = await apis.apiGetPlaylist({
+          limit: 40,
+          orderBy: "createdAt",
+        });
+        setPlaylist(res?.data?.data);
+      }
+    };
+    fetchPL();
+  }, []);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
   };
-  const handleAddToPlaylist = (sid) => {
-    const addPL = async(sid) => {
-      // const res = await apis.apiAddSongToPlaylist(sid, pid)
+  const handleAddToPlaylist = async(pid, sid) => {
+    const res = await apis.apiAddSongToPlaylist(sid, pid)
+    console.log(res)
+    if(res?.data?.code === 200){
+      toast.success('Thêm bài hát thành công!')
     }
-  }
+  };
+
+  const playlistSet = (
+    <div
+      tabIndex="-1"
+      className={`} w-48 cursor-auto select-none rounded-lg bg-white p-[15px] pt-4 shadow`}
+    >
+      <div className="flex flex-col justify-around">
+        <span className="text-sm font-semibold uppercase text-gray-400">
+          Playlist
+        </span>
+        <div className="flex flex-col gap-1 cursor-pointer pt-2">
+          {playlist.length !== 0? 
+            playlist.map((el) => {
+              return (
+                <span
+                  key={el.id}
+                  onClick={(e) => handleAddToPlaylist(el.id, song.id)}
+                  className="hover:bg-gray-200 text-left text-sm uppercase"
+                >
+                  {el?.title}
+                </span>
+              );
+            }): "chưa có playlist"} 
+        </div>
+      </div>
+    </div>
+  );
 
   const renderMoreDetails = (
     <div
@@ -35,7 +82,7 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
             song.artists.map((artist, index, artists) => (
               <Fragment key={artist?.id}>
                 <NavLink
-                  to={`/dashboard/artist/${artist?.slug}`}
+                  to={`/artist/${artist?.slug}/${artist?.id}`}
                   className="!inline text-sm font-medium line-clamp-2 hover:text-main-color"
                 >
                   {artist?.fullName}
@@ -63,7 +110,7 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
           Composer
         </span>
         <NavLink
-          to={`/dashboard/composer/${song.composer?.slug}`}
+          to={`/composer/${song.composer?.slug}/${song.composer?.id}`}
           className="text-sm font-medium line-clamp-2 hover:text-main-color"
         >
           {song?.composer?.fullName}
@@ -161,17 +208,32 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
         <FaRegComment className="scale-x-[-1] transform" />
         Bình luận
       </button>
-      <button className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100">
+      <button onClick={(e) => {
+
+      }} className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100">
         <HiOutlineLink size={16} />
-        Copy link
+        Copylink
       </button>
-      <button
-        className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100"
-        onClick={handleAddToPlaylist(song.id)}
+      <div
+        tabIndex="-2"
+        className={`w-60 cursor-auto select-none rounded-lg bg-white shadow hover:bg-gray-100`}
       >
-        <IoMdAdd size={16} />
-        Thêm vào playlist
-      </button>
+        <Popover
+          placement="left"
+          trigger="hover"
+          shrinkedPopoverPosition="right"
+          renderPopover={playlistSet}
+          offsetValue={{ mainAxis: -3, crossAxis: 20 }}
+          clasaName="flex pt-2 px-4 pb-2"
+          zindex={100}
+          delayHover={{ open: 0, close: 100 }}
+        >
+          <button className="flex w-full items-center gap-2 text-left text-sm text-gray-800">
+            <IoMdAdd size={16} />
+            Thêm vào playlist
+          </button>
+        </Popover>
+      </div>
     </div>
   );
 

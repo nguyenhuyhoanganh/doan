@@ -86,7 +86,7 @@ const Follow = () => {
     }, 20);
   };
   return (
-    <div className="w-full flex flex-col gap-10">
+    <div className="w-full flex flex-col gap-10 pl-4">
       <div className="gap-5 flex flex-col ">
         <h1 className="font-extrabold text-[30px] text-[#0D7373]">NGHỆ SĨ</h1>
 
@@ -137,7 +137,7 @@ const Follow = () => {
                   title={el?.fullName}
                   src={el?.backgroundImageUrl}
                   onClick={()=>{
-                    navigate(`/artist/${el?.slug}/${el?.id}`)
+                    navigate(`/composer/${el?.slug}/${el?.id}`)
                   }}
                   alt="ảnh nghệ sĩ"
                   className="w-[180px] rounded-full object-contain animate-slide-left"

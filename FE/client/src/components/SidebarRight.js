@@ -100,7 +100,7 @@ const SidebarRight = () => {
         </div>
       )}
       {!btnList ? (
-        <Scrollbars className="pl-5" style={{ width: "100%", height: 428 }}>
+        <Scrollbars className="pl-5" style={{ width: "100%", height: 390 }}>
           <div className="flex flex-col gap-3 mr-4">
             {preSong?.map((item, index) => {
               if (index > 0) {
@@ -157,7 +157,7 @@ const SidebarRight = () => {
             </span>
           </div>
           {/* map list recommend */}
-          <Scrollbars className="pl-5" style={{ width: "100%", height: 428 }}>
+          <Scrollbars className="pl-5" style={{ width: "100%", height: 390 }}>
             <div className="flex flex-col gap-3 mr-4">
               {songList?.map((item, index) => {
                 if (index > 0) {

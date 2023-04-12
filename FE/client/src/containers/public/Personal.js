@@ -8,7 +8,8 @@ import { AuthContext } from "../../contexts/auth.context";
 import Scrollbars from "react-custom-scrollbars-2";
 import { useNavigate } from "react-router-dom";
 import { List } from "../../components";
-import * as actions from "../../store/actions"
+import * as actions from "../../store/actions";
+import { toast } from "react-toastify";
 
 const Personal = () => {
   let setTimeOutId;
@@ -17,12 +18,13 @@ const Personal = () => {
   const [showBox, setShowBox] = useState(false);
 
   const [playList, setPlayList] = useState(null);
+  const [playlistName, sePlaylistName] = useState("");
   const [favoristList, setFavoristList] = useState(null);
   const { isAuthenticated } = useContext(AuthContext);
   const { banner } = useSelector((state) => {
     return state.app;
   });
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // console.log(banner);
   const handlePrev2 = () => {
     setTimeOutId && clearInterval(setTimeOutId);
@@ -100,12 +102,41 @@ const Personal = () => {
       }
     };
     fetchPL();
-  }, []);
+  }, [playList]);
   const handlePlayFaList = () => {
-    dispatch(actions.setCurSongId(favoristList[0]?.id));
-    dispatch(actions.play(true));
-    dispatch(actions.playAlbum(true));
-    dispatch(actions.setPlaylistData(favoristList));
+    if (favoristList !== null) {
+      dispatch(actions.setCurSongId(favoristList[0]?.id));
+      dispatch(actions.play(true));
+      dispatch(actions.playAlbum(true));
+      dispatch(actions.setPlaylistData(favoristList));
+    } else {
+      toast.warning("Chưa có bài hát yêu thích");
+    }
+  };
+  const handleCreatePlaylist = async () => {
+    if (playlistName === "") {
+      toast.warning("Đặt tên cho playlist");
+    } else {
+      // create playlist
+      // chưa đăng nhập
+      if (isAuthenticated) {
+        const res = await apis.apiCreatePlaylist({
+          title: playlistName,
+          slug: playlistName.replace(/\s+/g, "_"),
+          status: "PUBLIC"
+        });
+        console.log(res)
+        if(res?.data?.code === 201){
+          toast.warning("Tạo playlist thành công")
+          setPlayList([])
+        }
+        // if(res?.response.status === 422){
+        //   toast.warning("Tên đã tồn tại")
+        // }
+      } else {
+        toast.warning("Bạn cần đăng nhập để tạo playlist");
+      }
+    }
   };
   return (
     <Scrollbars style={{ width: "100%", height: 560 }}>
@@ -160,7 +191,7 @@ const Personal = () => {
               <IoMdAdd size={30} />
             </span>
             {showBox ? (
-              <div className="absolute top-1/2 transform -translate-y-1/2 left-1/2  -translate-x-1/2 h-auto w-[400px] border border-red-500 z-10">
+              <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2  -translate-x-1/2 h-auto w-[400px] border border-[#5998cb] rounded-lg z-10">
                 <div className="flex flex-col justify-center gap-3 items-center bg-main-300">
                   <h1 className="font-extrabold text-[20px] text-[#0D7373]">
                     Tên playlist
@@ -169,8 +200,15 @@ const Personal = () => {
                     <input
                       type="text"
                       className="p-1 w-[300px] focus:outline-none rounded-md focus:border-[#0D7373]"
+                      value={playlistName}
+                      onChange={(e) => {
+                        sePlaylistName(e.target.value);
+                      }}
                     />
-                    <button className="border border-[#0D7373] hover:bg-main-400 cursor-pointer rounded-md px-4">
+                    <button
+                      onClick={handleCreatePlaylist}
+                      className="border border-[#0D7373] hover:bg-main-400 cursor-pointer rounded-md px-4"
+                    >
                       Tạo
                     </button>
                   </div>
@@ -202,7 +240,12 @@ const Personal = () => {
                       >
                         <img
                           title={el?.title}
-                          src={el?.songs[0]?.imageUrl}
+                          src={
+                            el?.songs[0]?.imageUrl === undefined
+                              ? process.env.PUBLIC_URL + "/LOGO.png"
+                              : el?.songs[0]?.imageUrl
+                          }
+                          // https://assets-global.website-files.com/5deef90e2b03a42deaf1f5f9/5dfbc118b074186ea74e058b_Music-Playlist_Octiive-Blog-Post-Feat-Image.jpg
                           onClick={() => {
                             navigate(`/playlist/${el?.slug}/${el?.id}`);
                           }}

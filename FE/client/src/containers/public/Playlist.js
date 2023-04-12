@@ -10,13 +10,12 @@ import { AuthContext } from "../../contexts/auth.context";
 const Playlist = () => {
   const { pid } = useParams();
   const [playlist, setPlaylist] = useState(null);
-  const [songs, setSongs] = useState(null)
+  const [songs, setSongs] = useState([])
   const { isAuthenticated } = useContext(AuthContext);
   useEffect(() => {
     const fetchSongPlaylist = async (pid) => {
       if (isAuthenticated) {
         const res = await apis.apiGetPlaylistById(pid);
-        console.log(res?.data?.data?.songs);
         setSongs(res?.data?.data?.songs);
         setPlaylist(res?.data?.data)
 
@@ -29,9 +28,9 @@ const Playlist = () => {
       <div className="flex-none w-[30%] flex flex-col items-center gap-2">
         <img
           className="object-contain rounded-md w-full shadow-md"
-          src={songs? songs[0].imageUrl: ""}
+          src={songs.length !== 0? songs[0].imageUrl: process.env.PUBLIC_URL + "/LOGO.png"}
           alt="thumbnailM"
-        ></img>
+          ></img>
         <h3 className="text-[20px] text-center font-semibold">
           {playlist?.title}
         </h3>
@@ -46,7 +45,7 @@ const Playlist = () => {
           {/* {playlistData?.description} */}
         </h1>
         {/* playlist */}
-        {songs !== undefined ? (
+        {songs.length !== 0 ? (
           <Scrollbars className="pl-5" style={{ width: "100%", height: 510 }}>
             <List songs={songs} />
           </Scrollbars>

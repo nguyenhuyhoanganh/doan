@@ -102,7 +102,7 @@ const Search = () => {
     }, 20);
   };
   return (
-    <Scrollbars className="pl-5" style={{ width: "100%", height: 610 }}>
+    <Scrollbars className="pl-5" style={{ width: "100%", height: 560 }}>
       <div className="flex flex-col gap-5 m-4">
         <div className="flex flex-col gap-4">
           <h1 className="font-extrabold text-[30px] text-[#0D7373]">

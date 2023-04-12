@@ -19,7 +19,7 @@ const Chart = () => {
   return (
     <div className="flex flex-col bg-main-200 h-full w-full p-5">
       <h1 className="font-extrabold text-[30px] text-[#0D7373]">#CHART</h1>
-      <Scrollbars style={{ width: "100%", height: 540 }}>
+      <Scrollbars style={{ width: "100%", height: 480 }}>
         <div className="flex flex-col pr-8">
           {/* Mỗi thẻ div là 1 bài hát */}
           {listChart &&
