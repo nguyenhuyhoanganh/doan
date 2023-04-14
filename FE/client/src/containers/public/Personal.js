@@ -225,18 +225,17 @@ const Personal = () => {
             )}
           </div>
           <div className="flex justify-between">
-            {/* playlist */}
             {playList ? (
               <div className="relative w-full">
                 <div
                   id="slider"
-                  className="flex gap-5 items-center justify-center overflow-x-hidden"
+                  className="flex gap-5 items-center overflow-x-hidden px-4"
                 >
                   {playList?.map((el, index) => {
                     return (
                       <div
                         key={index}
-                        className="flex flex-col text-center gap-2 cursor-pointer "
+                        className="flex flex-col text-center gap-2 cursor-pointer w-[180px]"
                       >
                         <img
                           title={el?.title}
@@ -245,27 +244,26 @@ const Personal = () => {
                               ? process.env.PUBLIC_URL + "/LOGO.png"
                               : el?.songs[0]?.imageUrl
                           }
-                          // https://assets-global.website-files.com/5deef90e2b03a42deaf1f5f9/5dfbc118b074186ea74e058b_Music-Playlist_Octiive-Blog-Post-Feat-Image.jpg
                           onClick={() => {
                             navigate(`/playlist/${el?.slug}/${el?.id}`);
                           }}
                           alt="ảnh nghệ sĩ"
-                          className="w-[180px] rounded-full object-contain animate-slide-left"
+                          className="rounded-full object-contain animate-slide-left"
                         ></img>
-                        <h1>{el?.title}</h1>
+                        <h1 className="text-[10px]">{el?.title}</h1>
                       </div>
                     );
                   })}
                 </div>
                 <div
                   onClick={handlePrev}
-                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 fixed top-1/2 left-0 transform -translate-y-1/2"
                 >
                   <GrPrevious size={30}></GrPrevious>
                 </div>
                 <div
                   onClick={handleNext}
-                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 fixed top-1/2 right-0 transform -translate-y-1/2"
                 >
                   <GrNext size={30}></GrNext>
                 </div>

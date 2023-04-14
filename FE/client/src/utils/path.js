@@ -18,6 +18,7 @@ const path = {
     SEARCHBYVOICE: "searchbyvoice",
     LOGOUT: "logout",
     USERINFO: "userinfo",
+    AIPLAYLIST: "createplaylist",
     
 }
 export default path
