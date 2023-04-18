@@ -3,6 +3,7 @@ package com.doan.appmusic.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,9 @@ public class Category extends UpdateAuditable {
 
     @Column(unique = true, nullable = false)
     private String slug;
+
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.REMOVE)
+    private List<Song> songs;
 
     private String description;
 

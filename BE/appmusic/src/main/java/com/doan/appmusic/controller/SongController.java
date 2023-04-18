@@ -67,8 +67,8 @@ public class SongController {
     }
 
     @GetMapping("/chart")
-    public ResponseEntity<?> chart() {
-        Map<String, Object> data = service.chart();
+    public ResponseEntity<?> chart(@RequestParam(required = false, defaultValue = "10") int top) {
+        Map<String, Object> data = service.chart(top);
         ResponseDTO<?> response = ResponseDTO.builder().data(data).build();
         return ResponseEntity.ok(response);
     }

@@ -1,7 +1,11 @@
 import ChartSection from './components/ChartSection'
 
 const Analytics = () => {
-  return <ChartSection />
+  return (
+    <div className='min-h-screen'>
+      <ChartSection />
+    </div>
+  )
 }
 
 export default Analytics

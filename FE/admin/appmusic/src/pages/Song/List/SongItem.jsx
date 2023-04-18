@@ -40,14 +40,22 @@ const SongItem = ({ song, queryConfig }) => {
         ${song === songSelected && 'bg-gray-100'} ${isOpenInfo && 'bg-gray-100'}`}
       >
         {song.rank !== undefined && (
-          <div className='col-span-1 ml-10 flex items-center justify-between'>
-            <span
-              className={`text-4xl font-bold ${
-                song.rank === 1 ? 'top-1' : song.rank === 2 ? 'top-2' : song.rank === 3 ? 'top-3' : 'top-greater-than-3'
-              }`}
-            >
-              {song.rank}
-            </span>
+          <div className='col-span-1 flex items-center justify-between'>
+            <div className='w-full text-center'>
+              <span
+                className={`text-4xl font-bold ${
+                  song.rank === 1
+                    ? 'top-1'
+                    : song.rank === 2
+                    ? 'top-2'
+                    : song.rank === 3
+                    ? 'top-3'
+                    : 'top-greater-than-3'
+                }`}
+              >
+                {song.rank}
+              </span>
+            </div>
             {song.rankChange === 0 && (
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -80,7 +88,7 @@ const SongItem = ({ song, queryConfig }) => {
             )}
           </div>
         )}
-        <div className={`flex p-3 ${song.rank !== undefined ? 'col-span-4' : 'col-span-5'}`}>
+        <div className={`col-span-5 flex p-3`}>
           <div className='relative h-14 w-14 rounded-md object-cover' onClick={() => onPlayAudio(song)}>
             <span className='absolute top-0 left-0 h-full w-full'>
               {song === songSelected &&
@@ -128,7 +136,11 @@ const SongItem = ({ song, queryConfig }) => {
             </span>
           </div>
         </div>
-        <div className='col-span-5 flex items-center justify-start p-2 pr-4'>
+        <div
+          className={`flex items-center justify-start p-2 pr-4 ${
+            song.rank !== undefined ? 'col-span-4' : 'col-span-5'
+          }`}
+        >
           <NavLink
             to={`/dashboard/album/${song.album?.slug}`}
             className='text-sm text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
