@@ -18,10 +18,10 @@ const CategoryItem = ({ category, queryConfig }) => {
 
   return (
     <tr className='max-h-14 bg-white'>
-      <td className={`block w-40 items-center px-6 py-3 text-left font-medium`}>
+      <td className={`block w-40 px-6 py-3 text-left font-medium`}>
         <span className={`m-0 min-h-[1.5rem] line-clamp-2`}>{category.title}</span>
       </td>
-      <td className={`w-full items-center px-6 py-3 text-left font-medium`}>
+      <td className={`w-full px-6 py-3 text-left font-medium`}>
         <span className={`m-0 min-h-[1.5rem] line-clamp-2`}>{category.description}</span>
       </td>
       <td className={`flex min-w-[6rem] items-center justify-center gap-3 px-6 py-3 text-left font-medium`}>

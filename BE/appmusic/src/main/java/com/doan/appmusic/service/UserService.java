@@ -42,7 +42,7 @@ public interface UserService {
 
     UserDTO update(long id, UserDTO userDTO);
 
-//    void changePassword(long id, String password);
+    void changePassword(long id, String password, String newPassword);
 
     void delete(long id);
 
@@ -58,6 +58,8 @@ class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private FileService fileService;
 
 
     @Override
@@ -117,6 +119,11 @@ class UserServiceImpl implements UserService {
 
         if (!user.getEmail().equals(userDTO.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
+        String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
+        if (!user.getAvatarUrl().equals(userDTO.getAvatarUrl())) {
+            if (user.getAvatarUrl().startsWith(prefixDownloadUrl))
+                fileService.deleteFile(user.getAvatarUrl().substring(prefixDownloadUrl.length()));
+        }
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setPropertyCondition(Conditions.isNotNull());
@@ -126,8 +133,20 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changePassword(long id, String password, String newPassword) {
+        User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            throw new CustomSQLException("Error", Map.of("password", "Password doesn't correct"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+    }
+
+    @Override
     public void delete(long id) {
         User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
+        String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
+        if (user.getAvatarUrl().startsWith(prefixDownloadUrl))
+            fileService.deleteFile(user.getAvatarUrl().substring(prefixDownloadUrl.length()));
         repository.delete(user);
     }
 

@@ -10,6 +10,7 @@ import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.security.JwtUtils;
 import com.doan.appmusic.service.UserService;
+import lombok.Data;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -87,6 +88,14 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePass(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = service.findByEmail(authentication.getName());
+        service.changePassword(user.getId(), changePasswordDTO.getPassword(), changePasswordDTO.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/logout")
     public void logout(HttpServletRequest request) {
     }
@@ -103,4 +112,10 @@ public class AuthController {
         });
         return mapper.map(user, UserDTO.class);
     }
+}
+
+@Data
+class ChangePasswordDTO {
+    private String password;
+    private String newPassword;
 }
