@@ -9,6 +9,9 @@ const authApi = {
   },
   logout() {
     return http.post('/logout')
+  },
+  changePassword(body) {
+    return http.post('/change-password', body)
   }
 }
 

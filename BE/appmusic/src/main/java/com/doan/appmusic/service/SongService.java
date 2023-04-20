@@ -61,7 +61,7 @@ public interface SongService {
 
     void incrementView(long songId);
 
-    Map<String, Object> chart();
+    Map<String, Object> chart(int top);
 
     void updatePlaySongEveryHour();
 }
@@ -172,7 +172,7 @@ class SongServiceImpl implements SongService {
         Song songUpdated = repository.save(song);
         // add 24 play for song
         for (int i = 0; i < 24; i++) {
-            playRepository.save(Play.builder().count(0).song(songUpdated).label(String.valueOf(i)).build());
+            playRepository.save(Play.builder().count(0).song(Song.builder().id(songUpdated.getId()).build()).label(String.valueOf(i)).build());
         }
         return convertToDTO(songUpdated);
     }
@@ -267,7 +267,7 @@ class SongServiceImpl implements SongService {
         LocalDateTime now = LocalDateTime.now();
         String hour = String.valueOf(now.getHour());
         Optional<Play> playOptional = playRepository.findBySongIdAndLabel(song.getId(), hour);
-        if(playOptional.isPresent()) {
+        if (playOptional.isPresent()) {
             Play play = playOptional.get();
             play.incrementCount();
             playRepository.save(play);
@@ -276,18 +276,26 @@ class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Map<String, Object> chart() {
+    public Map<String, Object> chart(int top) {
         LocalDateTime now = LocalDateTime.now();
-        String label = String.valueOf(now.getHour());
-        List<Play> plays = playRepository.findTopPlayCount(label, PageRequest.of(0, 10));
+        int currentHour = now.getHour();
+        int previousHour = currentHour - 1 < 0 ? 23 : currentHour - 1;
+        List<Play> plays = playRepository.findTopPlayCount(String.valueOf(currentHour), PageRequest.of(0, top));
+        List<Play> oldPlays = playRepository.findTopPlayCount(String.valueOf(previousHour), PageRequest.of(0, top));
         List<Song> songs = plays.stream().map(Play::getSong).collect(Collectors.toList());
+        List<Song> oldSongs = oldPlays.stream().map(Play::getSong).collect(Collectors.toList());
+//        long minCount = 0, maxCount = 0;
         // datasets
         List<Object> datasets = new ArrayList<>();
         for (Song song : songs) {
-            List<Long> counts = song.getPlays().stream()
-                    .sorted(Comparator.comparing(play -> Integer.parseInt(play.getLabel())))
-                    .map(Play::getCount).collect(Collectors.toList());
-            datasets.add(Map.of("data", counts));
+            List<Long> counts = song.getPlays().stream().sorted(Comparator.comparing(play -> Integer.parseInt(play.getLabel()))).map(Play::getCount).collect(Collectors.toList());
+//            long maxCountOfList = counts.stream().max(Long::compare).get();
+//            long minCountOfList = counts.stream().min(Long::compare).get();
+//            maxCount = maxCountOfList > maxCount ? maxCountOfList : maxCount;
+//            minCount = minCountOfList < minCount ? minCountOfList : minCount;
+            List<Long> countsSorted = counts.subList(now.getHour() + 1, counts.size());
+            countsSorted.addAll(counts.subList(0, now.getHour() + 1));
+            datasets.add(Map.of("data", countsSorted));
         }
         // labels
         String[] labels = new String[24];
@@ -295,8 +303,19 @@ class SongServiceImpl implements SongService {
             labels[i] = String.valueOf((now.getHour() + i + 1) % 24);
         }
         // top_song
-        List<SongDTO> topSongs = songs.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<SongDTO> topSongs = songs.stream().map(song -> {
+            int rankChange = 0;
+            int previousRank = oldSongs.indexOf(song);
+            int currentRank = songs.indexOf(song);
+            if (previousRank != -1) {
+                rankChange = previousRank - currentRank;
+            }
+            SongDTO songDTO = convertToDTO(song);
+            songDTO.setRankChange(rankChange);
+            return songDTO;
+        }).collect(Collectors.toList());
 
+        // , "maxCount", maxCount, "minCount", minCount
         return Map.of("datasets", datasets, "labels", labels, "top_songs", topSongs);
     }
 

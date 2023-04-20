@@ -34,7 +34,7 @@ public class Artist extends UpdateAuditable {
 
     private String backgroundImageUrl;
 
-    @ManyToMany(mappedBy = "artists")
+    @ManyToMany(mappedBy = "artists", cascade = CascadeType.REMOVE)
     private List<Song> songs;
 
     @ManyToMany

@@ -1,3 +1,4 @@
+import { FaUserCircle } from 'react-icons/fa'
 import PATH from './paths'
 import { BsJournalAlbum, BsTagFill } from 'react-icons/bs'
 
@@ -26,6 +27,15 @@ const sideBarItems = [
   {
     title: 'MANAGEMENT',
     items: [
+      {
+        title: 'User',
+        link: PATH.dashboard.user.root,
+        icon: (
+          <span className='visible h-6 w-6  flex-shrink-0 transition duration-75'>
+            <FaUserCircle size={24} />
+          </span>
+        )
+      },
       {
         title: 'Song',
         link: PATH.dashboard.song.root,

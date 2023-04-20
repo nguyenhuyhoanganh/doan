@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useLayoutEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
-import { artistsSchema } from '../../../utils/validate.form'
+import { artistSchema } from '../../../utils/validate.form'
 import Input from '../../../components/Input'
 import RichText from '../../../components/RichText/RichText'
 import UploadImage from '../../../components/UploadImage/UploadImage'
@@ -24,7 +24,7 @@ const Form = ({ artist, onSubmit, isLoading }) => {
     setValue,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(artistsSchema)
+    resolver: yupResolver(artistSchema)
   })
 
   // update state, form value

@@ -89,4 +89,7 @@ public class SongDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isLiked = false;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private int rankChange;
 }

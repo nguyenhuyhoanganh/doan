@@ -9,7 +9,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'main-color': '#1ed760'
+        'main-color': '#9b4de0'
+        // #1ed760
       },
       backgroundImage: {
         'banner-image': "url('/src/imgs/banner.jpg')",

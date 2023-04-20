@@ -49,13 +49,15 @@ const Selector = ({
         >
           {selected && selected.length !== 0 ? (
             !hasMultipleValue ? (
-              <span className='truncate'>{selected?.title ? selected.title : selected.fullName}</span>
+              <span className='truncate'>
+                {selected?.title ? selected.title : selected?.fullName ? selected.fullName : selected.roleName}
+              </span>
             ) : (
               <div className='flex flex-wrap items-center justify-start gap-1'>
                 {selected.map((el, index) => (
                   <div className='max-h-7' key={index}>
                     <Chip
-                      content={el?.title ? el?.title : el?.fullName}
+                      content={el?.title ? el?.title : el?.fullName ? el?.fullName : el?.roleName}
                       onDelete={(e) => {
                         e.stopPropagation()
                         onSelected(el)
@@ -104,7 +106,7 @@ const Selector = ({
                 }
               }}
             >
-              {option.title ? option.title : option.fullName}
+              {option.title ? option.title : option?.fullName ? option.fullName : option.roleName}
             </li>
           ))}
         </ul>

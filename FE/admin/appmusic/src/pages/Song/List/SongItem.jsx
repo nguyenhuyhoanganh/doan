@@ -7,8 +7,10 @@ import Tooltip from '../../../components/Tooltip'
 import { AudioContext } from '../../../contexts/audio.context'
 import Modal from '../../../components/Modal/Modal'
 import { MdOutlineClose } from 'react-icons/md'
+import { RxTriangleUp, RxTriangleDown } from 'react-icons/rx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import songApi from '../../../apis/song.api'
+import './index.css'
 
 const SongItem = ({ song, queryConfig }) => {
   const { songSelected, isLoading, isPlaying, handlePlayAudio: onPlayAudio } = useContext(AudioContext)
@@ -34,10 +36,59 @@ const SongItem = ({ song, queryConfig }) => {
   return (
     <>
       <div
-        className={`group  grid h-auto w-[100%] cursor-pointer grid-cols-12 gap-4 rounded-md border-b-[1px] border-t-[1px] pr-[10px] hover:bg-gray-100 
+        className={`group grid h-auto w-[100%] cursor-pointer grid-cols-12 gap-4 rounded-md border-b-[1px] pr-[10px] hover:bg-gray-100 
         ${song === songSelected && 'bg-gray-100'} ${isOpenInfo && 'bg-gray-100'}`}
       >
-        <div className='col-span-5 flex p-3'>
+        {song.rank !== undefined && (
+          <div className='col-span-1 flex items-center justify-between'>
+            <div className='w-full text-center'>
+              <span
+                className={`text-4xl font-bold ${
+                  song.rank === 1
+                    ? 'top-1'
+                    : song.rank === 2
+                    ? 'top-2'
+                    : song.rank === 3
+                    ? 'top-3'
+                    : 'top-greater-than-3'
+                }`}
+              >
+                {song.rank}
+              </span>
+            </div>
+            {song.rankChange === 0 && (
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+                className='h-5 w-5 text-gray-600'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            )}
+            {song.rankChange > 0 && (
+              <div className='flex flex-col items-center justify-center'>
+                <span className='text-green-500'>
+                  <RxTriangleUp />
+                </span>
+                <span className='text-sm text-gray-600'>{song.rankChange}</span>
+              </div>
+            )}
+            {song.rankChange < 0 && (
+              <div className='flex flex-col items-center justify-center'>
+                <span className='text-red-500'>
+                  <RxTriangleDown />
+                </span>
+                <span className='text-sm font-medium text-gray-600'>{-song.rankChange}</span>
+              </div>
+            )}
+          </div>
+        )}
+        <div className={`col-span-5 flex p-3`}>
           <div className='relative h-14 w-14 rounded-md object-cover' onClick={() => onPlayAudio(song)}>
             <span className='absolute top-0 left-0 h-full w-full'>
               {song === songSelected &&
@@ -85,7 +136,11 @@ const SongItem = ({ song, queryConfig }) => {
             </span>
           </div>
         </div>
-        <div className='col-span-5 flex items-center justify-start p-2 pr-4'>
+        <div
+          className={`flex items-center justify-start p-2 pr-4 ${
+            song.rank !== undefined ? 'col-span-4' : 'col-span-5'
+          }`}
+        >
           <NavLink
             to={`/dashboard/album/${song.album?.slug}`}
             className='text-sm text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
@@ -166,7 +221,9 @@ const SongItem = ({ song, queryConfig }) => {
                 onClick={async () => {
                   await deleteSongMutation.mutateAsync(song.id, {
                     onSuccess: () => {
-                      queryClient.invalidateQueries(['songs', { ...queryConfig }])
+                      if (queryConfig) {
+                        queryClient.invalidateQueries(['songs', { ...queryConfig }])
+                      } else queryClient.invalidateQueries(['chart'])
                     }
                   })
                   setIsShowDeleteModal(false)

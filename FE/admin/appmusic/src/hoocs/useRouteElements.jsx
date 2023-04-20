@@ -7,7 +7,7 @@ import PATH from '../constants/paths'
 // layout
 import RegisterLayout from '../layouts/RegisterLayout'
 import DashboardLayout from '../layouts/DashboardLayout'
-import ProfileLayout from '../layouts/ProfileLayout'
+// import ProfileLayout from '../layouts/ProfileLayout'
 
 // page
 import Login from '../pages/Login'
@@ -20,14 +20,16 @@ import ArtistList from '../pages/Artist/List'
 import ArtistCreate from '../pages/Artist/Create'
 import { AudioProvider } from '../contexts/audio.context'
 import SongEdit from '../pages/Song/Edit'
-import AlbumList from '../pages/Album/List/AlbumList'
-import ComposerList from '../pages/Composer/List/ComposerList'
-import CategoryList from '../pages/Category/List/CategoryList'
+import AlbumList from '../pages/Album/List'
+import ComposerList from '../pages/Composer/List'
+import CategoryList from '../pages/Category/List'
 import ArtistEdit from '../pages/Artist/Edit'
 import ComposerCreate from '../pages/Composer/Create'
-import ComposerEdit from '../pages/Composer/Edit/ComposerEdit'
+import ComposerEdit from '../pages/Composer/Edit'
 import AlbumCreate from '../pages/Album/Create'
 import AlbumEdit from '../pages/Album/Edit'
+import UserList from '../pages/User/List'
+import UserEdit from '../pages/User/Edit'
 
 // check user is authenticated, if not then redirect to /login
 function ProtectedRoute() {
@@ -91,7 +93,26 @@ const useRouteElements = () => {
             },
             {
               path: 'analytics',
-              element: <Analytics />
+              element: (
+                <AudioProvider>
+                  <Analytics />
+                </AudioProvider>
+              )
+            },
+            {
+              path: 'user',
+              children: [
+                { element: <Navigate to={PATH.dashboard.user.root} replace /> },
+                {
+                  path: '',
+                  element: (
+                    <AudioProvider>
+                      <UserList />
+                    </AudioProvider>
+                  )
+                },
+                { path: 'modify/:slug/:id', element: <UserEdit /> }
+              ]
             },
             {
               path: 'song',
@@ -147,7 +168,7 @@ const useRouteElements = () => {
         },
         {
           path: PATH.profile.root,
-          element: <ProfileLayout />,
+          element: <DashboardLayout />,
           children: [
             {
               path: '',

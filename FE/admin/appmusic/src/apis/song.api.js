@@ -19,8 +19,8 @@ const songApi = {
   deleteSong(id) {
     return http.delete(`${URL}/delete/${id}`)
   },
-  chart() {
-    return http.get(`${URL}/chart`)
+  chart(top = 10) {
+    return http.get(`${URL}/chart?top=${top}`)
   }
 }
 

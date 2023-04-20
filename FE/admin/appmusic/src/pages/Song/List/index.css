@@ -1,0 +1,17 @@
+.top-1 {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px #4a90e2;
+}
+.top-2 {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px #50e3c2;
+}
+.top-3 {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px #e35050;
+}
+
+.top-greater-than-3 {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px white;
+}

@@ -1,6 +1,5 @@
 package com.doan.appmusic.controller;
 
-import com.doan.appmusic.entity.User;
 import com.doan.appmusic.model.ResponseDTO;
 import com.doan.appmusic.model.UserDTO;
 import com.doan.appmusic.security.CustomUserDetails;
@@ -8,7 +7,6 @@ import com.doan.appmusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,14 +52,7 @@ public class UserController {
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> update(@PathVariable long id, @RequestBody UserDTO userDTO) throws AuthenticationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = false;
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if (authority.getAuthority().equals("ROLE_ADMIN")) {
-                isAdmin = true;
-                break;
-            }
-        }
-        if (((CustomUserDetails) authentication.getPrincipal()).getUser().getId().equals(id) || isAdmin) {
+        if (isAuthenticatedUser(authentication, id) || isAdmin(authentication)) {
             UserDTO userUpdated = service.update(id, userDTO);
             ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(userUpdated).build();
             return ResponseEntity.ok(response);
@@ -72,14 +63,19 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) throws AuthenticationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = false;
-        for (GrantedAuthority authority : authentication.getAuthorities()) {
-            if (authority.getAuthority().equals("ROLE_ADMIN")) isAdmin = true;
-        }
-        if (isAdmin) {
+        if (isAdmin(authentication)) {
             service.delete(id);
             return ResponseEntity.noContent().build();
         }
         throw new AuthenticationException("You do not have the authority to perform this action");
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(
+                "ROLE_ADMIN"));
+    }
+
+    private boolean isAuthenticatedUser(Authentication authentication, long id) {
+        return ((CustomUserDetails) authentication.getPrincipal()).getUser().getId().equals(id);
     }
 }

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
-import { NavLink, createSearchParams, useLocation, useNavigate } from 'react-router-dom'
+import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import useQueryParams from '../../../hoocs/useQueryParams'
 import { isUndefined, omitBy } from 'lodash'
 import categoryApi from '../../../apis/category.api'
@@ -52,7 +52,7 @@ const CategoryList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title])
 
-  // scroll to top, pause audio when change query (search of useLocation)
+  // scroll to top (search of useLocation)
   useEffect(() => {
     window.scrollTo(0, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,7 +110,7 @@ const CategoryList = () => {
               <th scope='col' className='px-6 py-3'>
                 <div className={`flex items-center justify-start`}>
                   Title
-                  <NavLink to='#'>
+                  {/* <NavLink to='#'>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       fill='none'
@@ -121,7 +121,7 @@ const CategoryList = () => {
                     >
                       <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
                     </svg>
-                  </NavLink>
+                  </NavLink> */}
                 </div>
               </th>
               <th scope='col' className='px-6 py-3'>
