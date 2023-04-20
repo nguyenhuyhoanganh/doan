@@ -11,6 +11,22 @@ const AiPlaylist = () => {
   const { allsongs } = useSelector((state) => state.app);
   const [fvList, setFvList] = useState([]);
   const { isAuthenticated } = useContext(AuthContext);
+  const [favoristeList, setFavoristList] = useState([]);
+  const { preSongs } = useSelector((state) => state.music);
+
+  console.log(preSongs);
+  useEffect(() => {
+    const fetchFVL = async () => {
+      if (isAuthenticated) {
+        const res = await apis.apiGetFavoritePlaylist({
+          limit: 999,
+          orderBy: "createdAt",
+        });
+        setFavoristList(res?.data?.data);
+      }
+    };
+    fetchFVL();
+  }, []);
 
   const handleCreatePlaylist = () => {
     const findLengthOneHotVec = (songs) => {
@@ -29,6 +45,11 @@ const AiPlaylist = () => {
     const createVec = (id, max) => {
       const vec = new Array(max).fill(0);
       vec[id - 1] = 1;
+      return vec;
+    };
+    const createVecUser = (id, max) => {
+      const vec = new Array(max).fill(0);
+      vec[id - 1] = 0.1;
       return vec;
     };
 
@@ -73,11 +94,46 @@ const AiPlaylist = () => {
       // Đồng nhất kết quả
       return dotProduct;
     };
-    const userFeatures = [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.1, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0,
-      0.6, 0,
-    ];
+    // const userFeatures = [
+    //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.1, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0,
+    //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0,
+    //   0.6, 0,
+    // ];
+
+    const createUserFeatures = (fvList, preSongs, songs) => {
+      const userFeatures = [];
+      const { maxGenre, maxId } = findLengthOneHotVec(songs);
+      for (const s of fvList) {
+        const vecComposer = createVecUser(s.artists[0]?.id, maxId);
+        const vecGenres = createVecUser(s.album.id, maxGenre);
+        userFeatures.push([...vecComposer, ...vecGenres]);
+      }
+      if (preSongs.length > 0) {
+        for (const preSong of preSongs) {
+          const vecComposer = createVecUser(preSong.artists[0]?.id, maxId);
+          const vecGenres = createVecUser(preSong.album.id, maxGenre);
+          userFeatures.push([...vecComposer, ...vecGenres]);
+        }
+      }
+      // console.log(userFeatures)
+      const sumColumns = (matrix) => {
+        const numRows = matrix.length;
+        const numCols = matrix[0].length;
+        const sums = Array(numCols).fill(0);
+
+        for (let col = 0; col < numCols; col++) {
+          for (let row = 0; row < numRows; row++) {
+            sums[col] += matrix[row][col];
+          }
+        }
+
+        return sums;
+      };
+      const sum = sumColumns(userFeatures);
+      const userFeature = sum.map((val) => (val > 1 ? 1 : val));
+      return userFeature;
+    };
+    const userFeatures = createUserFeatures(favoristeList, preSongs, allsongs);
     const genderPlaylist = (userFeatures, songFeatures) => {
       const cosin = [];
       for (const x of songFeatures) {
@@ -97,8 +153,6 @@ const AiPlaylist = () => {
       });
       const favoristeList = [];
       for (let i = 0; i < 10; i++) {
-        console.log("ID_song", X[indices[i]][0]);
-        console.log("Name song: ", allsongs[indices[i]].title);
         favoristeList.push(allsongs[indices[i]]);
       }
       setFvList(favoristeList);

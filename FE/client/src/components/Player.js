@@ -92,7 +92,6 @@ const Player = () => {
         // console.log(audio.currentTime);
         let percent =
           Math.round((audio.currentTime * 10000) / songInfo.duration) / 100;
-        console.log(percent);
         thumbRef.current.style.cssText = `right: ${100 - percent}%`;
         setCurrentSec(Math.floor(audio.currentTime));
       }, 100);

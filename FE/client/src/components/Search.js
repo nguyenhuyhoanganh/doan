@@ -34,6 +34,7 @@ const Search = () => {
       recognition.onresult = function (event) {
         const text = event.results[0][0].transcript;
         ref.current.value = text.replace(/\./g, "");
+        setInput(ref.current.value)
         mic.classList?.remove("animate-pulse");
         navigate("search/" + ref.current.value);
       };
