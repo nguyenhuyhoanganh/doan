@@ -47,6 +47,10 @@ public interface UserService {
     void delete(long id);
 
     long count(Map<String, String[]> search);
+
+    void incrementViolationCount(long userId);
+
+    void decrementViolationCount(long userId);
 }
 
 @Service
@@ -120,7 +124,7 @@ class UserServiceImpl implements UserService {
         if (!user.getEmail().equals(userDTO.getEmail()) && repository.findByEmail(userDTO.getEmail()).isPresent())
             throw new CustomSQLException("Error", Map.of("email", "Email already exists"));
         String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
-        if (!user.getAvatarUrl().equals(userDTO.getAvatarUrl())) {
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().equals(userDTO.getAvatarUrl())) {
             if (user.getAvatarUrl().startsWith(prefixDownloadUrl))
                 fileService.deleteFile(user.getAvatarUrl().substring(prefixDownloadUrl.length()));
         }
@@ -145,7 +149,7 @@ class UserServiceImpl implements UserService {
     public void delete(long id) {
         User user = repository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
         String prefixDownloadUrl = "http://localhost:8080/api/files/download/";
-        if (user.getAvatarUrl().startsWith(prefixDownloadUrl))
+        if (user.getAvatarUrl() != null && user.getAvatarUrl().startsWith(prefixDownloadUrl))
             fileService.deleteFile(user.getAvatarUrl().substring(prefixDownloadUrl.length()));
         repository.delete(user);
     }
@@ -154,6 +158,22 @@ class UserServiceImpl implements UserService {
     public long count(Map<String, String[]> query) {
         Specification<User> specification = buildSpecification(query);
         return repository.count(specification);
+    }
+
+    @Override
+    public void incrementViolationCount(long userId) {
+        User user = repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
+        if (user.getViolationCount() == null) user.setViolationCount(1);
+        else user.incrementViolationCount();
+        repository.save(user);
+    }
+
+    @Override
+    public void decrementViolationCount(long userId) {
+        User user = repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User cannot be found"));
+        if (user.getViolationCount() == null || user.getViolationCount() == 0) user.setViolationCount(0);
+        else user.decrementViolationCount();
+        repository.save(user);
     }
 
     private UserDTO convertToDTO(User user) {

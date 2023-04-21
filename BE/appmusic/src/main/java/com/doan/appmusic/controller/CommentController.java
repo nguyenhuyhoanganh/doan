@@ -40,8 +40,12 @@ public class CommentController {
         try {
             if (accessor.getUser() != null) {
                 Authentication authentication = (Authentication) accessor.getUser();
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                messagingTemplate.convertAndSend("/song/" + comment.getSong().getId() + "/comments", service.create(comment));
+                int violationCount =
+                        ((CustomUserDetails) authentication.getPrincipal()).getUser().getViolationCount() == null ?
+                                0 : ((CustomUserDetails) authentication.getPrincipal()).getUser().getViolationCount();
+                if(violationCount > 10) throw new RuntimeException("We're sorry, you have exceeded the allowed number of standard violations.");
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    messagingTemplate.convertAndSend("/song/" + comment.getSong().getId() + "/comments", service.create(comment));
             }
         } catch (Exception exception) {
             throw new RuntimeException(exception.getMessage());
