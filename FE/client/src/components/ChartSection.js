@@ -186,15 +186,14 @@ const ChartSection = () => {
   return (
     <div className="relative h-[400px] w-[96%] rounded-md bg-cover bg-center bg-chart-image">
       {/* <img className='absolute inset-0 z-10 rounded-md' src='/src/imgs/chart.jpg' alt='bg-chart'></img> */}
-      <div className="absolute inset-0 z-20 rounded-md bg-[rgba(0,0,0,0.6)]"></div>
-      <div className="absolute inset-0 z-30 rounded-md p-4">
+      <div className="absolute inset-0 rounded-md bg-[rgba(0,0,0,0.6)]"></div>
+      <div className="absolute inset-0 rounded-md p-4">
         <div className="grid h-full grid-cols-12 gap-4">
           <h3 className="col-span-12 block text-2xl font-bold text-white">
             #Rating today
           </h3>
           <div className="col-span-5 flex flex-col gap-4">
             {/** vị trí hiển thị 3 bài hát top đầu */}
-            {console.log(topSongs)}
             {topSongs && topSongs.map((song, index) => (index < 3 ? <Item song={song} key={index} /> : null))}
           </div>
           <div className="relative col-span-7 h-full">
@@ -210,7 +209,6 @@ const ChartSection = () => {
                   top: tooltipState.top - 8,
                   left: tooltipState.left - 8,
                   position: "absolute",
-                  // opacity: tooltipState.opacity
                 }}
               >
                 {/* <Item song={topSongs[songIndexHover]} isTooltip={true} /> topSongs[songIndexHover].title*/}
@@ -218,7 +216,7 @@ const ChartSection = () => {
                   placement="top"
                   trigger="hover"
                   shrinkedPopoverPosition="bottom"
-                  renderPopover={<div>{100}</div>}
+                  renderPopover={<div>{topSongs[songIndexHover].title}</div>}
                   offsetValue={{ mainAxis: 7, crossAxis: 0 }}
                   delayHover={{
                     open: 0,
