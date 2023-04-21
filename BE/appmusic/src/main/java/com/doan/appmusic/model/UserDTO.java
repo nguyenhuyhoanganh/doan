@@ -41,6 +41,9 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer age;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer violationCount;
+
     @NotBlank(message = "Email is required", groups = {OnCreate.class, OnUpdate.class})
     @Email(message = "Email is not valid", groups = {OnCreate.class, OnUpdate.class})
     @Size(min = 5, max = 160, message = "Email length from 5 - 160 characters", groups = {OnCreate.class, OnUpdate.class})

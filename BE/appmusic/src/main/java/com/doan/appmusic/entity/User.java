@@ -45,8 +45,18 @@ public class User {
 
     private Integer age;
 
+    private Integer violationCount;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})})
     private List<Role> roles;
+
+    public void incrementViolationCount() {
+        this.violationCount++;
+    }
+
+    public void decrementViolationCount() {
+        this.violationCount--;
+    }
 }
 

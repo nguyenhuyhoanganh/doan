@@ -60,6 +60,12 @@ public class UserController {
         throw new AuthenticationException("You do not have the authority to perform this action");
     }
 
+    @PutMapping("/punish-violation/{userId}")
+    public void punishViolation(@PathVariable long userId) {
+        service.incrementViolationCount(userId);
+    }
+
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) throws AuthenticationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
