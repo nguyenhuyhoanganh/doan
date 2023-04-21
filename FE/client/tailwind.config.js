@@ -59,7 +59,10 @@ module.exports = {
     screens: {
       '1500': "1500px",
 
-    }
+    },
+    // backgroundImage: {
+    //   'chart-image': "url('/src/imgs/chart.jpg')",
+    // },
   },
   plugins: []
 }

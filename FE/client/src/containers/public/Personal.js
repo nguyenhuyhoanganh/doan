@@ -82,7 +82,6 @@ const Personal = () => {
         setTimeOutId && clearInterval(setTimeOutId);
       }
     }, 20);
-    console.log(slider);
   };
   const handleAddPlaylist = () => {
     setShowBox(true);
@@ -191,8 +190,8 @@ const Personal = () => {
             <IoMdAdd size={30} />
           </span>
           {showBox ? (
-            <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2  -translate-x-1/2 h-auto w-[400px] border border-[#5998cb] rounded-lg z-10">
-              <div className="flex flex-col justify-center gap-3 items-center bg-main-300">
+            <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2 bg-main-300 p-2 -translate-x-1/2 h-auto w-[400px] border shadow-md rounded-lg z-10">
+              <div className="flex flex-col justify-center gap-3 items-center ">
                 <h1 className="font-extrabold text-[20px] text-[#0D7373]">
                   Tên playlist
                 </h1>
@@ -214,7 +213,7 @@ const Personal = () => {
                 </div>
                 <div
                   onClick={() => setShowBox(false)}
-                  className="border border-red-500 hover:bg-red-500 rounded-md cursor-pointer px-2"
+                  className="border border-red-500 hover:bg-red-500 rounded-md cursor-pointer px-4"
                 >
                   Hủy
                 </div>
