@@ -14,7 +14,7 @@ class Http {
     this.accessToken = getAccessTokenFromLocalStorage()
     this.instance = axios.create({
       baseURL: process.env.REACT_APP_SERVER_URL,
-      timeout: 10 * 1000,
+      timeout: 1000 * 1000,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

@@ -32,7 +32,8 @@ const Login = () => {
           setIsAuthenticated(true);
           setProfile(res?.data?.data?.user);
           // chuyển hướng trang
-          navigate("/");
+          window.location.assign("http://localhost:3001/dashboard/analytics")
+          // navigate("");
         }
       };
       login(data)

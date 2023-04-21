@@ -18,7 +18,9 @@ export const apiGetFavoritePlaylist = (params) => http.get('/songs/favorites_lis
 
 export const apiCreatePlaylist = (body) => http.post('/playlists/create', body)
 
-
+export const chart = (top = 10) => {
+  return http.get(`songs/chart?top=${top}`)
+}
 
 export const apiGetDetailSong = (sid) =>
   new Promise(async (resolve, reject) => {

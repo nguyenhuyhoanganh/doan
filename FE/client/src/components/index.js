@@ -14,3 +14,4 @@ export { default as SkeletonSlider } from './SkeletonSlider';
 export { default as SkeletonSong } from './SkeletonSong';
 export { default as Paginated } from './Paginated';
 export { default as Radio } from './Radio';
+export { default as Item } from './Item';

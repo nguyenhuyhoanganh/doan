@@ -28,6 +28,11 @@ const UserInfo = () => {
     setIsEdit(true);
   };
   const handleUpdate = () => {
+    if(isEdit){
+
+    } else {
+      toast.warning('Hãy nhấn chỉnh sửa trước')
+    }
     if (!firstNameValid && !lastNameValid && !emailValid) {
       // khi rỗng
       const fetchUpdate = async () => {
@@ -49,7 +54,7 @@ const UserInfo = () => {
     <div
       // onSubmit={handleUpdate}
       noValidate
-      className="flex flex-col w-full m-auto items-center text-center pt-[50px] gap-5"
+      className="flex flex-col w-full m-auto items-center text-center pt-[50px] gap-5 text-[20px]"
     >
       <div className="flex group relative">
         <img
@@ -66,12 +71,12 @@ const UserInfo = () => {
           className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#230e0e] text-center group-hover:flex hidden"
         />
       </div>
-      <div className="flex gap-4">
-        <h1>Chức vụ: </h1>
-        <span>{roles.join(", ")}</span>
+      <div className="flex gap-4 w-[80%]">
+        <label className="w-[40%] text-right">Chức vụ:</label>
+        <label className="w-[60%] text-left">{roles.join(", ")}</label>
       </div>
-      <div className="flex gap-4 justify-evenly">
-        <h1>Email: </h1>
+      <div className="flex gap-4 w-[80%]">
+        <label className="w-[40%] text-right">Email: </label>
         {isEdit ? (
           <input
             // {...register("email")}
@@ -88,12 +93,12 @@ const UserInfo = () => {
             value={email}
           />
         ) : (
-          <span>{email}</span>
+          <span className="w-[60%] text-left">{email}</span>
         )}
         <span className="text-[#bc3b3b]">{emailValid}</span>
       </div>
-      <div className="flex gap-4">
-        <h1>First Name: </h1>
+      <div className="flex gap-4 w-[80%]">
+        <label className="w-[40%] text-right">First Name: </label>
         {isEdit ? (
           <input
             className="p-1 rounded-md focus:outline-none focus:boder-[#0D7373]"
@@ -109,12 +114,12 @@ const UserInfo = () => {
             }}
           />
         ) : (
-          <span>{firstName}</span>
+          <span className="w-[60%] text-left">{firstName}</span>
         )}
         <span className="text-[#bc3b3b]">{firstNameValid}</span>
       </div>
-      <div className="flex gap-4">
-        <h1>Last Name: </h1>
+      <div className="flex gap-4 w-[80%]">
+        <label className="w-[40%] text-right">Last Name: </label>
         {isEdit ? (
           <input
             className="p-1 rounded-md focus:outline-none focus:boder-[#0D7373]"
@@ -130,21 +135,21 @@ const UserInfo = () => {
             }}
           />
         ) : (
-          <span>{lastName}</span>
+          <span className="w-[60%] text-left">{lastName}</span>
         )}
         <span className="text-[#bc3b3b]">{lastNameValid}</span>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 w-[80%] justify-center">
         <div
           onClick={handleEdit}
-          className="flex border hover:bg-red-300 p-2 items-center gap-2"
+          className="flex border hover:bg-red-400 hover:text-[#fff] p-2 items-center gap-2"
         >
           <BsPen></BsPen>
           <button>Chỉnh sửa</button>
         </div>
         <div
           onClick={handleUpdate}
-          className="flex border hover:bg-main-400 p-2 items-center gap-2"
+          className="flex border hover:bg-main-400 hover:text-[#fff] p-2 items-center gap-2"
         >
           <BsPen></BsPen>
           <button type="submit">Xác thực</button>
