@@ -10,6 +10,7 @@ import TestSlide from "./containers/public/TestSlide";
 import Art_Com from "./containers/public/Art_Com";
 import SearchByVoice from "./containers/public/SearchByVoice";
 import Playlist from "./containers/public/Playlist";
+import AiPlaylist from "./containers/public/AiPlaylist";
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AuthContext)
@@ -28,6 +29,10 @@ function App() {
     dispatch(actions.getHome())
     dispatch(actions.getNewRelease())
     dispatch(actions.getTop10())
+    dispatch(actions.getChartHome())
+    dispatch(actions.getArtist())
+    dispatch(actions.getComposer())
+    dispatch(actions.getAllSongs())
   }, [])
 
   return (
@@ -53,6 +58,7 @@ function App() {
             <Route path={path.SEARCHBYVOICE} element={<SearchByVoice />}/>
             <Route path={path.LOGOUT} element={<Home />}/>
             <Route path={path.USERINFO} element={<UserInfo />}/>
+            <Route path={path.AIPLAYLIST} element={<AiPlaylist />}/>
             
             <Route path={path.STAR} element={<Home/>}/>
           </Route>

@@ -2,6 +2,8 @@ import http from "../axios";
 
 export const apiGetSong = (sid) => http.get(`/song`, sid)
 
+export const apiGetAllSongs = (params) => http.get(`/songs`, {params})
+
 export const apiGetComment = (params, sid) => http.get(`/songs/${sid}/comments`, {params})
 
 export const apiGetPlaylist = (params) => http.get('/playlists', {params})
