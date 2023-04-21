@@ -75,7 +75,7 @@ const SearchByVoice = () => {
         if (response === undefined) {
           toast.warning("Không tìm thấy bài hát");
         } else {
-          navigate(`/search/${response}`);
+          navigate(`/search/${response.replace(/\([^)]*\)/g, "")}`);
         }
         return response;
       })
@@ -87,7 +87,7 @@ const SearchByVoice = () => {
 
   const startRecording = () => {
     const mic = document.getElementById("mic_search");
-    console.log(mic);
+    // console.log(mic);
     Mp3Recorder.start()
       .then(() => {
         setIsRecording(true);
@@ -124,7 +124,11 @@ const SearchByVoice = () => {
   };
   const handleSearch = async () => {
     console.log("searching...");
-    identify_song(selectedFile);
+    if (selectedFile) {
+      identify_song(selectedFile);
+    } else {
+      toast.info("Chọn file âm nhạc trước")
+    }
   };
   return (
     <div className="flex flex-col gap-5 m-auto items-center py-[100px] text-center">
@@ -137,6 +141,7 @@ const SearchByVoice = () => {
         </span>
       </div>
       {isRecording ? <span>Đang nghe .....</span> : ""}
+      {isRecording ? <img src="https://dphi.tech/blog/wp-content/uploads/2021/04/tumblr_mjxl2mmonE1s5nl47o3_r1_500.gif"/>: ""}
       <span>Tìm kiếm trực tiếp</span>
       <div className="flex flex-col gap-2">
         <span className="text-[20px] text-[#568fdb]">Hoặc</span>

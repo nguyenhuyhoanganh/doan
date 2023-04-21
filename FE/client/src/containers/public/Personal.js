@@ -53,6 +53,7 @@ const Personal = () => {
         setTimeOutId && clearInterval(setTimeOutId);
       }
     }, 20);
+    console.log(slider);
   };
   const handlePrev = () => {
     setTimeOutId && clearInterval(setTimeOutId);
@@ -81,6 +82,7 @@ const Personal = () => {
         setTimeOutId && clearInterval(setTimeOutId);
       }
     }, 20);
+    console.log(slider);
   };
   const handleAddPlaylist = () => {
     setShowBox(true);
@@ -123,12 +125,12 @@ const Personal = () => {
         const res = await apis.apiCreatePlaylist({
           title: playlistName,
           slug: playlistName.replace(/\s+/g, "_"),
-          status: "PUBLIC"
+          status: "PUBLIC",
         });
-        console.log(res)
-        if(res?.data?.code === 201){
-          toast.warning("Tạo playlist thành công")
-          setPlayList([])
+        console.log(res);
+        if (res?.data?.code === 201) {
+          toast.warning("Tạo playlist thành công");
+          setPlayList([]);
         }
         // if(res?.response.status === 422){
         //   toast.warning("Tên đã tồn tại")
@@ -178,65 +180,61 @@ const Personal = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-5">
-          {/* list các playlist */}
-          <div className="flex gap-5 items-center">
-            <h1 className="font-extrabold text-[30px] text-[#0D7373]">
-              PLAYLIST
-            </h1>
-            <span
-              onClick={handleAddPlaylist}
-              className="border border-[#0D7373] rounded-full cursor-pointer text-[#0D7373] p-1 hover:bg-main-400 hover:text-[#fff]"
-            >
-              <IoMdAdd size={30} />
-            </span>
-            {showBox ? (
-              <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2  -translate-x-1/2 h-auto w-[400px] border border-[#5998cb] rounded-lg z-10">
-                <div className="flex flex-col justify-center gap-3 items-center bg-main-300">
-                  <h1 className="font-extrabold text-[20px] text-[#0D7373]">
-                    Tên playlist
-                  </h1>
-                  <div className="flex gap-5">
-                    <input
-                      type="text"
-                      className="p-1 w-[300px] focus:outline-none rounded-md focus:border-[#0D7373]"
-                      value={playlistName}
-                      onChange={(e) => {
-                        sePlaylistName(e.target.value);
-                      }}
-                    />
-                    <button
-                      onClick={handleCreatePlaylist}
-                      className="border border-[#0D7373] hover:bg-main-400 cursor-pointer rounded-md px-4"
-                    >
-                      Tạo
-                    </button>
-                  </div>
-                  <div
-                    onClick={() => setShowBox(false)}
-                    className="border border-red-500 hover:bg-red-500 rounded-md cursor-pointer px-2"
+        <div className="flex gap-5 items-center">
+          <h1 className="font-extrabold text-[30px] text-[#0D7373]">
+            PLAYLIST
+          </h1>
+          <span
+            onClick={handleAddPlaylist}
+            className="border border-[#0D7373] rounded-full cursor-pointer text-[#0D7373] p-1 hover:bg-main-400 hover:text-[#fff]"
+          >
+            <IoMdAdd size={30} />
+          </span>
+          {showBox ? (
+            <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2  -translate-x-1/2 h-auto w-[400px] border border-[#5998cb] rounded-lg z-10">
+              <div className="flex flex-col justify-center gap-3 items-center bg-main-300">
+                <h1 className="font-extrabold text-[20px] text-[#0D7373]">
+                  Tên playlist
+                </h1>
+                <div className="flex gap-5">
+                  <input
+                    type="text"
+                    className="p-1 w-[300px] focus:outline-none rounded-md focus:border-[#0D7373]"
+                    value={playlistName}
+                    onChange={(e) => {
+                      sePlaylistName(e.target.value);
+                    }}
+                  />
+                  <button
+                    onClick={handleCreatePlaylist}
+                    className="border border-[#0D7373] hover:bg-main-400 cursor-pointer rounded-md px-4"
                   >
-                    Hủy
-                  </div>
+                    Tạo
+                  </button>
+                </div>
+                <div
+                  onClick={() => setShowBox(false)}
+                  className="border border-red-500 hover:bg-red-500 rounded-md cursor-pointer px-2"
+                >
+                  Hủy
                 </div>
               </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="flex justify-between">
-            {/* playlist */}
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="flex flex-col gap-5 relative">
+          {/* list các playlist */}
+          <div className="flex justify-between overflow-x-hidden" id="slider">
             {playList ? (
-              <div className="relative w-full">
-                <div
-                  id="slider"
-                  className="flex gap-5 items-center justify-center overflow-x-hidden"
-                >
+              <div className="w-screen">
+                <div className="flex gap-5 items-center overflow-x-hidden relative">
                   {playList?.map((el, index) => {
                     return (
                       <div
                         key={index}
-                        className="flex flex-col text-center gap-2 cursor-pointer "
+                        className="flex flex-col text-center gap-2 cursor-pointer w-[180px]"
                       >
                         <img
                           title={el?.title}
@@ -245,14 +243,13 @@ const Personal = () => {
                               ? process.env.PUBLIC_URL + "/LOGO.png"
                               : el?.songs[0]?.imageUrl
                           }
-                          // https://assets-global.website-files.com/5deef90e2b03a42deaf1f5f9/5dfbc118b074186ea74e058b_Music-Playlist_Octiive-Blog-Post-Feat-Image.jpg
                           onClick={() => {
                             navigate(`/playlist/${el?.slug}/${el?.id}`);
                           }}
                           alt="ảnh nghệ sĩ"
-                          className="w-[180px] rounded-full object-contain animate-slide-left"
+                          className="rounded-full object-contain animate-slide-left"
                         ></img>
-                        <h1>{el?.title}</h1>
+                        <h1 className="text-[10px]">{el?.title}</h1>
                       </div>
                     );
                   })}

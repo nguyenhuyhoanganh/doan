@@ -9,7 +9,7 @@ import * as apis from "../../apis";
 
 const UserInfo = () => {
   const { BsPen } = icons;
-  const { profile } = useContext(AuthContext);
+  const { profile, setProfile } = useContext(AuthContext);
   const [isEdit, setIsEdit] = useState(false);
   const [email, setEmail] = useState(profile?.email);
   const [firstName, setFirstName] = useState(profile?.firstName);
@@ -37,6 +37,7 @@ const UserInfo = () => {
           lastName: lastName,
         });
         console.log(res)
+        setProfile(res?.data?.data)
       };
       fetchUpdate()
       setIsEdit(false);

@@ -1,34 +1,13 @@
 import React, { useEffect, useState } from "react";
-import * as apis from "../../apis";
 import icons from "../../utils/icons";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Follow = () => {
   const { GrPrevious, GrNext } = icons;
-  const [page, setPage] = useState(0);
-  const [items, setItems] = useState(null);
-  const [composers, setComposers] = useState(null);
-  const [artists, setArtists] = useState(null);
   const navigate = useNavigate()
   let setTimeOutId;
-  useEffect(() => {
-    const fetchComposers = async () => {
-      const res = await apis.apiGetComposers();
-      const res2 = await apis.apiGetArtists();
-      if (res?.data.code === 200) {
-        setComposers(res.data?.data);
-      }
-      if (res2.data?.code === 200) {
-        setArtists(res?.data?.data);
-      }
-    };
-    fetchComposers();
-  }, []);
-  // useEffect(() => {
-  //   if (composers) {
-  //     setItems(composers.slice(page * 5, page * 5 + 5));
-  //   }
-  // }, [page]);
+  const {artists, composers} = useSelector(state => state.app)
   const handleNext = () => {
     setTimeOutId && clearInterval(setTimeOutId);
     const slider = document.getElementById("slider");

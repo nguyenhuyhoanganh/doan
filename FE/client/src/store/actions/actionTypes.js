@@ -8,7 +8,11 @@ const actionTypes = {
     SKIP: 'SKIP',
     GET_NEW_RELEASE: 'GET_NEW_RELEASE',
     GET_TOP_10: 'GET_TOP_10',
-    SET_PRE_SONGS: 'SET_PRE_SONGS'
+    SET_PRE_SONGS: 'SET_PRE_SONGS',
+    GET_CHART: 'GET_CHART',
+    GET_ARTIST: 'GET_ARTIST',
+    GET_COMPOSER: 'GET_COMPOSER',
+    GET_ALL_SONG: 'GET_ALL_SONG',
 }
 
 export default actionTypes

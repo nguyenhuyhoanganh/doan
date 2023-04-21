@@ -3,27 +3,19 @@ import * as apis from "../../apis";
 import List from "../../components/List";
 import handleDuration from "../../utils/formatDuration";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import { useSelector } from "react-redux";
 
 const Chart = () => {
-  const [listChart, setListChart] = useState(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await apis.getChart();
-      if (res.data?.code === 200) {
-        setListChart(res?.data.data);
-        console.log(listChart);
-      }
-    };
-    fetchData();
-  }, []);
+
+  const {chart} = useSelector(state => state.app)
   return (
     <div className="flex flex-col bg-main-200 h-full w-full p-5">
       <h1 className="font-extrabold text-[30px] text-[#0D7373]">#CHART</h1>
       <Scrollbars style={{ width: "100%", height: 480 }}>
         <div className="flex flex-col pr-8">
           {/* Mỗi thẻ div là 1 bài hát */}
-          {listChart &&
-            listChart.map((element, index) => {
+          {chart &&
+            chart.map((element, index) => {
               return (
                 <div
                   key={index}

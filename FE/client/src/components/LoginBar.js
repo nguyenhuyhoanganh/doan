@@ -47,12 +47,12 @@ const LoginBar = () => {
   };
 
   return (
-    <div className="h-10 border flex rounded-md hover:shadow-md hover:bg-main-300 cursor-pointer">
+    <div className="h-10 border flex rounded-full hover:shadow-md hover:bg-main-300 cursor-pointer">
       {profile ? (
         <div id="loginImg" className="relative" title={profile?.firstName}>
           <img
             onClick={handleClick}
-            className="object-contain w-10 hover:flex"
+            className="object-contain rounded-full w-10 hover:flex"
             src={profile?.avatarUrl === undefined ? 'https://avatar.talk.zdn.vn/default.jpg' : profile?.avatarUrl}
             alt=""
           />
