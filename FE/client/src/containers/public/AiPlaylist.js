@@ -10,11 +10,11 @@ import getCurrentDate from "../../utils/currentDate";
 const AiPlaylist = () => {
   const { allsongs } = useSelector((state) => state.app);
   const [fvList, setFvList] = useState([]);
+  const [useSkeleton, setUseSkeleton] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
   const [favoristeList, setFavoristList] = useState([]);
   const { preSongs } = useSelector((state) => state.music);
 
-  console.log(preSongs);
   useEffect(() => {
     const fetchFVL = async () => {
       if (isAuthenticated) {
@@ -172,6 +172,7 @@ const AiPlaylist = () => {
   const handleAproval = () => {
     // console.log(fvList);
     const currentDate = getCurrentDate();
+    setUseSkeleton(true);
     const fetchCreatePL = async () => {
       const res = await apis.apiCreatePlaylist({
         title: `Favoriste Playlist ${currentDate}`,
@@ -182,6 +183,7 @@ const AiPlaylist = () => {
         for (let song of fvList) {
           await apis.apiAddSongToPlaylist(song.id, res?.data?.data?.id);
         }
+        setUseSkeleton(false);
         toast.warning("Tạo playlist thành công");
       } else {
         toast.warning("Tạo plalist không thành công!!!");
@@ -208,13 +210,15 @@ const AiPlaylist = () => {
             Tạo thử
           </div>
           {fvList.length !== 0 && (
-            <div
+            <button
+              disabled={useSkeleton}
               onClick={handleAproval}
-              className="px-2 py-2 border border-[#0D7373] rounded-md hover:bg-main-400 w-[50%] cursor-pointer"
+              className={`px-2 py-2 border border-[#0D7373] rounded-md hover:bg-main-400 w-[50%] cursor-pointer ${useSkeleton? "cursor-wait" : ""}`}
             >
               Tạo playlist này
-            </div>
+            </button>
           )}
+          {useSkeleton? <span className="text-[14px] text-[#0D7373] animate-pulse">Đang tạo playlist....</span>: ""}
         </div>
         <div className="w-[70%] h-[200px] text-left">
           {fvList.length !== 0 && (

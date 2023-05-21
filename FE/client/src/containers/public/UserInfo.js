@@ -1,14 +1,17 @@
 import React, { useContext, useState } from "react";
 import icons from "../../utils/icons";
 import { AuthContext } from "../../contexts/auth.context";
-import { useForm } from "react-hook-form";
-import { loginSchema } from "../../utils/validate.form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import fileApi from "../../apis/file";
 import { toast } from "react-toastify";
 import * as apis from "../../apis";
+import { useEffect } from "react";
+import { setProfileToLocalStorage } from "../../utils/auth";
 
 const UserInfo = () => {
   const { BsPen } = icons;
+  const [isChooseImg, setIsChooseImg] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState("");
   const { profile, setProfile } = useContext(AuthContext);
   const [isEdit, setIsEdit] = useState(false);
   const [email, setEmail] = useState(profile?.email);
@@ -18,20 +21,21 @@ const UserInfo = () => {
   const [firstNameValid, setFirstNameValid] = useState("");
   const [lastNameValid, setLastNameValid] = useState("");
   const roles = profile?.roles?.map((el) => el.roleName);
-  console.log(profile)
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm({ resolver: yupResolver(loginSchema) });
+  const [isChangeAvatar, setIsChangeAvatar] = useState(false);
+  const [avatarChanged, setAvatarChanged] = useState(null);
+
+  useEffect(() => {
+    if ("avatarUrl" in profile) {
+      setBackgroundImage(profile?.avatarUrl);
+    }
+  }, []);
   const handleEdit = () => {
     setIsEdit(true);
   };
   const handleUpdate = () => {
-    if(isEdit){
-
+    if (isEdit) {
     } else {
-      toast.warning('Hãy nhấn chỉnh sửa trước')
+      toast.warning("Hãy nhấn chỉnh sửa trước");
     }
     if (!firstNameValid && !lastNameValid && !emailValid) {
       // khi rỗng
@@ -41,13 +45,66 @@ const UserInfo = () => {
           firstName: firstName,
           lastName: lastName,
         });
-        console.log(res)
-        setProfile(res?.data?.data)
+        setProfile(res?.data?.data);
       };
-      fetchUpdate()
+      fetchUpdate();
       setIsEdit(false);
     } else {
       toast.warning("Kiểm tra lại thông tin hợp lệ");
+    }
+  };
+
+  const hanldeChooseFileImg = (event) => { 
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      setBackgroundImage(e.target.result);
+      file && setAvatarChanged(file);
+      setIsChangeAvatar(true);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChangeImg = () => {
+    setIsChooseImg(true);
+  };
+
+  const uploadFilesMutation = useMutation({
+    mutationFn: async (files) => {
+      const fileUploadPromises = files.map((file) => {
+        return file.name !== "fileUpload"
+          ? fileApi.uploadFile(file)
+          : undefined;
+      });
+      const results = await Promise.all(fileUploadPromises);
+      return results;
+    },
+  });
+  const handleAccept = async () => {
+    if (isChangeAvatar === true) {
+      const uploadResponse = await uploadFilesMutation.mutateAsync([
+        avatarChanged,
+      ]);
+      const avatarUrl =
+        uploadResponse[0] !== undefined
+          ? uploadResponse[0].data.data.download_url
+          : undefined;
+      // update profile
+      const fetchUpdateImage = async () => {
+        const res = await apis.updateInfo(profile?.id, {
+          avatarUrl: avatarUrl,
+        });
+        setProfile(res?.data?.data);
+        // update lại LCS, có avatarUrl = avatarUrl
+        setProfileToLocalStorage(res?.data?.data);
+      };
+      fetchUpdateImage();
+      setIsChooseImg(false);
+      isChangeAvatar(false);
     }
   };
   return (
@@ -67,10 +124,65 @@ const UserInfo = () => {
           }
         />
         <BsPen
+          onClick={handleChangeImg}
           size={30}
           className="absolute cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#230e0e] text-center group-hover:flex hidden"
         />
       </div>
+      {isChooseImg ? (
+        <div className="fixed top-1/2 transform -translate-y-1/2 left-1/2 bg-main-300 p-2 -translate-x-1/2 w-[400px] h-[400px] border shadow-md rounded-lg z-10">
+          <div className="flex flex-col justify-center gap-3 items-center h-[100%] w-[100%]">
+            <h1 className="font-extrabold text-[20px] text-[#0D7373]">
+              Chọn ảnh nền
+            </h1>
+            <div
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+              onLoad={120}
+              onResize={120}
+              className="w-[80%] h-[90%] m-auto bg-white rounded-md items-center flex justify-center"
+            >
+              <div
+                onClick={() => document.getElementById("fileInput").click()}
+                className="flex w-[300px] h-[300px] items-center justify-center cursor-pointer rounded-full bg-[rgba(0,0,0,0.1)]"
+              >
+                {backgroundImage ? null : "Chọn ảnh nền"}
+                <input
+                  type="file"
+                  id="fileInput"
+                  style={{ display: "none" }}
+                  accept=".jpg,.png"
+                  onChange={(e) => hanldeChooseFileImg(e)}
+                />
+              </div>
+            </div>
+            <div className="flex gap-5">
+              <button
+                disabled={!isChangeAvatar}
+                onClick={() => handleAccept()}
+                className={`border border-green-500 rounded-md ${!isChangeAvatar? "cursor-not-allowed": "cursor-pointer hover:bg-green-500"} px-4`}
+              >
+                Xác nhận
+              </button>
+              <div
+                onClick={() => setIsChooseImg(false)}
+                className="border border-red-500 hover:bg-red-500 rounded-md cursor-pointer px-4"
+              >
+                Hủy
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       <div className="flex gap-4 w-[80%]">
         <label className="w-[40%] text-right">Chức vụ:</label>
         <label className="w-[60%] text-left">{roles.join(", ")}</label>

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import * as actions from "../store/actions"
 
 const Item = ({song}) => {
-  const { TbPlayerTrackNext } = icons;
+  const { FaRegPlayCircle } = icons;
   const dispatch = useDispatch();
   const handleTime = (sec) => {
     let min = Math.floor(sec / 60);
@@ -20,7 +20,7 @@ const Item = ({song}) => {
         }}
         className="absolute pt-3 pl-[30px] top-0 left-0 hover:opacity-100 opacity-0"
       >
-        <TbPlayerTrackNext size={24} />
+        <FaRegPlayCircle size={24} />
       </span>
       <div className="flex " title={song.title}>
         <img
@@ -38,8 +38,8 @@ const Item = ({song}) => {
           </span>
         </div>
       </div>
-      <span className="group-hover:hidden">{handleTime(song.duration)}</span>
-      <div className="group-hover:opacity-100 group-hover:visible opacity-0 hidden group-hover:flex"></div>
+      <span className="">{handleTime(song.duration)}</span>
+      {/* <div className="group-hover:opacity-100 group-hover:visible opacity-0 hidden group-hover:flex"></div> */}
     </div>
   );
 };

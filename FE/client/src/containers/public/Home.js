@@ -1,10 +1,27 @@
 import React, { useEffect } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { Header, Slider, SkeletonComment, Skeleton, SkeletonCard, SkeletonSlider, SkeletonSong } from "../../components";
+import {
+  Header,
+  Slider,
+  SkeletonComment,
+  Skeleton,
+  SkeletonCard,
+  SkeletonSlider,
+  SkeletonSong,
+} from "../../components";
 import HomeContainer from "../../components/HomeContainer";
+import { useDispatch } from "react-redux";
+import * as actions from "../../store/actions";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth.context";
 
+const Home = ({ useSkeleton }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  if (isAuthenticated) {
+    dispatch(actions.getPlaylistName());
+  }
 
-const Home = ({ useSkeleton}) => {
   return (
     <Scrollbars className="pl-5" style={{ width: "100%", height: 560 }}>
       <div className="overflow-y-auto">

@@ -26,7 +26,7 @@ import { useDispatch } from "react-redux";
 import { Item} from "../components"
 
 const ChartSection = () => {
-  const {TbPlayerTrackNext} = icons;
+  const {FaRegPlayCircle} = icons;
   // data hiển thị lên Line
   const [chartData, setChartData] = useState(null);
   // lấy ra các query param trên url
@@ -186,7 +186,7 @@ const ChartSection = () => {
   return (
     <div className="relative h-[400px] w-[96%] rounded-md bg-cover bg-center bg-chart-image">
       {/* <img className='absolute inset-0 z-10 rounded-md' src='/src/imgs/chart.jpg' alt='bg-chart'></img> */}
-      <div className="absolute inset-0 rounded-md bg-[rgba(0,0,0,0.6)]"></div>
+      <div className="absolute inset-0 rounded-md bg-[rgba(0,0,0,0.4)]"></div>
       <div className="absolute inset-0 rounded-md p-4">
         <div className="grid h-full grid-cols-12 gap-4">
           <h3 className="col-span-12 block text-2xl font-bold text-white">
@@ -216,7 +216,7 @@ const ChartSection = () => {
                   placement="top"
                   trigger="hover"
                   shrinkedPopoverPosition="bottom"
-                  renderPopover={<div>{topSongs[songIndexHover].title}</div>}
+                  renderPopover={<div className="text-[#963d3d]">{topSongs[songIndexHover].title}</div>}
                   offsetValue={{ mainAxis: 7, crossAxis: 0 }}
                   delayHover={{
                     open: 0,

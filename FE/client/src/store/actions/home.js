@@ -1,5 +1,6 @@
 import actionTypes from "./actionTypes";
 import * as apis from "../../apis";
+import { assign } from "lodash";
 export const getHome = () => async (dispatch) => {
   try {
     // console.log("dispatch", dispatch)
@@ -148,11 +149,38 @@ export const getComposer = () => async (dispatch) => {
   }
 };
 
+export const getPlaylistName = () => async (dispatch) => {
+  try {
+    // console.log("dispatch", dispatch)
+    const response = await apis.apiGetPlaylist({
+      limit: 40,
+      orderBy: "createdAt",
+    });
+    if (response?.data.code === 200) {
+      console.log(response);
+      dispatch({
+        type: actionTypes.GET_ALL_PLAYLIST_NAMES,
+        myplaylist: response?.data?.data,
+        // send objiect action
+      });
+    } else {
+      dispatch({
+        type: actionTypes.GET_ALL_PLAYLIST_NAMES,
+        myplaylist: null,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionTypes.GET_ALL_PLAYLIST_NAMES,
+      myplaylist: null,
+    });
+  }
+};
+
 export const getAllSongs = () => async (dispatch) => {
   try {
     // console.log("dispatch", dispatch)
-    const response = await apis.apiGetAllSongs({limit: 99999});
-    console.log(response)
+    const response = await apis.apiGetAllSongs({ limit: 99999 });
     if (response?.data.code === 200) {
       // console.log('catch')
       dispatch({

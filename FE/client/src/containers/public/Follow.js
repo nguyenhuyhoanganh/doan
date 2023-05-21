@@ -75,7 +75,7 @@ const Follow = () => {
             id="slider"
             className="flex justify-between gap-2 relative p-2 overflow-x-hidden transition-all"
           >
-            {composers?.map((el, index) => {
+            {artists?.map((el, index) => {
               return (
                 <img
                   key={index}
@@ -85,20 +85,20 @@ const Follow = () => {
                     navigate(`/artist/${el?.slug}/${el?.id}`)
                   }}
                   alt="ảnh nghệ sĩ"
-                  className="w-[180px] rounded-full object-contain animate-slide-left"
+                  className="w-[180px] rounded-full object-contain cursor-pointer animate-slide-left"
                 ></img>
               );
             })}
           </div>
           <div
             onClick={handlePrev}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <GrPrevious size={30}></GrPrevious>
           </div>
           <div
             onClick={handleNext}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
           >
             <GrNext size={30}></GrNext>
           </div>
@@ -109,7 +109,7 @@ const Follow = () => {
         <h1 className="font-extrabold text-[30px] text-[#0D7373]">NHẠC SĨ</h1>
         <div className="relative">
           <div id="slider2" className="flex gap-5 items-center overflow-x-hidden">
-            {artists?.reverse().map((el, index) => {
+            {composers?.map((el, index) => {
               return (
                 <img
                   key={index}
@@ -119,20 +119,20 @@ const Follow = () => {
                     navigate(`/composer/${el?.slug}/${el?.id}`)
                   }}
                   alt="ảnh nghệ sĩ"
-                  className="w-[180px] rounded-full object-contain animate-slide-left"
+                  className="w-[180px] rounded-full object-contain cursor-pointer animate-slide-left"
                 ></img>
               );
             })}
           </div>
           <div
             onClick={handlePrev2}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <GrPrevious size={30}></GrPrevious>
           </div>
           <div
             onClick={handleNext2}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
           >
             <GrNext size={30}></GrNext>
           </div>

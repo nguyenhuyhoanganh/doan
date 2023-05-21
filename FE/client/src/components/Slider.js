@@ -100,7 +100,6 @@ const Slider = () => {
       dispatch(actions.play(true));
       // dispatch(actions.setPlaylistData(null));
     } else if (item?.type === 4) {
-      console.log(item);
       // link = /album/Nhac-Moi-Moi-Ngay-Sam-Smith-Vu-Cat-Tuong-STAYC-Hoang-Thuy-Linh/67WIO6CF.html
       // const albumPath = item?.link?.split(".")[0];
       // console.log(albumPath)
@@ -124,7 +123,7 @@ const Slider = () => {
               key={item.id}
               src={item.backgroundImageUrl}
               onClick={() => handleClickBanner(item)}
-              className={`slider-item flex-1 object-contain w-[30%] rounded-lg ${
+              className={`slider-item flex-1 object-contain w-[30%] cursor-pointer rounded-lg ${
                 index <= 2 ? "block" : "hidden"
               }`}
             />

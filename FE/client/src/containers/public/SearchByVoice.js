@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import icons from "../../utils/icons";
-import * as apis from "../../apis";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,6 +9,7 @@ import MicRecorder from "mic-recorder-to-mp3";
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const SearchByVoice = () => {
   const [isRecording, setIsRecording] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
   const { BsMicFill } = icons;
   const navigate = useNavigate();
   const defaultOptions = {
@@ -53,7 +53,7 @@ const SearchByVoice = () => {
       timestamp
     );
     const signature = sign(stringToSign, options.access_secret);
-
+    setIsSearch(true);
     const formData = new FormData();
     formData.append("sample", data);
     formData.append("access_key", options.access_key);
@@ -77,6 +77,7 @@ const SearchByVoice = () => {
         } else {
           navigate(`/search/${response.replace(/\([^)]*\)/g, "")}`);
         }
+        setIsSearch(false);
         return response;
       })
       .catch((err) => {
@@ -86,19 +87,21 @@ const SearchByVoice = () => {
   };
 
   const startRecording = () => {
-    const mic = document.getElementById("mic_search");
-    // console.log(mic);
-    Mp3Recorder.start()
-      .then(() => {
-        setIsRecording(true);
-        mic.classList?.add("animate-pulse");
-      })
-      .catch((e) => console.error(e));
-    const timeOut = setTimeout(() => {
-      stopRecording();
-      mic.classList?.remove("animate-pulse");
-      clearTimeout(timeOut);
-    }, 10000);
+    if (!isRecording) {
+      const mic = document.getElementById("mic_search");
+      // console.log(mic);
+      Mp3Recorder.start()
+        .then(() => {
+          setIsRecording(true);
+          mic.classList?.add("animate-pulse");
+        })
+        .catch((e) => console.error(e));
+      const timeOut = setTimeout(() => {
+        stopRecording();
+        mic.classList?.remove("animate-pulse");
+        clearTimeout(timeOut);
+      }, 10000);
+    }
   };
 
   const stopRecording = () => {
@@ -115,7 +118,6 @@ const SearchByVoice = () => {
   const identify_song = (file) => {
     indentify(file, defaultOptions, function (err, httpResponse, body) {
       if (err) console.log(err);
-      console.log(body);
     });
   };
   const [selectedFile, setSelectedFile] = useState(null);
@@ -123,11 +125,10 @@ const SearchByVoice = () => {
     setSelectedFile(e.target.files[0]);
   };
   const handleSearch = async () => {
-    console.log("searching...");
     if (selectedFile) {
       identify_song(selectedFile);
     } else {
-      toast.info("Chọn file âm nhạc trước")
+      toast.info("Chọn file âm nhạc trước");
     }
   };
   return (
@@ -137,11 +138,17 @@ const SearchByVoice = () => {
         className="cursor-pointer hover:shadow-md rounded-full"
       >
         <span>
-          <BsMicFill id="mic_search" className="" size={70}></BsMicFill>
+          <BsMicFill id="mic_search" className={`${isRecording? "cursor-wait" : ""}`} size={70}></BsMicFill>
         </span>
       </div>
-      {isRecording ? <span>Đang nghe .....</span> : ""}
-      {isRecording ? <img src="https://dphi.tech/blog/wp-content/uploads/2021/04/tumblr_mjxl2mmonE1s5nl47o3_r1_500.gif"/>: ""}
+      {isRecording ? (
+        <span className="text-[20px] text-[#276a6c] animate-pulse">
+          Đang nghe .....
+        </span>
+      ) : (
+        ""
+      )}
+      {/* {isRecording ? <img src="https://dphi.tech/blog/wp-content/uploads/2021/04/tumblr_mjxl2mmonE1s5nl47o3_r1_500.gif"/>: ""} */}
       <span>Tìm kiếm trực tiếp</span>
       <div className="flex flex-col gap-2">
         <span className="text-[20px] text-[#568fdb]">Hoặc</span>
@@ -149,16 +156,26 @@ const SearchByVoice = () => {
         <input
           type="file"
           accept=".mp3"
-          className="px-4 py-2 mb-4 text-gray-700 bg-main-300 rounded-lg shadow-md focus:outline-none focus:shadow-outline"
+          className="px-4 py-2 mb-4 text-gray-700 bg-main-300 rounded-lg cursor-pointer shadow-md focus:outline-none focus:shadow-outline"
           onChange={handleFileInputChange}
         />
       </div>
       <button
+        disabled={isSearch}
         onClick={handleSearch}
-        className="border border-[#276a6c] rounded-md hover:bg-main-400 px-10 py-1"
+        className={`border border-[#276a6c] rounded-md hover:bg-main-400 px-10 py-1 ${
+          isSearch ? "cursor-wait" : ""
+        }`}
       >
         Tìm tên bài hát
       </button>
+      {isSearch ? (
+        <span className="text-[20px] text-[#276a6c] animate-pulse">
+          Đang tìm kiếm bài hát.....
+        </span>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
