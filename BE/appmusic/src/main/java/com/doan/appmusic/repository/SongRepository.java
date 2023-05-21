@@ -29,4 +29,7 @@ public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificat
 
     @Query("SELECT song.id FROM Song song")
     List<Long> findAllIdSong();
+
+    @Query("SELECT COUNT(s) FROM Song s WHERE s.createdAt >= CURRENT_DATE")
+    long countNewSongsToday();
 }

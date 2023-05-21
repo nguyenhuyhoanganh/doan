@@ -125,7 +125,7 @@ const SongItem = ({ song, queryConfig }) => {
                 song.artists.map((artist, index, artists) => (
                   <Fragment key={artist?.id}>
                     <NavLink
-                      to={`/dashboard/artist/${artist?.slug}`}
+                      to={`/dashboard/artist?fullName=${artist?.fullName}`}
                       className='text-xs text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
                     >
                       {artist?.fullName}
@@ -142,7 +142,7 @@ const SongItem = ({ song, queryConfig }) => {
           }`}
         >
           <NavLink
-            to={`/dashboard/album/${song.album?.slug}`}
+            to={`/dashboard/album?title=${song.album?.title}`}
             className='text-sm text-gray-500 hover:text-main-color hover:underline hover:underline-offset-1'
           >
             {song.album.title}
