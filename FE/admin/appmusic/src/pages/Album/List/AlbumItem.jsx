@@ -53,7 +53,7 @@ const AlbumItem = ({ album }) => {
               </Tooltip>
               <span
                 className='mx-4 h-11 w-11 rounded-full text-white opacity-0 hover:opacity-80 group-hover:opacity-100'
-                onClick={() => console.log('play')}
+                onClick={() => navigate(`/dashboard/song?page=1&limit=10&search=${album.title}`)}
               >
                 <CiPlay1 size={45} />
               </span>

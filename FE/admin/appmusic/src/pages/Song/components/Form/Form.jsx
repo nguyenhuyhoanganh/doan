@@ -15,6 +15,7 @@ import SelectorSearch from '../../../../components/SelectorSearch/SelectorSearch
 import Radio from '../../../../components/Radio'
 import UploadImage from '../../../../components/UploadImage/UploadImage'
 import UploadAudio from '../UploadAudio/UploadAudio'
+import { NavLink } from 'react-router-dom'
 
 const STATUS = [
   { value: 'DRAFT', title: 'DRAFT' },
@@ -121,6 +122,23 @@ const Form = ({ song, onSubmit, isLoading }) => {
       onSubmit={handleSubmitForm}
       noValidate
     >
+      <div className='col-span-12 px-5 py-1'>
+        <span className='text-sm text-gray-500'>
+          {`(*) If you have new kind of album or artist or composer, you need to create those first. Create `}
+          <NavLink className='font-semibold hover:text-blue-500 hover:underline' to={'/dashboard/album/create'}>
+            album
+          </NavLink>
+          {`, `}
+          <NavLink className='font-semibold hover:text-blue-500 hover:underline' to={'/dashboard/artist/create'}>
+            artist
+          </NavLink>
+          {`, `}
+          <NavLink className='font-semibold hover:text-blue-500 hover:underline' to={'/dashboard/composer/create'}>
+            composer
+          </NavLink>
+          {`.`}
+        </span>
+      </div>
       <div className='col-span-8 rounded-lg border border-t-slate-200/80 p-5 shadow-md'>
         <Input
           label='Title:'

@@ -51,6 +51,8 @@ public interface SongService {
 
     long count(Map<String, String[]> search);
 
+    long count();
+
     void like(long songId, long userId);
 
     void unlike(long songId, long userId);
@@ -64,6 +66,10 @@ public interface SongService {
     Map<String, Object> chart(int top);
 
     void updatePlaySongEveryHour();
+
+    Map<String, Long> getSongListeningStatistics();
+
+    long countNewSongs();
 }
 
 @Service
@@ -228,6 +234,11 @@ class SongServiceImpl implements SongService {
     }
 
     @Override
+    public long count() {
+        return repository.count();
+    }
+
+    @Override
     public void like(long songId, long userId) {
         if (likeRepository.findByUserAndSong(userId, songId).isPresent())
             throw new CommonException("You liked this" + " song");
@@ -337,6 +348,16 @@ class SongServiceImpl implements SongService {
 //            playRepository.save(play);
 //        }
 
+    }
+
+    @Override
+    public Map<String, Long> getSongListeningStatistics() {
+        return playRepository.getTotalListensByLabel();
+    }
+
+    @Override
+    public long countNewSongs() {
+        return repository.countNewSongsToday();
     }
 
     private Specification<Song> buildSpecification(Map<String, String[]> query) {

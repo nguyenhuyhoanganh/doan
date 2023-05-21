@@ -73,6 +73,16 @@ public class SongController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/statistics")
+    public ResponseEntity<?> statistics(@RequestParam(required = false, defaultValue = "10") int top) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("play_statistics",service.getSongListeningStatistics());
+        data.put("number_of_new_songs", service.countNewSongs());
+        data.put("number_of_songs", service.count());
+        ResponseDTO<?> response = ResponseDTO.builder().data(data).build();
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SongDTO songDTO) {
         SongDTO songCreated = service.create(songDTO);
