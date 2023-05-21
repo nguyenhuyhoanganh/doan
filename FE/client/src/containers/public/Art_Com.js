@@ -9,22 +9,36 @@ import List from "../../components/List";
 const Art_Com = () => {
   const { slug, id } = useParams();
   const [artist, setArtist] = useState(null);
+  const [composers, setComposers] = useState(null);
   const [songs, setSongs] = useState(null);
   const [useSkeleton, setUseSkeleton] = useState(false);
+  const currentURL = window.location.href;
   useEffect(() => {
-    const fetchData = async () => {
+    const url = currentURL.split("/")[3];
+    const fetchDataArtis = async () => {
       setUseSkeleton(true);
-      const res = await apis.apiGetArtistBySlug(slug);
-      const res2 = await apis.apiGetSongsByArtistId(id);
-      if (res.data?.code === 200) {
-        setArtist(res.data?.data[0]);
-      }
-      if (res2.data?.code === 200) {
-        setSongs(res2.data?.data);
+      if (url === "artist") {
+        const res = await apis.apiGetArtistById(id);
+        const res2 = await apis.apiGetSongsByArtistId(id);
+        if (res2.data?.code === 200) {
+          setSongs(res2.data?.data);
+        }
+        if (res.data?.code === 200) {
+          setArtist(res.data?.data);
+        }
+      } else {
+        const res = await apis.apiComposerById(id);
+        const res2 = await apis.apiGetSongsByComposerId(id);
+        if (res.data?.code === 200) {
+          setArtist(res.data?.data);
+        }
+        if (res2.data?.code === 200) {
+          setSongs(res2.data?.data);
+        }
       }
       setUseSkeleton(false);
     };
-    fetchData();
+    fetchDataArtis();
   }, []);
   return (
     <div className="flex gap-4 w-full px-[40px]">
@@ -32,6 +46,7 @@ const Art_Com = () => {
         <div className="w-[30%] h-[280px] bg-gray-500 animate-pulse flex  "></div>
       ) : (
         <div className="flex-none w-[30%] flex flex-col items-center gap-2">
+          {console.log(artist)}
           <img
             className="object-contain rounded-md w-full shadow-md"
             // src={artist?.avatarUrl}

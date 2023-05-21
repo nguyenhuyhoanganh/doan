@@ -175,6 +175,7 @@ class SongServiceImpl implements SongService {
         // save song
         song.setCommentCount(0l);
         song.setLikeCount(0l);
+        song.setView(0l);
         Song songUpdated = repository.save(song);
         // add 24 play for song
         for (int i = 0; i < 24; i++) {
@@ -274,7 +275,8 @@ class SongServiceImpl implements SongService {
     @Override
     public void incrementView(long songId) {
         Song song = repository.findById(songId).orElseThrow(() -> new CommonException("Song cannot be found"));
-        song.incrementView();
+        if(song.getView() == null) song.setView(1l);
+        else song.incrementView();
         LocalDateTime now = LocalDateTime.now();
         String hour = String.valueOf(now.getHour());
         Optional<Play> playOptional = playRepository.findBySongIdAndLabel(song.getId(), hour);
@@ -440,12 +442,16 @@ class SongServiceImpl implements SongService {
             if (artists != null)
                 context.getDestination().setArtists(artists.stream().map(artist -> ArtistDTO.builder().id(artist.getId()).fullName(artist.getFullName()).avatarUrl(artist.getAvatarUrl()).slug(artist.getSlug()).build()).collect(Collectors.toList()));
 
+            // view
+            if(context.getSource().getView() == null) context.getDestination().setView(0l);
+
             // composer
             Composer composer = context.getSource().getComposer();
             if (composer != null)
                 context.getDestination().setComposer(ComposerDTO.builder().id(composer.getId()).slug(composer.getSlug()).fullName(composer.getFullName()).avatarUrl(composer.getAvatarUrl()).build());
             return context.getDestination();
         }).addMappings(mapping -> mapping.skip(SongDTO::setComments)).addMappings(mapping -> mapping.skip(SongDTO::setLikes));
+
 
         return mapper.map(song, SongDTO.class);
     }

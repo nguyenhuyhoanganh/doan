@@ -159,6 +159,8 @@ class PlaylistServiceImpl implements PlaylistService {
                 }
             }
 
+            if(context.getSource().getView() == null) context.getDestination().setView(0l);
+
             // album
             Album album = context.getSource().getAlbum();
             if (album != null)

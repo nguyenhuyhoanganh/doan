@@ -136,11 +136,49 @@ export const apiGetArtistBySlug = (slug) =>
     }
   });
 
+export const apiGetArtistById = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await http({
+        url: `artists/${id}`,
+        method: "GET",
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+export const apiComposerById = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await http({
+        url: `composers/${id}`,
+        method: "GET",
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
 export const apiGetSongsByArtistId = (id) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await http({
         url: `songs?artists.id=${id}`,
+        method: "GET",
+      });
+      resolve(response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+export const apiGetSongsByComposerId = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await http({
+        url: `songs?composer.id=${id}`,
         method: "GET",
       });
       resolve(response);

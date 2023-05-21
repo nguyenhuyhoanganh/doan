@@ -75,7 +75,7 @@ const Follow = () => {
             id="slider"
             className="flex justify-between gap-2 relative p-2 overflow-x-hidden transition-all"
           >
-            {composers?.map((el, index) => {
+            {artists?.map((el, index) => {
               return (
                 <img
                   key={index}
@@ -109,7 +109,7 @@ const Follow = () => {
         <h1 className="font-extrabold text-[30px] text-[#0D7373]">NHẠC SĨ</h1>
         <div className="relative">
           <div id="slider2" className="flex gap-5 items-center overflow-x-hidden">
-            {artists?.reverse().map((el, index) => {
+            {composers?.map((el, index) => {
               return (
                 <img
                   key={index}
