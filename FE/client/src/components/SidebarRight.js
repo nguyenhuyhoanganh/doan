@@ -7,7 +7,7 @@ import * as actions from "../store/actions";
 import * as api from "../apis";
 import { SkeletonSong } from "../components";
 
-const { BsToggleOff, BsToggleOn, TbPlayerTrackNext } = icons;
+const { BsToggleOff, BsToggleOn, FaRegPlayCircle } = icons;
 const SidebarRight = () => {
   // const [autoPlay, setAutoPlay] = useState(false);
   const [btnList, setBtnList] = useState(true);
@@ -79,7 +79,7 @@ const SidebarRight = () => {
           className="flex gap-4 bg-[#0E8080] border border-[#CED9D9] shadow-lg w-[100%] rounded-lg cursor-pointer hover:shadow-md"
         >
           {/* <span className="text-[#fff] absolute pt-3 pl-[30px]">
-          <TbPlayerTrackNext size={24} />
+          <FaRegPlayCircle size={24} />
         </span> */}
           <img
             src={curSong?.imageUrl}
@@ -114,7 +114,7 @@ const SidebarRight = () => {
                     className="flex cursor-pointer bg-main-300 border border-[#0D7373] hover:shadow-md w-[100%] rounded-lg"
                   >
                     {/* <span className="absolute pt-3 pl-[30px]">
-                  <TbPlayerTrackNext size={24} />
+                  <FaRegPlayCircle size={24} />
                 </span> */}
                     <img
                       src={item.imageUrl}
@@ -172,7 +172,7 @@ const SidebarRight = () => {
                       className="flex cursor-pointer bg-main-300 border border-[#0D7373] hover:shadow-md w-[100%] rounded-lg"
                     >
                       {/* <span className="absolute pt-3 pl-[30px]">
-                      <TbPlayerTrackNext size={24} />
+                      <FaRegPlayCircle size={24} />
                     </span> */}
                       <img
                         src={item.imageUrl}

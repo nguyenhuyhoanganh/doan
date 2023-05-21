@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import icons from "../../utils/icons";
 import * as apis from "../../apis";
@@ -24,6 +24,7 @@ const Personal = () => {
   const { banner } = useSelector((state) => {
     return state.app;
   });
+  const { personnalPlaylist } = useSelector((state) => state.music);
   const dispatch = useDispatch();
   // console.log(banner);
   const handlePrev2 = () => {
@@ -53,7 +54,6 @@ const Personal = () => {
         setTimeOutId && clearInterval(setTimeOutId);
       }
     }, 20);
-    console.log(slider);
   };
   const handlePrev = () => {
     setTimeOutId && clearInterval(setTimeOutId);
@@ -90,20 +90,29 @@ const Personal = () => {
     const fetchPL = async () => {
       if (isAuthenticated) {
         const res = await apis.apiGetPlaylist({
-          limit: 40,
+          limit: 10,
           orderBy: "createdAt",
         });
-        const res2 = await apis.apiGetFavoritePlaylist({
-          limit: 999,
-          orderBy: "createdAt",
-        });
-        // console.log(res2)
-        setFavoristList(res2?.data?.data);
         setPlayList(res?.data?.data);
       }
     };
-    fetchPL();
-  }, [playList]);
+    // fetchPL();
+    if (personnalPlaylist) {
+      setPlayList(personnalPlaylist);
+    }
+  }, [personnalPlaylist]);
+  useEffect(() => {
+    const fetchFvPl = async () => {
+      const res2 = await apis.apiGetFavoritePlaylist({
+        limit: 10,
+        orderBy: "createdAt",
+      });
+      setFavoristList(res2?.data?.data);
+    };
+    if (isAuthenticated) {
+      fetchFvPl();
+    }
+  }, []);
   const handlePlayFaList = () => {
     if (favoristList !== null) {
       dispatch(actions.setCurSongId(favoristList[0]?.id));
@@ -126,14 +135,13 @@ const Personal = () => {
           slug: playlistName.replace(/\s+/g, "_"),
           status: "PUBLIC",
         });
-        console.log(res);
         if (res?.data?.code === 201) {
           toast.warning("Tạo playlist thành công");
-          setPlayList([]);
+          setShowBox(false);
+          console.log(res?.data?.data);
+          setPlayList((pre) => [...pre, res?.data?.data]);
+          dispatch(actions.getPlaylistName());
         }
-        // if(res?.response.status === 422){
-        //   toast.warning("Tên đã tồn tại")
-        // }
       } else {
         toast.warning("Bạn cần đăng nhập để tạo playlist");
       }
@@ -167,13 +175,13 @@ const Personal = () => {
             </div>
             <div
               onClick={handlePrev2}
-              className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
             >
               <GrPrevious size={30}></GrPrevious>
             </div>
             <div
               onClick={handleNext2}
-              className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
             >
               <GrNext size={30}></GrNext>
             </div>
@@ -225,10 +233,13 @@ const Personal = () => {
         </div>
         <div className="flex flex-col gap-5 relative">
           {/* list các playlist */}
-          <div className="flex justify-between overflow-x-hidden" id="slider">
+          <div
+            className="flex justify-between items-center overflow-x-hidden"
+            id="slider"
+          >
             {playList ? (
               <div className="w-screen">
-                <div className="flex gap-5 items-center overflow-x-hidden relative">
+                <div className="flex gap-5 justify-center items-center overflow-x-hidden relative">
                   {playList?.map((el, index) => {
                     return (
                       <div
@@ -238,9 +249,11 @@ const Personal = () => {
                         <img
                           title={el?.title}
                           src={
-                            el?.songs[0]?.imageUrl === undefined
-                              ? process.env.PUBLIC_URL + "/LOGO.png"
-                              : el?.songs[0]?.imageUrl
+                            "songs" in el
+                              ? el?.songs[0]?.imageUrl === undefined
+                                ? process.env.PUBLIC_URL + "/LOGO.png"
+                                : el?.songs[0]?.imageUrl
+                              : process.env.PUBLIC_URL + "/LOGO.png"
                           }
                           onClick={() => {
                             navigate(`/playlist/${el?.slug}/${el?.id}`);
@@ -255,13 +268,13 @@ const Personal = () => {
                 </div>
                 <div
                   onClick={handlePrev}
-                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+                  className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
                 >
                   <GrPrevious size={30}></GrPrevious>
                 </div>
                 <div
                   onClick={handleNext}
-                  className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+                  className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
                 >
                   <GrNext size={30}></GrNext>
                 </div>

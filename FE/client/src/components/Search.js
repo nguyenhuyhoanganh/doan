@@ -18,8 +18,13 @@ const Search = () => {
       setInput("");
     }
   };
+  const handleSearch = () => {
+    if (input != "") {
+      navigate("search/" + input);
+      setInput("");
+    }
+  };
   const handleSearchButton = () => {
-    const inputElement = document.getElementById("input_value");
     const mic = document.getElementById("mic");
     const recognition = new window.webkitSpeechRecognition();
     if (mic.classList?.contains("animate-pulse")) {
@@ -34,7 +39,7 @@ const Search = () => {
       recognition.onresult = function (event) {
         const text = event.results[0][0].transcript;
         ref.current.value = text.replace(/\./g, "");
-        setInput(ref.current.value)
+        setInput(ref.current.value);
         mic.classList?.remove("animate-pulse");
         navigate("search/" + ref.current.value);
       };
@@ -42,7 +47,10 @@ const Search = () => {
   };
   return (
     <div className="w-full flex items-center">
-      <span className="h-10 pl-4 flex bg-[#DDE4E4] hover:text-[#000] items-center justify-center rounded-l-[20px] text-gray-500 cursor-pointer">
+      <span
+        onClick={handleSearch}
+        className="h-10 pl-4 flex bg-[#DDE4E4] hover:text-[#000] items-center justify-center rounded-l-[20px] text-gray-500 cursor-pointer"
+      >
         <AiOutlineSearch size={24} />
       </span>
       <input

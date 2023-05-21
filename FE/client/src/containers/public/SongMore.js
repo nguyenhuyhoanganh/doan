@@ -12,33 +12,33 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth.context";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
   const navigate = useNavigate();
+  const { personnalPlaylist } = useSelector((state) => state.music);
   const { isAuthenticated } = useContext(AuthContext);
   const [playlist, setPlaylist] = useState([]);
-  useEffect(() => {
-    const fetchPL = async () => {
-      if (isAuthenticated) {
-        const res = await apis.apiGetPlaylist({
-          limit: 40,
-          orderBy: "createdAt",
-        });
-        setPlaylist(res?.data?.data);
-      }
-    };
-    // ???
-    fetchPL();
-  }, []);
-
+  // useEffect(() => {
+  //   const fetchPL = async () => {
+  //     if (isAuthenticated) {
+  //       const res = await apis.apiGetPlaylist({
+  //         limit: 40,
+  //         orderBy: "createdAt",
+  //       });
+  //       setPlaylist(res?.data?.data);
+  //     }
+  //   };
+  //   // ???
+  //   fetchPL();
+  // }, []);
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
   };
-  const handleAddToPlaylist = async(pid, sid) => {
-    const res = await apis.apiAddSongToPlaylist(sid, pid)
-    console.log(res)
-    if(res?.data?.code === 200){
-      toast.success('Thêm bài hát thành công!')
+  const handleAddToPlaylist = async (pid, sid) => {
+    const res = await apis.apiAddSongToPlaylist(sid, pid);
+    if (res?.data?.code === 200) {
+      toast.success("Thêm bài hát thành công!");
     }
   };
 
@@ -52,18 +52,19 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
           Playlist
         </span>
         <div className="flex flex-col gap-1 cursor-pointer pt-2">
-          {playlist.length !== 0? 
-            playlist.map((el) => {
-              return (
-                <span
-                  key={el.id}
-                  onClick={(e) => handleAddToPlaylist(el.id, song.id)}
-                  className="hover:bg-gray-200 text-left text-sm uppercase"
-                >
-                  {el?.title}
-                </span>
-              );
-            }): "chưa có playlist"} 
+          {personnalPlaylist
+            ? personnalPlaylist.map((el) => {
+                return (
+                  <span
+                    key={el.id}
+                    onClick={(e) => handleAddToPlaylist(el.id, song.id)}
+                    className="hover:bg-gray-200 text-left text-sm uppercase"
+                  >
+                    {el?.title}
+                  </span>
+                );
+              })
+            : "chưa có playlist"}
         </div>
       </div>
     </div>
@@ -209,9 +210,10 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
         <FaRegComment className="scale-x-[-1] transform" />
         Bình luận
       </button>
-      <button onClick={(e) => {
-
-      }} className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100">
+      <button
+        onClick={(e) => {}}
+        className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 hover:bg-gray-100"
+      >
         <HiOutlineLink size={16} />
         Copylink
       </button>

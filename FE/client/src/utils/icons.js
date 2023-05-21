@@ -21,6 +21,7 @@ import { IoMdSkipBackward, IoMdSkipForward, IoMdAdd} from "react-icons/io"
 import { RxLoop} from "react-icons/rx"
 import { TbRepeat, TbRepeatOnce, TbPlayerTrackNext, TbPlayerTrackPrev} from "react-icons/tb"
 import { GrContactInfo, GrNext, GrPrevious, GrAdd} from "react-icons/gr"
+import {FaRegPlayCircle} from "react-icons/fa"
 
 const icons = {
   MdOutlineLibraryMusic,
@@ -60,6 +61,7 @@ const icons = {
   BsThreeDots,
   BsPen,
   GrAdd,
-  IoMdAdd
+  IoMdAdd,
+  FaRegPlayCircle
 };
 export default icons;

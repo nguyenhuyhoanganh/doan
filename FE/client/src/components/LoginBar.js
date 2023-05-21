@@ -42,7 +42,6 @@ const LoginBar = () => {
       setIsAuthenticated(false);
       setProfile(null);
     }
-    console.log("logout");
     navigate("/");
   };
 
@@ -52,7 +51,7 @@ const LoginBar = () => {
         <div id="loginImg" className="relative" title={profile?.firstName}>
           <img
             onClick={handleClick}
-            className="object-contain rounded-full w-10 hover:flex"
+            className="object-contain rounded-full w-10 h-10 hover:flex"
             src={profile?.avatarUrl === undefined ? 'https://avatar.talk.zdn.vn/default.jpg' : profile?.avatarUrl}
             alt=""
           />

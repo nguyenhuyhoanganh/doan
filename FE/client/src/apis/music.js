@@ -1,26 +1,33 @@
 import http from "../axios";
 
-export const apiGetSong = (sid) => http.get(`/song`, sid)
+export const apiDeletePlaylist = (pid) =>
+  http.delete(`/playlists/delete/${pid}`);
 
-export const apiGetAllSongs = (params) => http.get(`/songs`, {params})
+export const apiGetSong = (sid) => http.get(`/song`, sid);
 
-export const apiGetComment = (params, sid) => http.get(`/songs/${sid}/comments`, {params})
+export const apiGetAllSongs = (params) => http.get(`/songs`, { params });
 
-export const apiGetPlaylist = (params) => http.get('/playlists', {params})
-export const apiGetPlaylistById = (pid) => http.get(`/playlists/${pid}`)
+export const apiGetComment = (params, sid) =>
+  http.get(`/songs/${sid}/comments`, { params });
 
-export const apiAddSongToPlaylist = (sid, pid) => http.post(`/playlists/${pid}/add/${sid}`)
-export const apiLikeSong = (sid) => http.post(`songs/${sid}/like`)
-export const apiUnLikeSong = (sid) => http.post(`/songs/${sid}/unlike`)
-export const apiIncresingView = (sid) => http.post(`/songs/${sid}/increment_view`)
+export const apiGetPlaylist = (params) => http.get("/playlists", { params });
+export const apiGetPlaylistById = (pid) => http.get(`/playlists/${pid}`);
 
-export const apiGetFavoritePlaylist = (params) => http.get('/songs/favorites_list', {params})
+export const apiAddSongToPlaylist = (sid, pid) =>
+  http.post(`/playlists/${pid}/add/${sid}`);
+export const apiLikeSong = (sid) => http.post(`songs/${sid}/like`);
+export const apiUnLikeSong = (sid) => http.post(`/songs/${sid}/unlike`);
+export const apiIncresingView = (sid) =>
+  http.post(`/songs/${sid}/increment_view`);
 
-export const apiCreatePlaylist = (body) => http.post('/playlists/create', body)
+export const apiGetFavoritePlaylist = (params) =>
+  http.get("/songs/favorites_list", { params });
+
+export const apiCreatePlaylist = (body) => http.post("/playlists/create", body);
 
 export const chart = (top = 10) => {
-  return http.get(`songs/chart?top=${top}`)
-}
+  return http.get(`songs/chart?top=${top}`);
+};
 
 export const apiGetDetailSong = (sid) =>
   new Promise(async (resolve, reject) => {
@@ -142,7 +149,7 @@ export const apiGetSongsByArtistId = (id) =>
     }
   });
 
-  export const apiSearchSong = (search) =>
+export const apiSearchSong = (search) =>
   new Promise(async (resolve, reject) => {
     try {
       const response = await http({

@@ -13,6 +13,7 @@ const actionTypes = {
     GET_ARTIST: 'GET_ARTIST',
     GET_COMPOSER: 'GET_COMPOSER',
     GET_ALL_SONG: 'GET_ALL_SONG',
+    GET_ALL_PLAYLIST_NAMES: 'GET_ALL_PLAYLIST_NAMES',
 }
 
 export default actionTypes

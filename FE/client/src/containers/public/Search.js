@@ -22,13 +22,11 @@ const Search = () => {
       const albumResult = [];
       if (res.data?.code === 200) {
         setResult(res.data?.data);
-        console.log(res.data?.data.length);
         res.data?.data?.forEach((element) => {
           const artist = element.artists[0];
           const album = element.album;
           artistsResult.push(artist);
           albumResult.push(album);
-          console.log(album);
         });
         // unique artistResult
         const uniArts = artistsResult.filter(
@@ -40,7 +38,6 @@ const Search = () => {
         );
         setAlbums(uniAlbs);
       }
-      console.log(artists);
     };
     fetchResult();
   }, [key]);

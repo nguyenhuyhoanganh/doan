@@ -7,6 +7,7 @@ const initState = {
   songs: null,
   skip: true,
   preSongs: [],
+  personnalPlaylist: [],
 };
 
 const musicReducer = (state = initState, action) => {
@@ -39,6 +40,12 @@ const musicReducer = (state = initState, action) => {
       return {
         ...state,
         skip: action.flag,
+      };
+    }
+    case actionTypes.GET_ALL_PLAYLIST_NAMES: {
+      return {
+        ...state,
+        personnalPlaylist: action.myplaylist || null,
       };
     }
     case actionTypes.SET_PRE_SONGS: {

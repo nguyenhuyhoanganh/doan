@@ -51,7 +51,6 @@ const Player = () => {
       const res = await api.apiGetDetailSong(curSongId);
       if (res?.data.code === 200) {
         audio.pause();
-        console.log(res?.data?.data[0]);
         setSongInfo(res?.data?.data[0]);
         setAudio(new Audio(res?.data?.data[0]?.sourceUrls[0]));
         setSkeleton(false);
@@ -59,7 +58,6 @@ const Player = () => {
         setLike(res?.data?.data[0]?.liked);
       } else {
         // ERROR occurred when call VIP songs
-        console.log(res?.data.code);
         audio.pause();
         setAudio(new Audio());
         dispatch(actions.play(false));
@@ -71,6 +69,7 @@ const Player = () => {
         // console.log(isVipSong);
         thumbRef.current.style.cssText = `right: 100%`;
       }
+      const res2 = await api.apiIncresingView(curSongId);
     };
 
     fetchDetailSong();
@@ -103,7 +102,6 @@ const Player = () => {
     intervalId && clearInterval(intervalId);
     // trường hợp có lặp
     if (loopBtn) {
-      console.log("lặp lại bài");
       audio.currentTime = 0;
       audio.play();
       intervalId = setInterval(() => {
@@ -115,16 +113,14 @@ const Player = () => {
         setCurrentSec(Math.floor(audio.currentTime));
       }, 100);
     } else {
-      console.log("loop", loopBtn);
-      console.log("hết bài");
       if (!songs || songs[songs.length - 1].id === curSongId) {
-        console.log("là bài cuối");
       } else {
         if (skip) {
           handleNextSong();
         }
       }
     }
+    
     audio.removeEventListener("ended", handleEnd);
   };
   // trường hợp không lặp bài
@@ -167,25 +163,20 @@ const Player = () => {
   };
   // console.log(songs);
   const handleClickProgressbar = (e) => {
-    console.log(e);
     // console.log(trackRef.current.getBoundingClientRect());
     const trackRect = trackRef.current.getBoundingClientRect();
     const percent =
       Math.round(((e.clientX - trackRect.left) * 10000) / trackRect.width) /
       100;
-    console.log(percent);
     thumbRef.current.style.cssText = `right: ${100 - percent}%`;
     audio.currentTime = (percent * songInfo.duration) / 100;
     setCurrentSec(Math.round((percent * songInfo.duration) / 100));
   };
   const handleNextSong = () => {
-    console.log(songs);
     if (songSuf != null) {
       // phát theo list này
-      console.log("phát theo suffle");
     } else {
       if (songs != null) {
-        console.log("1");
 
         let curSongIndex;
         songs?.forEach((item, index) => {
@@ -236,12 +227,9 @@ const Player = () => {
   };
   const handleClickVoiceConfig = (e) => {
     const trackRect = voiceRefTrack.current.getBoundingClientRect();
-    console.log(trackRect.left + ": " + trackRect.width);
-    console.log(e.clientX);
     const percent =
       Math.round(((e.clientX - trackRect.left) * 10000) / trackRect.width) /
       100;
-    console.log(percent);
     voiceRef.current.style.cssText = `right: ${100 - percent}%`;
     audio.volume = Math.floor(percent) / 100;
   };
@@ -265,7 +253,6 @@ const Player = () => {
     // TH chưa có bài nào đc chọn
     if (songs) {
       if (songs.find((s) => s.id === curSongId)) {
-        console.log("bài trong list đc chọn");
         songSuf = songs;
         // dispatch(actions.setPlaylistData(songSuf));
         // xử lý trộn bài loại bỏ 1
@@ -279,12 +266,9 @@ const Player = () => {
         dispatch(actions.setCurSongId(songSuf[0].id));
         dispatch(actions.play(true));
       } else {
-        console.log("bài trong list chưa được chọn");
         const songSuf = shuffle(songs);
         dispatch(actions.setPlaylistData(songSuf));
         // phát luôn bài đầu tiên này
-        console.log(songSuf[0].id);
-
         songSuf && dispatch(actions.setCurSongId(songSuf[0].id));
       }
     } else {
@@ -293,7 +277,6 @@ const Player = () => {
     // TH chọn 1 bài trong playlist rồi thì sẽ có id
   };
   const handleCLickLoop = () => {
-    console.log("repeat loop");
     setLoopBtn((pre) => !pre);
   };
   const handleLikeSong = () => {

@@ -7,7 +7,7 @@ import SkeletonCard from "./SkeletonCard";
 import handleTime from "../utils/formatDuration";
 import List from "../components/List"
 
-const { TbPlayerTrackNext } = icons;
+const { FaRegPlayCircle } = icons;
 var fakeWaitAPI;
 const HomeContainer = () => {
   const [skeleton, setSkeleton] = useState(true);

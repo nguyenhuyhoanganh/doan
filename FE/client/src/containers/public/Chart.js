@@ -20,8 +20,6 @@ const Chart = () => {
     },
     keepPreviousData: true,
   });
-  console.log(data);
-
   useEffect(() => {
     if (data !== undefined) {
       setTopSongs(data?.data?.data?.top_songs);
@@ -32,7 +30,6 @@ const Chart = () => {
           (accumulator, currentValue) => accumulator + currentValue,
           0
         );
-        // console.log(total)
         topListen.push(total);
       }
       setTopListen(topListen);
@@ -62,15 +59,17 @@ const Chart = () => {
                     />
                     <div className="flex flex-col gap-1 pl-2">
                       <span className="font-bold text-[#111010]">
-                        {element.title.length <= 30 ? element.title : `${element.title.slice(0, 30)}....`}
+                        {element.title.length <= 30
+                          ? element.title
+                          : `${element.title.slice(0, 30)}....`}
                       </span>
                       <span className="text-sm text-[#171e1e]">
                         {element.artists[0].fullName}
                       </span>
                     </div>
                   </div>
-                  <span>Lượt nghe: {topListen[index]}</span>
-                  <span>Lượt thích: {element.likeCount}</span>
+                  <span className="text-[14px]">Lượt nghe trong hôm nay: {topListen[index]}</span>
+                  <span className="text-[14px]">Lượt thích của bài: {element.likeCount}</span>
                   <span>{handleDuration(element.duration)}</span>
                 </div>
               );

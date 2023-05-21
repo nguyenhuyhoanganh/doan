@@ -6,7 +6,7 @@ import SongMore from "../../containers/public/SongMore";
 import * as actions from "../../store/actions";
 
 const SongItem = ({ item, songs }) => {
-  const { TbPlayerTrackNext, BsThreeDots } = icons;
+  const { FaRegPlayCircle, BsThreeDots } = icons;
   const dispatch = useDispatch();
   const handleTime = (sec) => {
     let min = Math.floor(sec / 60);
@@ -27,7 +27,7 @@ const SongItem = ({ item, songs }) => {
         }}
         className="absolute pt-3 pl-[30px] top-0 left-0 hover:opacity-100 opacity-0"
       >
-        <TbPlayerTrackNext size={24} />
+        <FaRegPlayCircle className="text-[#d9cbcb]" size={24} />
       </span>
       <div className="flex " title={item.title}>
         <img

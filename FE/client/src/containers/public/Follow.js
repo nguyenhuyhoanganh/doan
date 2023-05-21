@@ -85,20 +85,20 @@ const Follow = () => {
                     navigate(`/artist/${el?.slug}/${el?.id}`)
                   }}
                   alt="ảnh nghệ sĩ"
-                  className="w-[180px] rounded-full object-contain animate-slide-left"
+                  className="w-[180px] rounded-full object-contain cursor-pointer animate-slide-left"
                 ></img>
               );
             })}
           </div>
           <div
             onClick={handlePrev}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <GrPrevious size={30}></GrPrevious>
           </div>
           <div
             onClick={handleNext}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
           >
             <GrNext size={30}></GrNext>
           </div>
@@ -119,20 +119,20 @@ const Follow = () => {
                     navigate(`/composer/${el?.slug}/${el?.id}`)
                   }}
                   alt="ảnh nghệ sĩ"
-                  className="w-[180px] rounded-full object-contain animate-slide-left"
+                  className="w-[180px] rounded-full object-contain cursor-pointer animate-slide-left"
                 ></img>
               );
             })}
           </div>
           <div
             onClick={handlePrev2}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <GrPrevious size={30}></GrPrevious>
           </div>
           <div
             onClick={handleNext2}
-            className="w-10 h-10 flex justify-center items-center rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
+            className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-[rgba(255,255,255,0.3)] hover:bg-[rgba(255,255,255,0.8)]  z-10 absolute top-1/2 right-0 transform -translate-y-1/2"
           >
             <GrNext size={30}></GrNext>
           </div>
