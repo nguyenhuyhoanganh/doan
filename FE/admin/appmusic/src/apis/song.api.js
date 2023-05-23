@@ -21,6 +21,9 @@ const songApi = {
   },
   chart(top = 10) {
     return http.get(`${URL}/chart?top=${top}`)
+  },
+  statistics() {
+    return http.get(`${URL}/statistics`)
   }
 }
 

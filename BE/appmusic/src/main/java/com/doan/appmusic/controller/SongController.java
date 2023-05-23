@@ -8,6 +8,7 @@ import com.doan.appmusic.model.SongDTO;
 import com.doan.appmusic.security.CustomUserDetails;
 import com.doan.appmusic.service.CommentService;
 import com.doan.appmusic.service.SongService;
+import com.doan.appmusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,8 @@ public class SongController {
     private SongService service;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("")
     public ResponseEntity<?> getAll(HttpServletRequest request, @RequestParam(required = false, defaultValue = "id") String[] sortBy, @RequestParam(required = false, defaultValue = "desc") String[] orderBy, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "10") Integer limit) {
@@ -74,11 +77,12 @@ public class SongController {
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<?> statistics(@RequestParam(required = false, defaultValue = "10") int top) {
+    public ResponseEntity<?> statistics() {
         Map<String, Object> data = new HashMap<>();
         data.put("play_statistics",service.getSongListeningStatistics());
         data.put("number_of_new_songs", service.countNewSongs());
         data.put("number_of_songs", service.count());
+        data.put("number_of_users", userService.count());
         ResponseDTO<?> response = ResponseDTO.builder().data(data).build();
         return ResponseEntity.ok(response);
     }
