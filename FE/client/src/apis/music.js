@@ -3,6 +3,10 @@ import http from "../axios";
 export const apiDeletePlaylist = (pid) =>
   http.delete(`/playlists/delete/${pid}`);
 
+export const apiDeleteSongFromPlaylist = (pid, sid) => {
+  http.post(`/playlists/${pid}/remove/${sid}`);
+} 
+  
 export const apiGetSong = (sid) => http.get(`/song`, sid);
 
 export const apiGetAllSongs = (params) => http.get(`/songs`, { params });

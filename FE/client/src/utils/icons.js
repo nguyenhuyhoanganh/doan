@@ -14,6 +14,7 @@ import {
   AiOutlineHeart,
   AiOutlinePlayCircle,
   AiOutlinePauseCircle,
+  AiFillDelete
 } from "react-icons/ai";
 import { BsMicFill, BsShuffle, BsVolumeUp, BsToggleOff, BsToggleOn, BsThreeDots, BsPen } from "react-icons/bs";
 import { RiVipFill } from "react-icons/ri";
@@ -62,6 +63,7 @@ const icons = {
   BsPen,
   GrAdd,
   IoMdAdd,
-  FaRegPlayCircle
+  FaRegPlayCircle,
+  AiFillDelete
 };
 export default icons;

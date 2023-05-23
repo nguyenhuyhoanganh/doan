@@ -1,9 +1,9 @@
 import { BsDownload, BsCardText, BsHeadphones } from "react-icons/bs";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillDelete, AiOutlineHeart } from "react-icons/ai";
 import { HiOutlineLink } from "react-icons/hi";
 import { FaRegComment } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Popover from "../../components/Popover";
 import { Fragment, useState } from "react";
 import Tooltip from "../../components/Tooltip";
@@ -14,24 +14,28 @@ import { AuthContext } from "../../contexts/auth.context";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
-const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
+const SongMore = ({
+  children,
+  song,
+  onChangeOpen,
+  isOpen,
+  handleAfterDelete,
+}) => {
   const navigate = useNavigate();
+  const { pid } = useParams();
   const { personnalPlaylist } = useSelector((state) => state.music);
   const { isAuthenticated } = useContext(AuthContext);
   const [playlist, setPlaylist] = useState([]);
-  // useEffect(() => {
-  //   const fetchPL = async () => {
-  //     if (isAuthenticated) {
-  //       const res = await apis.apiGetPlaylist({
-  //         limit: 40,
-  //         orderBy: "createdAt",
-  //       });
-  //       setPlaylist(res?.data?.data);
-  //     }
-  //   };
-  //   // ???
-  //   fetchPL();
-  // }, []);
+  const [flag_del, setFlag_del] = useState(false);
+  const currentURL = window.location.href;
+  useEffect(() => {
+    const url = currentURL.split("/");
+    if (url.length >= 3 && url[3] === "playlist") {
+      setFlag_del(true);
+    } else {
+      setFlag_del(false);
+    }
+  }, []);
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
   };
@@ -40,6 +44,10 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
     if (res?.data?.code === 200) {
       toast.success("Thêm bài hát thành công!");
     }
+  };
+  const handleDeleteSongFromPL = async (pid, sid) => {
+    await apis.apiDeleteSongFromPlaylist(pid, sid);
+    handleAfterDelete(sid);
   };
 
   const playlistSet = (
@@ -217,26 +225,42 @@ const SongMore = ({ children, song, onChangeOpen, isOpen }) => {
         <HiOutlineLink size={16} />
         Copylink
       </button>
-      <div
-        tabIndex="-2"
-        className={`w-60 cursor-auto select-none rounded-lg bg-white shadow hover:bg-gray-100`}
-      >
-        <Popover
-          placement="left"
-          trigger="hover"
-          shrinkedPopoverPosition="right"
-          renderPopover={playlistSet}
-          offsetValue={{ mainAxis: -3, crossAxis: 20 }}
-          clasaName="flex pt-2 px-4 pb-2"
-          zindex={100}
-          delayHover={{ open: 0, close: 100 }}
+      {!flag_del ? (
+        <div
+          tabIndex="-2"
+          className={`w-60 cursor-auto select-none rounded-lg bg-white hover:bg-gray-100`}
         >
-          <button className="flex w-full items-center gap-2 text-left text-sm text-gray-800">
-            <IoMdAdd size={16} />
-            Thêm vào playlist
-          </button>
-        </Popover>
-      </div>
+          <Popover
+            placement="left"
+            trigger="hover"
+            shrinkedPopoverPosition="right"
+            renderPopover={playlistSet}
+            offsetValue={{ mainAxis: -3, crossAxis: 20 }}
+            clasaName="flex pt-2 px-4 pb-2"
+            zindex={100}
+            delayHover={{ open: 0, close: 100 }}
+          >
+            <button className="flex w-full items-center gap-2 text-left text-sm text-gray-800">
+              <IoMdAdd size={16} />
+              Thêm vào playlist
+            </button>
+          </Popover>
+        </div>
+      ) : (
+        ""
+      )}
+
+      {flag_del ? (
+        <button
+          onClick={(e) => handleDeleteSongFromPL(pid, song.id)}
+          className="flex w-full items-center gap-2 py-2 px-5 text-left text-sm text-gray-800 rounded-lg hover:bg-gray-100"
+        >
+          <AiFillDelete size={16} />
+          Xóa khỏi playlist
+        </button>
+      ) : (
+        ""
+      )}
     </div>
   );
 

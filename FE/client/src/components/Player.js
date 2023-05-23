@@ -45,6 +45,7 @@ const Player = () => {
   const { isAuthenticated } = useContext(AuthContext);
   var tempSource;
   const [audio, setAudio] = useState(new Audio());
+  const { friday } = useSelector((state) => state.app);
   useEffect(() => {
     const fetchDetailSong = async () => {
       setSkeleton(true);
@@ -75,9 +76,14 @@ const Player = () => {
     fetchDetailSong();
   }, [curSongId]);
 
-  // useEffect(()=>{
-  //   console.log()
-  // }, [isPlaying])
+  useEffect(() => {
+    if (friday.length > 0) {
+      dispatch(actions.setCurSongId(friday[0].id));
+      dispatch(actions.play(false));
+      dispatch(actions.playAlbum(true));
+      dispatch(actions.setPlaylistData(friday));
+    }
+  }, [friday]);
   // console.log(isVipSong);
   useEffect(() => {
     // dispatch(actions.play(true))
@@ -101,6 +107,7 @@ const Player = () => {
   const handleEnd = () => {
     intervalId && clearInterval(intervalId);
     // trường hợp có lặp
+    console.log(loopBtn)
     if (loopBtn) {
       audio.currentTime = 0;
       audio.play();
@@ -120,7 +127,7 @@ const Player = () => {
         }
       }
     }
-    
+
     audio.removeEventListener("ended", handleEnd);
   };
   // trường hợp không lặp bài
@@ -177,7 +184,6 @@ const Player = () => {
       // phát theo list này
     } else {
       if (songs != null) {
-
         let curSongIndex;
         songs?.forEach((item, index) => {
           if (item.id === +curSongId) {
@@ -278,22 +284,22 @@ const Player = () => {
   };
   const handleCLickLoop = () => {
     setLoopBtn((pre) => !pre);
+    console.log(loopBtn);
   };
   const handleLikeSong = () => {
     const actionLikeSong = async () => {
       if (isAuthenticated) {
         if (like) {
           // nếu like = true là đã like
-          const res = await api.apiUnLikeSong(curSongId)
-          setLike(false)
-          toast.info('Bỏ lượt thích :((')
+          const res = await api.apiUnLikeSong(curSongId);
+          setLike(false);
+          toast.info("Bỏ lượt thích :((");
         } else {
           // like = false là chưa like
           const res = await api.apiLikeSong(curSongId);
-          setLike(true)
-          toast.info('Cảm ơn đã thích bài hát <3')
+          setLike(true);
+          toast.info("Cảm ơn đã thích bài hát <3");
         }
-        
       } else {
         toast.warning("Bạn cần đăng nhập để like bài hát");
       }
@@ -324,9 +330,7 @@ const Player = () => {
             <AiOutlineHeart
               onClick={() => handleLikeSong()}
               size={24}
-              className={
-                like? "text-red-500" : "hover:text-red-500"
-              }
+              className={like ? "text-red-500" : "hover:text-red-500"}
             />
             <MdInfoOutline
               onClick={() => {
@@ -400,11 +404,11 @@ const Player = () => {
               <IoMdSkipForward size={24} />
             </span>
             <span
-              onClick={handleCLickLoop}
+              onClick={(e) => handleCLickLoop()}
               className="hover:text-[#fff]"
               title="Lặp bài hát"
             >
-              {!loopBtn ? <TbRepeat size={30} /> : <TbRepeatOnce size={30} />}
+              {loopBtn ? <TbRepeatOnce size={30} /> : <TbRepeat size={30} />}
             </span>
           </div>
           <div className="flex h-[30%] gap-6 justify-center cursor-pointer m-auto items-center w-full">

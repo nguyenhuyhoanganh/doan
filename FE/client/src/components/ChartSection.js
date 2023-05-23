@@ -142,8 +142,8 @@ const ChartSection = () => {
     maintainAspectRatio: false,
     scales: {
       y: {
-        ticks: { display: false },
-        grid: { color: "rgba(255, 255, 255, 0.3)", drawTicks: false },
+        ticks: { display: true },
+        grid: { color: "rgba(255, 255, 255, 0.7)", drawTicks: false },
         border: { dash: [3, 4] },
         min: 0,
         max: 250,
@@ -156,7 +156,7 @@ const ChartSection = () => {
     plugins: {
       legend: false,
       tooltip: {
-        enabled: false,
+        enabled: true,
         external: ({ tooltip }) => {
           if (!chartRef || !chartRef.current) return;
           if (tooltip.opacity === 0) {
@@ -184,9 +184,9 @@ const ChartSection = () => {
   };
   // bg-gradient-to-t from-[#34224f]/90 to-[#34224f]/70
   return (
-    <div className="relative h-[400px] w-[96%] rounded-md bg-cover bg-center bg-chart-image">
+    <div className="relative h-[400px] w-[96%] rounded-md bg-cover bg-center">
       {/* <img className='absolute inset-0 z-10 rounded-md' src='/src/imgs/chart.jpg' alt='bg-chart'></img> */}
-      <div className="absolute inset-0 rounded-md bg-[rgba(0,0,0,0.4)]"></div>
+      <div className="absolute inset-0 rounded-md bg-[rgba(0,0,0,0.6)]"></div>
       <div className="absolute inset-0 rounded-md p-4">
         <div className="grid h-full grid-cols-12 gap-4">
           <h3 className="col-span-12 block text-2xl font-bold text-white">

@@ -12,8 +12,7 @@ import java.util.List;
 @Builder
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "playlists", uniqueConstraints = {@UniqueConstraint(columnNames = {"created_by", "slug"}),
-        @UniqueConstraint(columnNames = {"created_by", "title"}), @UniqueConstraint(columnNames = {"title", "slug"})})
+@Table(name = "playlists")
 public class Playlist extends CreateAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
