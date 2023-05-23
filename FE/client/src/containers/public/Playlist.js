@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import path from "../../utils/path";
 import * as actions from "../../store/actions";
 import icons from "../../utils/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Playlist = () => {
   const { pid } = useParams();
@@ -23,16 +23,16 @@ const Playlist = () => {
   const [useSkeleton, setUseSkeleton] = useState(false);
   const [btnSkeleton, setBtnSkeleton] = useState(false);
   const navigate = useNavigate();
+  const fetchSongPlaylist = async (pid) => {
+    setUseSkeleton(true);
+    if (isAuthenticated) {
+      const res = await apis.apiGetPlaylistById(pid);
+      setSongs(res?.data?.data?.songs);
+      setPlaylist(res?.data?.data);
+    }
+    setUseSkeleton(false);
+  };
   useEffect(() => {
-    const fetchSongPlaylist = async (pid) => {
-      setUseSkeleton(true);
-      if (isAuthenticated) {
-        const res = await apis.apiGetPlaylistById(pid);
-        setSongs(res?.data?.data?.songs);
-        setPlaylist(res?.data?.data);
-      }
-      setUseSkeleton(false);
-    };
     fetchSongPlaylist(pid);
   }, []);
   const handleDeletePlaylist = () => {
@@ -63,6 +63,9 @@ const Playlist = () => {
     } else {
       toast.warning("Chưa có bài hát nào trong playlist");
     }
+  };
+  const handleSetSongAfterDel = (sid) => {
+    setSongs((pre) => pre.filter((s) => s.id !== sid));
   };
   return (
     <div className="flex gap-4 w-full px-[40px] relative">
@@ -103,7 +106,9 @@ const Playlist = () => {
                   <button
                     disabled={btnSkeleton}
                     onClick={handleDelete}
-                    className={`border border-red-500 hover:bg-red-500 rounded-md hover:text-[#fff] px-2 py-1 ${btnSkeleton? "cursor-wait" : "cursor-pointer"}`}
+                    className={`border border-red-500 hover:bg-red-500 rounded-md hover:text-[#fff] px-2 py-1 ${
+                      btnSkeleton ? "cursor-wait" : "cursor-pointer"
+                    }`}
                   >
                     Xác nhận
                   </button>
@@ -152,7 +157,7 @@ const Playlist = () => {
                 ></div>
               ))
             ) : (
-              <List songs={songs} />
+              <List songs={songs} handleAfterDelete={handleSetSongAfterDel} />
             )}
           </Scrollbars>
         ) : (

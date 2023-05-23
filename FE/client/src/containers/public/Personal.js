@@ -96,11 +96,11 @@ const Personal = () => {
         setPlayList(res?.data?.data);
       }
     };
-    // fetchPL();
+    fetchPL();
     if (personnalPlaylist) {
       setPlayList(personnalPlaylist);
     }
-  }, [personnalPlaylist]);
+  }, []);
   useEffect(() => {
     const fetchFvPl = async () => {
       const res2 = await apis.apiGetFavoritePlaylist({

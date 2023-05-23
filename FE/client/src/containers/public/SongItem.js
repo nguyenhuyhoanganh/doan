@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import SongMore from "../../containers/public/SongMore";
 import * as actions from "../../store/actions";
 
-const SongItem = ({ item, songs }) => {
+const SongItem = ({ item, songs, handleAfterDelete }) => {
   const { FaRegPlayCircle, BsThreeDots } = icons;
   const dispatch = useDispatch();
   const handleTime = (sec) => {
@@ -51,6 +51,7 @@ const SongItem = ({ item, songs }) => {
           song={item}
           onChangeOpen={handleUpdateOpenInfo}
           isOpen={isOpenInfo}
+          handleAfterDelete={handleAfterDelete}
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-gray-200">
             <svg

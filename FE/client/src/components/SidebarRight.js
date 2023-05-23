@@ -6,6 +6,7 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import * as actions from "../store/actions";
 import * as api from "../apis";
 import { SkeletonSong } from "../components";
+import { toast } from "react-toastify";
 
 const { BsToggleOff, BsToggleOn, FaRegPlayCircle } = icons;
 const SidebarRight = () => {
@@ -21,15 +22,22 @@ const SidebarRight = () => {
   const { songs, skip, curSongId, preSongs } = useSelector(
     (state) => state.music
   );
+  const { friday } = useSelector((state) => {
+    return state.app;
+  });
   useEffect(() => {
     setPreSong(preSongs);
-    songs &&
+    if (songs !== null) {
       songs.forEach((element, index) => {
         if (element.id == +curSongId) {
           setSongList(songs.slice(index));
         }
       });
-  }, [curSongId]);
+    } else {
+      setSongList(friday);
+    }
+    console.log(songs);
+  }, [curSongId, friday]);
 
   useEffect(() => {
     setSkeleton(true);
