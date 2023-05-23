@@ -48,6 +48,8 @@ public interface UserService {
 
     long count(Map<String, String[]> search);
 
+    long count();
+
     void incrementViolationCount(long userId);
 
     void decrementViolationCount(long userId);
@@ -158,6 +160,11 @@ class UserServiceImpl implements UserService {
     public long count(Map<String, String[]> query) {
         Specification<User> specification = buildSpecification(query);
         return repository.count(specification);
+    }
+
+    @Override
+    public long count() {
+        return repository.count();
     }
 
     @Override

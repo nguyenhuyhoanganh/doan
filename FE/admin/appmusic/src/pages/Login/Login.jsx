@@ -11,6 +11,7 @@ import { useContext } from 'react'
 import { AuthContext } from '../../contexts/auth.context'
 import Button from '../../components/Button'
 import PATH from '../../constants/paths'
+import { toast } from 'react-toastify'
 
 const Login = () => {
   const { setIsAuthenticated, setProfile } = useContext(AuthContext)
@@ -35,11 +36,14 @@ const Login = () => {
     loginMutation.mutate(data, {
       // login thành công
       onSuccess: (data) => {
-        // set isAuthenticated = true trong context
-        setIsAuthenticated(true)
-        // save profile user vào context
-        setProfile(data.data.data.user)
-        navigate(PATH.dashboard.root)
+        console.log(data.data.data.user)
+        if (data.data.data.user.roles.some((item) => item.roleName === 'ROLE_ADMIN')) {
+          // set isAuthenticated = true trong context
+          setIsAuthenticated(true)
+          // save profile user vào context
+          setProfile(data.data.data.user)
+          navigate(PATH.dashboard.root)
+        } else toast.error("You don't have permission")
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError(error)) {
